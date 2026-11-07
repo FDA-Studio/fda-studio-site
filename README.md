@@ -88,7 +88,7 @@ Protections : validation Zod côté serveur, contrôle d'origine, taille maximal
 
 1. Dépôt `FDA-Studio/fda-studio-site` (ou nom validé), *Settings → Pages → Source : GitHub Actions*.
 2. Pousser sur `main` déclenche build + déploiement ; les autres branches ne font qu'une compilation de contrôle.
-3. DNS chez IONOS (`@` → A `185.199.108.153` à `185.199.111.153`, `www` → CNAME `fda-studio.github.io`), puis forcer HTTPS. `public/CNAME` contient `fdastudio.fr`.
+3. Domaine : `fdastudio.fr` configuré dans *Settings → Pages* ; DNS chez IONOS (`@` → 4 A `185.199.108.153` à `185.199.111.153`, `www` → CNAME `fda-studio.github.io`, configuré le 7 nov. 2026, enregistrements e-mail inchangés). Aperçu en sous-dossier possible via la variable de dépôt `PAGES_BASE_PATH`.
 
 ## À compléter avant la production
 
