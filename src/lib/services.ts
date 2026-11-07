@@ -70,7 +70,7 @@ export const services: Service[] = [
         "Agence IA : agents intelligents, assistants vocaux, chatbots, automatisation des e-mails, du CRM et des processus métier. Intégration sécurisée de l'IA dans vos systèmes existants.",
       keywords: ["intégration intelligence artificielle entreprise", "automatisation IA", "agence IA", "agent IA", "assistant vocal IA", "chatbot entreprise"],
     },
-    heroLines: ["L'IA au travail,", "pas en vitrine."],
+    heroLines: ["L’IA au travail,", "pas en vitrine."],
     intro:
       "Nous partons de vos processus, pas de la technologie. Où passez-vous du temps sur des tâches répétitives ? Où des demandes restent-elles sans réponse ? Nous y plaçons des agents IA reliés à vos outils, avec des règles claires et un humain qui valide ce qui compte.",
     offers: [
