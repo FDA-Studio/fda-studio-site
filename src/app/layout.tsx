@@ -50,7 +50,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta httpEquiv="Content-Security-Policy" content={csp} />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
-        <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <noscript>
           <style>{`.reveal-line>span{transform:none!important}`}</style>
         </noscript>

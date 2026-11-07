@@ -11,11 +11,13 @@
 type Sfx = "tick" | "door";
 type Listener = (on: boolean) => void;
 
+import { asset } from "./site";
+
 const FILES = {
-  power: "/sounds/power-on.mp3",
-  ambient: "/sounds/ambient.mp3",
-  door: "/sounds/door.mp3",
-  tick: "/sounds/tick.mp3",
+  power: asset("/sounds/power-on.mp3"),
+  ambient: asset("/sounds/ambient.mp3"),
+  door: asset("/sounds/door.mp3"),
+  tick: asset("/sounds/tick.mp3"),
 } as const;
 
 const AMBIENT_LEVEL = 0.32;

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { budgets, contactSchema, needs, timelines } from "@/lib/validations/contact";
 import { site } from "@/lib/site";
@@ -212,7 +213,7 @@ export function ContactForm() {
           <input type="checkbox" name="consent" data-field="consent" className="mt-1 h-4 w-4 shrink-0 accent-[#2f5bff]" aria-invalid={!!errors.consent} />
           <span>
             J’accepte que FDA Studio utilise ces informations pour répondre à ma demande. Elles ne sont ni revendues ni utilisées à d’autres fins.{" "}
-            <a href="/confidentialite/" className="link-line text-paper">Politique de confidentialité</a>
+            <Link href="/confidentialite/" className="link-line text-paper">Politique de confidentialité</Link>
           </span>
         </label>
         {err("consent")}
