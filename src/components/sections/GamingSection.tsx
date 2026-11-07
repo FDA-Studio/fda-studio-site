@@ -22,9 +22,9 @@ export function GamingSection() {
           height={2050}
           loading="lazy"
           decoding="async"
-          className="absolute -right-1/3 top-0 h-full w-auto max-w-none opacity-35 md:right-[-8%] md:opacity-60"
+          className="absolute -right-1/3 top-0 h-full w-auto max-w-none opacity-25 blur-[2px] md:-right-[12%] md:opacity-30"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-night/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-night via-night/80 to-night/55" />
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-night to-transparent" />
       </div>
 
