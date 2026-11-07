@@ -90,9 +90,9 @@ Protections : validation Zod côté serveur, contrôle d'origine, taille maximal
 2. Pousser sur `main` déclenche build + déploiement ; les autres branches ne font qu'une compilation de contrôle.
 3. Domaine : `fdastudio.fr` configuré dans *Settings → Pages* ; DNS chez IONOS (`@` → 4 A `185.199.108.153` à `185.199.111.153`, `www` → CNAME `fda-studio.github.io`, configuré le 7 nov. 2026, enregistrements e-mail inchangés). Aperçu en sous-dossier possible via la variable de dépôt `PAGES_BASE_PATH`.
 
-## À compléter avant la production
+## Contenus
 
-- Mentions légales : raison sociale, SIRET, adresse, TVA, directeur de publication (éléments surlignés dans la page).
-- Confidentialité : confirmer la liste des sous-traitants selon la configuration du formulaire.
-- Captures réelles des projets (`ProjectCover` affiche des visuels générés en attendant).
-- Recherche d'antériorité de la marque (INPI / EUIPO), voir `brand/README.md`.
+- Informations légales : société FDA (nom commercial FDA Studio), reprises des mentions publiées sur doorknight.games et fdaholding.fr. Modifiables dans `src/lib/site.ts`.
+- Univers Door Knight : textes et visuels officiels de doorknight.games (`src/lib/doorknight.ts`), servis depuis ce site.
+- Portfolio : captures réelles dans `public/work/` ; les concepts internes gardent une composition générée et sont signalés comme tels.
+- Avant tout dépôt de marque : recherche d'antériorité (INPI / EUIPO), voir `brand/README.md`.

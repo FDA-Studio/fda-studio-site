@@ -23,6 +23,8 @@ export type Project = {
   work: string[];
   tags: string[];
   cover: CoverVariant;
+  /** Visuel réel (capture ou image officielle). Prioritaire sur la couverture générée. */
+  image?: { src: string; alt: string; width: number; height: number; position?: string };
   link?: { href: string; label: string };
   featured?: boolean;
 };
@@ -61,6 +63,7 @@ export const projects: Project[] = [
     ],
     tags: ["Jeu mobile 3D", "iOS", "Android", "Multijoueur", "Free-to-play"],
     cover: "doors",
+    image: { src: "https://doorknight.games/img/v3/w/w01.webp", alt: "La Forêt de Brume, premier monde de Door Knight 2.0", width: 1920, height: 864 },
     link: { href: "https://doorknight.games", label: "doorknight.games" },
     featured: true,
   },
@@ -84,6 +87,7 @@ export const projects: Project[] = [
     ],
     tags: ["Next.js", "WebGL", "Three.js", "Design system", "SEO"],
     cover: "sculpture",
+    image: { src: "/work/fda-studio.webp", alt: "Page d’accueil de fdastudio.fr avec la sculpture 3D temps réel", width: 1200, height: 840, position: "top" },
     link: { href: "/", label: "Retour à l'accueil" },
     featured: true,
   },
@@ -106,6 +110,7 @@ export const projects: Project[] = [
     ],
     tags: ["Site corporate", "SEO", "Déploiement continu"],
     cover: "holding",
+    image: { src: "/work/fda-holding.webp", alt: "Page d’accueil du site fdaholding.fr", width: 1200, height: 840, position: "top" },
     link: { href: "https://fdaholding.fr", label: "fdaholding.fr" },
   },
   {
@@ -127,6 +132,7 @@ export const projects: Project[] = [
     ],
     tags: ["Site de jeu", "Communauté", "Mobile first"],
     cover: "browser",
+    image: { src: "/work/doorknight-games.webp", alt: "Page d’accueil du site doorknight.games", width: 1200, height: 840, position: "top" },
     link: { href: "https://doorknight.games", label: "doorknight.games" },
   },
   {

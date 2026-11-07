@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/PageHeader";
-import { ProjectCover } from "@/components/ProjectCover";
+import { ProjectVisual } from "@/components/ProjectVisual";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ContactCTA } from "@/components/sections/ContactCTA";
 import { ArrowIcon, ExternalIcon } from "@/components/icons";
 import { categoryLabels, getProject, natureLabels, projects } from "@/lib/projects";
 import { pageMeta } from "@/lib/seo";
+import { doorKnight } from "@/lib/doorknight";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -43,7 +44,7 @@ export default async function ProjectPage({ params }: Props) {
       <section aria-label="Visuel du projet" className="pb-16">
         <div className="wrap">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-line md:aspect-[21/9]">
-            <ProjectCover variant={p.cover} className="absolute inset-0" />
+            <ProjectVisual project={p} className="absolute inset-0" eager />
           </div>
           {p.nature === "concept" && (
             <p className="mt-4 text-sm text-muted">Démonstrateur ou concept interne FDA Studio : ce n’est pas une réalisation client.</p>
@@ -100,6 +101,25 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {(p.slug === "door-knight" || p.slug === "doorknight-games") && (
+        <section aria-labelledby="galerie-title" className="border-t border-line py-20">
+          <div className="wrap">
+            <div className="flex items-end justify-between gap-6">
+              <h2 id="galerie-title" className="text-heading">Captures du jeu</h2>
+              <Link href="/gaming/" className="link-line text-muted hover:text-paper">Tout l’univers Door Knight</Link>
+            </div>
+            <ul className="mt-10 grid gap-6 md:grid-cols-2">
+              {[...doorKnight.shots, ...doorKnight.ui.slice(0, 2)].map((s) => (
+                <li key={s.img}>
+                  <img src={s.img} alt={s.alt} width={800} height={360} loading="lazy" decoding="async" className="aspect-[20/9] w-full rounded-2xl border border-line object-cover" />
+                  <p className="mt-3 text-sm text-muted">{s.alt}.</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section aria-label="Projet suivant" className="border-t border-line py-20">
         <div className="wrap">

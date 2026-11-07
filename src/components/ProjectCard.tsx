@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ProjectCover } from "./ProjectCover";
+import { ProjectVisual } from "./ProjectVisual";
 import { categoryLabels, natureLabels, type Project } from "@/lib/projects";
 
 export function ProjectCard({ project, size = "md" }: { project: Project; size?: "lg" | "md" }) {
@@ -8,7 +8,7 @@ export function ProjectCard({ project, size = "md" }: { project: Project; size?:
     <article className="group">
       <Link href={`/work/${project.slug}/`} className="block" aria-label={`${project.title} : ${project.summary}`}>
         <div className={`relative overflow-hidden rounded-[1.25rem] border border-line ${size === "lg" ? "aspect-[4/3] md:aspect-[16/9]" : "aspect-[4/3]"}`}>
-          <ProjectCover variant={project.cover} className="absolute inset-0" />
+          <ProjectVisual project={project} className="absolute inset-0" />
           <span
             className={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs backdrop-blur-md ${
               concept ? "border-line-strong bg-ink/60 text-muted" : "border-accent/40 bg-ink/60 text-paper"

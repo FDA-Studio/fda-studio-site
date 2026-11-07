@@ -4,7 +4,17 @@
  */
 export const site = {
   name: "FDA Studio",
-  legalName: "FDA Studio", // TODO(FDA) : raison sociale exacte à confirmer
+  /** Société éditrice : FDA Studio est un nom commercial de la société FDA (groupe FDA). */
+  company: {
+    name: "FDA",
+    form: "Société à responsabilité limitée à associé unique",
+    capital: "10 000 €",
+    address: "La Bonde, 37230 Fondettes, France",
+    rcs: "RCS Tours 889 822 300",
+    euid: "FR3701.889822300",
+    vat: "FR43889822300",
+    director: "Antoine Donabella, gérant",
+  },
   url: "https://fdastudio.fr",
   locale: "fr_FR",
   email: "contact@fdastudio.fr",

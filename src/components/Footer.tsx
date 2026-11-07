@@ -54,7 +54,7 @@ export function Footer() {
         </p>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-line pt-8 text-sm text-muted md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} {site.legalName}. Une société du {site.group.name}.</p>
+          <p>© {new Date().getFullYear()} FDA Studio, marque de la société {site.company.name} ({site.group.name}).</p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             <li><Link href="/mentions-legales/" className="link-line hover:text-paper">Mentions légales</Link></li>
             <li><Link href="/confidentialite/" className="link-line hover:text-paper">Confidentialité</Link></li>

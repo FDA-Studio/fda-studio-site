@@ -1,10 +1,6 @@
 import type { CoverVariant } from "@/lib/projects";
 
-/**
- * Visuels de projet générés en code (SVG).
- * TODO(FDA) : remplacer par des captures réelles des projets quand elles sont disponibles
- * (ajouter un champ `image` au projet et l'afficher ici en priorité).
- */
+/** Compositions SVG pour les concepts internes (projets sans visuel réel, voir ProjectVisual). */
 export function ProjectCover({ variant, className = "" }: { variant: CoverVariant; className?: string }) {
   return (
     <div className={`overflow-hidden ${className.includes("absolute") ? "" : "relative"} ${className}`} aria-hidden>
