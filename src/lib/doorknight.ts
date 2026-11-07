@@ -41,9 +41,9 @@ export const doorKnight = {
     "Antre du Dragon",
   ],
   worldArt: [
-    { img: dk("/img/v3/w/w01.webp"), label: "Monde 1, Forêt de Brume" },
-    { img: dk("/img/v3/w/w02-960.webp"), label: "Monde 2, Grottes d’Écho" },
-    { img: dk("/img/v3/w/w10-960.webp"), label: "Monde 10, Antre du Dragon" },
+    { img: dk("/img/v3/w/w01.webp"), label: "Capture réelle de Door Knight 2.0" },
+    { img: dk("/img/v3/w/w02-960.webp"), label: "Capture réelle de Door Knight 2.0" },
+    { img: dk("/img/v3/w/w10-960.webp"), label: "Capture réelle de Door Knight 2.0" },
   ],
   shots: [
     { img: dk("/img/v3/s/combat-knight-800.webp"), alt: "Le Chevalier lance Frappe sismique dans les Grottes d’Écho" },

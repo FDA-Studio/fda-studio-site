@@ -63,7 +63,7 @@ export const projects: Project[] = [
     ],
     tags: ["Jeu mobile 3D", "iOS", "Android", "Multijoueur", "Free-to-play"],
     cover: "doors",
-    image: { src: "https://doorknight.games/img/v3/w/w01.webp", alt: "La Forêt de Brume, premier monde de Door Knight 2.0", width: 1920, height: 864 },
+    image: { src: "https://doorknight.games/img/v3/w/w01.webp", alt: "Capture réelle de Door Knight 2.0", width: 1920, height: 864 },
     link: { href: "https://doorknight.games", label: "doorknight.games" },
     featured: true,
   },

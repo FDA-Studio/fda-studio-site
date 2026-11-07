@@ -173,7 +173,7 @@ export default function GamingPage() {
             {dk.worldArt.map((w, i) => (
               <figure key={w.img} className={i === 0 ? "" : "lg:w-[78%] " + (i === 2 ? "lg:ml-auto" : "")}>
                 <img src={w.img} alt={w.label} width={i === 0 ? 1920 : 960} height={i === 0 ? 864 : 432} loading="lazy" decoding="async" className="aspect-[20/9] w-full rounded-2xl border border-white/10 object-cover" />
-                <figcaption className="mt-3 text-sm text-[#a59fc0]">{w.label}</figcaption>
+                {i === dk.worldArt.length - 1 && <figcaption className="mt-3 text-sm text-[#a59fc0]">Captures réelles de Door Knight 2.0, en cours de développement.</figcaption>}
               </figure>
             ))}
           </div>
