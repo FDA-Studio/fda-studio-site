@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CheckIcon } from "@/components/icons";
+import { sfx } from "@/lib/sound";
 
 /** Concept « Cockpit opérationnel ». Toutes les données sont fictives. */
 const series: Record<string, { label: string; values: number[]; kpis: [string, string, string][] }> = {
@@ -70,7 +71,7 @@ export function ProductDemo() {
             id={`tab-${v.id}`}
             aria-selected={view === v.id}
             aria-controls={`panel-${v.id}`}
-            onClick={() => setView(v.id)}
+            onClick={() => { setView(v.id); sfx("tick"); }}
             className="chip shrink-0"
           >
             {v.label}
@@ -92,7 +93,7 @@ export function ProductDemo() {
                   key={k}
                   type="button"
                   aria-pressed={period === k}
-                  onClick={() => setPeriod(k)}
+                  onClick={() => { setPeriod(k); sfx("tick"); }}
                   className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${period === k ? "bg-paper text-ink" : "text-muted hover:text-paper"}`}
                 >
                   {k}
@@ -144,7 +145,7 @@ export function ProductDemo() {
                       <button
                         type="button"
                         aria-pressed={isDone}
-                        onClick={() => setDone((d) => (isDone ? d.filter((x) => x !== t.id) : [...d, t.id]))}
+                        onClick={() => { setDone((d) => (isDone ? d.filter((x) => x !== t.id) : [...d, t.id])); sfx("tick"); }}
                         className="flex w-full items-center gap-3 rounded-2xl border border-line bg-surface p-3 text-left transition-colors hover:border-line-strong"
                       >
                         <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border transition-colors ${isDone ? "border-accent bg-accent text-white" : "border-line-strong"}`}>

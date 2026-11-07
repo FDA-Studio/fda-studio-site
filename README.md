@@ -64,6 +64,13 @@ Ajouter un objet dans `src/lib/projects.ts`. La page `/work/<slug>`, la liste, l
 
 Protections : validation Zod côté serveur, contrôle d'origine, taille maximale, champ piège et délai minimal anti-robots, rate-limit 5/h/IP, échappement HTML, table protégée par RLS sans politique publique.
 
+## Expérience sonore
+
+- Coupée par défaut : bouton dans l'en-tête et invitation dans le hero. Aucun son avant un geste du visiteur (règles d'autoplay, WCAG 1.4.2).
+- À l'activation : impact « power-on », puis nappe ambiante en boucle qui s'ouvre progressivement (filtre passe-bas) et s'atténue en descendant dans la page. Petits sons d'interface (onglets, scénarios IA, expertises) et grincement des portes Door Knight.
+- Sons générés avec ElevenLabs Sound Effects (flux « FDA Studio — sons du site »), puis découpés, normalisés et bouclés : `public/sounds/` (≈ 140 Ko au total), téléchargés uniquement à l'activation. Moteur : `src/lib/sound.ts`.
+- Remplacer un son : déposer un MP3 du même nom dans `public/sounds/`.
+
 ## Sécurité et RGPD
 
 - Aucun cookie, aucun traceur, polices auto-hébergées (aucun appel à Google Fonts).

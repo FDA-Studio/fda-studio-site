@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./brand/Logo";
 import { nav, site } from "@/lib/site";
+import { SoundToggle } from "./SoundToggle";
 
 export function Header() {
   const pathname = usePathname();
@@ -92,6 +93,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <SoundToggle className="relative z-10" />
             <Link href="/contact/" className="btn btn-primary hidden !h-11 !px-5 text-sm sm:inline-flex">
               Démarrer un projet
             </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { sfx } from "@/lib/sound";
 
 const fates = [
   { name: "Une horde", text: "Des vagues d’ennemis. Tiens la position.", tone: "#8b93a1" },
@@ -24,7 +25,10 @@ export function DoorPicker() {
 
   const open = (i: number) => {
     if (opened !== null) return;
-    if (opened === null && i >= 0) setOpened(i);
+    if (opened === null && i >= 0) {
+      setOpened(i);
+      sfx("door");
+    }
   };
   const reset = () => {
     setOpened(null);

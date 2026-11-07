@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HeroCanvas } from "@/components/hero/HeroCanvas";
 import { ArrowIcon } from "@/components/icons";
+import { SoundHint } from "@/components/SoundHint";
 
 export function Hero() {
   return (
@@ -30,9 +31,12 @@ export function Hero() {
             <li>Intelligent systems.</li>
             <li>Interactive worlds.</li>
           </ul>
-          <p className="hero-fade max-w-md text-muted md:col-span-4" style={{ ["--i" as string]: 2 }}>
-            Sites internet premium, intelligence artificielle intégrée à vos outils, applications et jeux vidéo. De l&rsquo;idée au produit en production.
-          </p>
+          <div className="hero-fade md:col-span-4" style={{ ["--i" as string]: 2 }}>
+            <p className="max-w-md text-muted">
+              Sites internet premium, intelligence artificielle intégrée à vos outils, applications et jeux vidéo. De l&rsquo;idée au produit en production.
+            </p>
+            <div className="mt-5"><SoundHint /></div>
+          </div>
           <div className="hero-fade flex flex-col gap-3 sm:flex-row md:col-span-4 md:justify-end" style={{ ["--i" as string]: 3 }}>
             <Link href="/contact/" className="btn btn-primary">
               Démarrer un projet

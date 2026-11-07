@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { sfx } from "@/lib/sound";
 
 const devices = [
   { id: "mobile", label: "Mobile", width: "22rem" },
@@ -20,7 +21,7 @@ export function ResponsiveDemo() {
     <div>
       <div role="group" aria-label="Taille d’écran" className="flex flex-wrap gap-2">
         {devices.map((d) => (
-          <button key={d.id} type="button" aria-pressed={device === d.id} onClick={() => setDevice(d.id)} className="chip">
+          <button key={d.id} type="button" aria-pressed={device === d.id} onClick={() => { setDevice(d.id); sfx("tick"); }} className="chip">
             {d.label}
           </button>
         ))}

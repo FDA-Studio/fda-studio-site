@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon } from "@/components/icons";
+import { sfx } from "@/lib/sound";
 
 type Scenario = {
   id: string;
@@ -109,7 +110,7 @@ export function AgentConsole() {
     sc.fields.forEach((_, k) => at(t + 300 + k * 260, () => setShownFields(k + 1)));
     t += 300 + sc.fields.length * 260 + 300;
     at(t, () => setPhase(3));
-    sc.actions.forEach((_, k) => at(t + 250 + k * 420, () => setShownActions(k + 1)));
+    sc.actions.forEach((_, k) => at(t + 250 + k * 420, () => { setShownActions(k + 1); sfx("tick"); }));
     t += 250 + sc.actions.length * 420 + 300;
     at(t, () => setPhase(4));
   }, []);
@@ -135,6 +136,7 @@ export function AgentConsole() {
   }, [run]);
 
   const select = (i: number) => {
+    sfx("tick");
     setIdx(i);
     started.current = true;
     run(i);

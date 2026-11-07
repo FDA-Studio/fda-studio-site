@@ -5,6 +5,7 @@ import { useState } from "react";
 import { services } from "@/lib/services";
 import { ServiceEmblem } from "@/components/ServiceEmblem";
 import { ArrowIcon, PlusIcon } from "@/components/icons";
+import { sfx } from "@/lib/sound";
 
 /**
  * Les quatre expertises en liste éditoriale dépliable.
@@ -34,7 +35,7 @@ export function Expertises() {
                     aria-expanded={open}
                     aria-controls={`exp-${s.slug}`}
                     id={`exp-btn-${s.slug}`}
-                    onClick={() => setActive(i)}
+                    onClick={() => { setActive(i); sfx("tick"); }}
                     className="group flex w-full items-center gap-5 py-7 text-left md:gap-10 md:py-10"
                   >
                     <span className={`hidden w-14 font-display text-sm transition-colors md:block ${open ? "text-accent-bright" : "text-muted"}`}>{s.letter}</span>
