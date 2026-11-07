@@ -3,6 +3,9 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { Cursor } from "@/components/motion/Cursor";
+import { Intro, introScript } from "@/components/motion/Intro";
 import { organizationJsonLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -47,15 +50,19 @@ const csp = [
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <meta httpEquiv="Content-Security-Policy" content={csp} />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <script dangerouslySetInnerHTML={{ __html: introScript }} />
         <noscript>
           <style>{`.reveal-line>span{transform:none!important}`}</style>
         </noscript>
       </head>
       <body className="grain">
+        <Intro />
+        <SmoothScroll />
+        <Cursor />
         <JsonLd data={organizationJsonLd} />
         <Header />
         <main id="contenu">{children}</main>

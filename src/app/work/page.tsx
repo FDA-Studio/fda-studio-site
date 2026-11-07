@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { WorkGrid } from "@/components/WorkGrid";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -28,7 +28,7 @@ export default function WorkPage() {
           <WorkGrid />
         </div>
       </section>
-      <ContactCTA title={["Votre projet", "sera le prochain."]} />
+      <FinalCTA />
     </>
   );
 }

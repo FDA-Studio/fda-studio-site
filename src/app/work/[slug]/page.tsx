@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/PageHeader";
 import { ProjectVisual } from "@/components/ProjectVisual";
 import { ProjectCard } from "@/components/ProjectCard";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { ArrowIcon, ExternalIcon } from "@/components/icons";
 import { categoryLabels, getProject, natureLabels, projects } from "@/lib/projects";
 import { pageMeta } from "@/lib/seo";
@@ -130,7 +130,7 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       </section>
 
-      <ContactCTA />
+      <FinalCTA />
     </>
   );
 }

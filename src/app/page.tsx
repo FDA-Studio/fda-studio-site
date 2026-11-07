@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
-import { Vision } from "@/components/sections/Vision";
-import { Expertises } from "@/components/sections/Expertises";
-import { AISection } from "@/components/sections/AISection";
-import { ProductSection } from "@/components/sections/ProductSection";
-import { GamingSection } from "@/components/sections/GamingSection";
-import { WorkShowcase } from "@/components/sections/WorkShowcase";
-import { Process } from "@/components/sections/Process";
-import { Capabilities } from "@/components/sections/Capabilities";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { Marquee } from "@/components/home/Marquee";
+import { Statement } from "@/components/home/Statement";
+import { ExpertiseRail } from "@/components/home/ExpertiseRail";
+import { SelectedWork } from "@/components/home/SelectedWork";
+import { DoorPortal } from "@/components/home/DoorPortal";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -26,15 +23,12 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Vision />
-      <Expertises />
-      <AISection />
-      <ProductSection />
-      <GamingSection />
-      <WorkShowcase />
-      <Process />
-      <Capabilities />
-      <ContactCTA />
+      <Marquee />
+      <Statement />
+      <ExpertiseRail />
+      <SelectedWork />
+      <DoorPortal />
+      <FinalCTA />
     </>
   );
 }

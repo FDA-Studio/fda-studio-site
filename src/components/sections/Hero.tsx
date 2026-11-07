@@ -2,10 +2,12 @@ import Link from "next/link";
 import { HeroCanvas } from "@/components/hero/HeroCanvas";
 import { ArrowIcon } from "@/components/icons";
 import { SoundHint } from "@/components/SoundHint";
+import { HeroScroll } from "@/components/home/HeroScroll";
 
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[100svh] flex-col overflow-hidden">
+    <section id="hero" aria-labelledby="hero-title" className="relative isolate flex min-h-[100svh] flex-col overflow-hidden">
+      <HeroScroll />
       <div className="absolute inset-0 -z-10">
         <HeroCanvas />
         {/* Voiles de lisibilité */}
@@ -25,24 +27,21 @@ export function Hero() {
           <span className="sr-only"> Création digitale, intelligence artificielle et expériences interactives.</span>
         </h1>
 
-        <div className="mt-10 grid gap-8 md:mt-14 md:grid-cols-12 md:items-end">
-          <ul className="hero-fade font-display text-lg leading-snug text-paper md:col-span-4 md:text-xl" style={{ ["--i" as string]: 1 }} aria-label="Ce que nous construisons">
+        <div id="hero-foot" className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">
+          <ul className="hero-fade font-display text-lg leading-snug text-paper md:text-xl" style={{ ["--i" as string]: 1 }} aria-label="Ce que nous construisons">
             <li>Digital experiences.</li>
             <li>Intelligent systems.</li>
             <li>Interactive worlds.</li>
           </ul>
-          <div className="hero-fade md:col-span-4" style={{ ["--i" as string]: 2 }}>
-            <p className="max-w-md text-muted">
-              Sites internet premium, intelligence artificielle intégrée à vos outils, applications et jeux vidéo. De l&rsquo;idée au produit en production.
-            </p>
-            <div className="mt-5"><SoundHint /></div>
-          </div>
-          <div className="hero-fade flex flex-col gap-3 sm:flex-row md:col-span-4 md:justify-end" style={{ ["--i" as string]: 3 }}>
-            <Link href="/contact/" className="btn btn-primary">
-              Démarrer un projet
-              <span className="btn-icon"><ArrowIcon /></span>
-            </Link>
-            <a href="#expertises" className="btn btn-ghost">Nos expertises</a>
+          <div className="hero-fade flex flex-col gap-5 md:items-end" style={{ ["--i" as string]: 2 }}>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/contact/" className="btn btn-primary">
+                Démarrer un projet
+                <span className="btn-icon"><ArrowIcon /></span>
+              </Link>
+              <a href="#expertises" className="btn btn-ghost">Nos expertises</a>
+            </div>
+            <SoundHint />
           </div>
         </div>
       </div>

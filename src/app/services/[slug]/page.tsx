@@ -2,17 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/PageHeader";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { ServiceEmblem } from "@/components/ServiceEmblem";
 import { JsonLd } from "@/components/JsonLd";
-import { ProjectCard } from "@/components/ProjectCard";
 import { ResponsiveDemo } from "@/components/demos/ResponsiveDemo";
 import { AgentConsole } from "@/components/demos/AgentConsole";
 import { ProductDemo } from "@/components/demos/ProductDemo";
 import { DoorPicker } from "@/components/demos/DoorPicker";
 import { ArrowIcon } from "@/components/icons";
 import { getService, services, type ServiceSlug } from "@/lib/services";
-import { projects } from "@/lib/projects";
 import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -49,7 +47,6 @@ export default async function ServicePage({ params }: Props) {
   if (!services.some((s) => s.slug === slug)) notFound();
   const s = getService(slug as ServiceSlug);
   const night = s.slug === "gaming";
-  const related = projects.filter((p) => p.categories.includes(s.slug)).slice(0, 2);
   const others = services.filter((x) => x.slug !== s.slug);
 
   const serviceLd = {
@@ -113,57 +110,6 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
 
-      {/* Bénéfices et livrables */}
-      <section aria-labelledby="benefices-title" className="section bg-graphite">
-        <div className="wrap grid gap-16 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-6">
-            <h2 id="benefices-title" className="text-title">Ce que vous y gagnez.</h2>
-            <div className="mt-12 space-y-10">
-              {s.outcomes.map((o) => (
-                <div key={o.title} className="border-l border-accent pl-6">
-                  <h3 className="text-heading">{o.title}</h3>
-                  <p className="mt-3 max-w-md text-muted">{o.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="lg:col-span-5 lg:col-start-8">
-            <div className="panel p-7 md:p-9">
-              <h3 className="font-display text-xl text-paper">Livrables</h3>
-              <ul className="mt-6 space-y-3 text-muted">
-                {s.deliverables.map((d) => (
-                  <li key={d} className="flex gap-3"><span className="mt-3 h-px w-3 shrink-0 bg-accent" aria-hidden />{d}</li>
-                ))}
-              </ul>
-              <h3 className="mt-10 font-display text-xl text-paper">Technologies</h3>
-              <ul className="mt-5 flex flex-wrap gap-2">
-                {s.stack.map((t) => (
-                  <li key={t} className="rounded-full border border-line-strong px-3 py-1.5 text-sm text-muted">{t}</li>
-                ))}
-              </ul>
-              <Link href={`/contact/?besoin=${s.slug}`} className="btn btn-primary mt-10 w-full">
-                {s.cta} <span className="btn-icon"><ArrowIcon /></span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Projets liés */}
-      {related.length > 0 && (
-        <section aria-labelledby="lies-title" className="section">
-          <div className="wrap">
-            <div className="flex items-end justify-between gap-6">
-              <h2 id="lies-title" className="text-title">Projets liés.</h2>
-              <Link href="/work/" className="link-line hidden text-muted hover:text-paper sm:inline">Toutes les réalisations</Link>
-            </div>
-            <div className="mt-14 grid gap-12 md:grid-cols-2">
-              {related.map((p) => <ProjectCard key={p.slug} project={p} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* FAQ */}
       <section aria-labelledby="faq-title" className="section border-t border-line">
         <div className="wrap grid gap-12 lg:grid-cols-12">
@@ -199,7 +145,7 @@ export default async function ServicePage({ params }: Props) {
         </ul>
       </nav>
 
-      <ContactCTA title={["Votre projet", "commence ici."]} />
+      <FinalCTA />
     </>
   );
 }

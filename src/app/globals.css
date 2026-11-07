@@ -390,3 +390,108 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent); outline-of
   .reveal-line > span { transform: none; }
 }
 
+
+/* ==========================================================================
+   Vitrine animée : intro, curseur, bandeau, expertises
+   ========================================================================== */
+@layer components {
+  /* Intro de première visite */
+  .intro-overlay { display: none; }
+  html.intro .intro-overlay,
+  .intro-overlay.is-leaving {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    background: var(--color-ink);
+    transition: clip-path 0.95s var(--ease-in-out-quart);
+    clip-path: inset(0 0 0 0);
+  }
+  .intro-overlay.is-leaving { clip-path: inset(0 0 100% 0); }
+  .intro-symbol { width: clamp(5rem, 14vw, 8rem); overflow: visible; }
+  .intro-symbol path {
+    fill: transparent;
+    stroke: #ffffff;
+    stroke-width: 1.4;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: intro-draw 1s var(--ease-out-expo) forwards, intro-fill 0.5s ease 0.8s forwards;
+  }
+  .intro-count {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    color: var(--color-muted);
+  }
+  html.intro body { overflow: hidden; }
+  html.intro .hero-rise,
+  html.intro .hero-fade,
+  html.intro .canvas-fade { animation-play-state: paused; }
+
+  /* Curseur d'accompagnement */
+  .cursor-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 90;
+    pointer-events: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: -1.125rem 0 0 -1.125rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    display: grid;
+    place-items: center;
+    mix-blend-mode: difference;
+    transition: width 0.35s var(--ease-out-expo), height 0.35s var(--ease-out-expo), margin 0.35s var(--ease-out-expo), background-color 0.3s, border-color 0.3s, opacity 0.3s;
+  }
+  .cursor-ring span {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .cursor-ring[data-state="hover"] { width: 3.25rem; height: 3.25rem; margin: -1.625rem 0 0 -1.625rem; border-color: #fff; }
+  .cursor-ring[data-state="label"] {
+    width: 6rem;
+    height: 6rem;
+    margin: -3rem 0 0 -3rem;
+    background: #fff;
+    border-color: #fff;
+    mix-blend-mode: normal;
+  }
+  .cursor-ring[data-state="label"] span { opacity: 1; }
+  .cursor-ring[data-state="hidden"] { opacity: 0; }
+
+  /* Mots du bandeau : contour, remplissage au survol */
+  .marquee-word {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(244, 244, 242, 0.32);
+    transition: color 0.5s, -webkit-text-stroke-color 0.5s;
+  }
+  .marquee-word:hover { color: var(--color-paper); -webkit-text-stroke-color: transparent; }
+
+  /* Phrase révélée au défilement */
+  .fill-text .word { opacity: 0.4; }
+}
+
+@keyframes intro-draw { to { stroke-dashoffset: 0; } }
+@keyframes intro-fill { to { fill: #ffffff; } }
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes web-build { 0%, 8% { transform: scaleX(0); opacity: 0; } 22%, 78% { transform: scaleX(1); opacity: 1; } 92%, 100% { transform: scaleX(0); opacity: 0; } }
+@keyframes app-scroll { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+@keyframes notif { 0%, 12% { transform: translateY(-140%); opacity: 0; } 18%, 46% { transform: none; opacity: 1; } 54%, 100% { transform: translateY(-140%); opacity: 0; } }
+@keyframes pulse-node { 0%, 100% { r: 5; opacity: 0.6; } 50% { r: 8; opacity: 1; } }
+@keyframes dash-flow { to { stroke-dashoffset: -40; } }
+@keyframes chart-draw { 0% { stroke-dashoffset: 1; } 45%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }

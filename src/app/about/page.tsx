@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { processSteps } from "@/lib/process";
 import { RevealTitle } from "@/components/Reveal";
 import { ArrowIcon, ExternalIcon } from "@/components/icons";
@@ -13,13 +13,6 @@ export const metadata: Metadata = pageMeta({
   description: "FDA Studio est le studio technologique du groupe FDA. Un studio à taille humaine qui réunit design, développement, intelligence artificielle et jeu vidéo.",
   path: "/about/",
 });
-
-const beliefs = [
-  { t: "Montrer plutôt que promettre", d: "Nous préférons un prototype à une présentation. Un produit qu’on peut toucher tranche plus vite qu’un long document." },
-  { t: "La technique au service du métier", d: "Une technologie n’a de valeur que si elle sert un objectif : gagner du temps, vendre mieux, mieux servir vos clients." },
-  { t: "L’honnêteté comme méthode", d: "Délais réalistes, coûts récurrents annoncés, limites de l’IA expliquées. Vous décidez en connaissance de cause." },
-  { t: "La sécurité par défaut", d: "Clés côté serveur, règles d’accès vérifiées, données minimisées et hébergées en Europe quand c’est nécessaire." },
-];
 
 export default function AboutPage() {
   return (
@@ -48,20 +41,6 @@ export default function AboutPage() {
               les coûts, les retours des utilisateurs. C’est cette expérience que nous mettons au service de nos clients.
             </p>
           </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="convictions-title" className="section">
-        <div className="wrap">
-          <h2 id="convictions-title" className="text-title max-w-[14ch]">Ce en quoi nous croyons.</h2>
-          <dl className="mt-16 border-t border-line">
-            {beliefs.map((b) => (
-              <div key={b.t} className="grid gap-4 border-b border-line py-10 md:grid-cols-12 md:gap-8">
-                <dt className="font-display text-[clamp(1.5rem,3vw,2.5rem)] font-semibold leading-tight tracking-[-0.04em] text-paper md:col-span-6">{b.t}</dt>
-                <dd className="text-lg text-muted md:col-span-5 md:col-start-8">{b.d}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
       </section>
 
@@ -108,7 +87,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <ContactCTA />
+      <FinalCTA />
     </>
   );
 }

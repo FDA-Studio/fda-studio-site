@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DoorPicker } from "@/components/demos/DoorPicker";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { JsonLd } from "@/components/JsonLd";
 import { RevealTitle } from "@/components/Reveal";
 import { ArrowIcon, ExternalIcon } from "@/components/icons";
@@ -15,15 +14,6 @@ export const metadata: Metadata = pageMeta({
   path: "/gaming/",
   keywords: ["développement jeux vidéo", "jeu mobile 3D", "Door Knight", "studio de jeu indépendant", "jeu iPhone Android"],
 });
-
-const features = [
-  ["Mille portes", "Dix mondes, dix zones par monde, dix portes par zone. Chaque zone se termine par un boss, chaque monde par un gardien."],
-  ["Butin et forge", "Des objets nommés par rareté, des chances de butin affichées sur chaque porte et une forge jusqu’à +15."],
-  ["Un camp qui travaille", "Scierie, carrière et mine de cristal produisent des ressources même lorsque le jeu est fermé."],
-  ["Monstres d’élite", "À partir de la zone 4, des ennemis plus coriaces dotés d’une technique supplémentaire."],
-  ["Guildes et classement", "Un objectif de guilde chaque semaine et un classement mondial selon la porte la plus haute atteinte."],
-  ["Une seule progression", "La sauvegarde est en ligne et suit le joueur entre iPhone, iPad et Android."],
-];
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -193,25 +183,6 @@ export default function GamingPage() {
               </li>
             ))}
           </ul>
-          <dl className="mt-20 grid gap-x-10 gap-y-10 border-t border-white/10 pt-12 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(([t, d]) => (
-              <div key={t}>
-                <dt className="text-xl font-semibold tracking-[-0.02em]">{t}</dt>
-                <dd className="mt-3 text-[#c9c4dc]">{d}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/* Mini-expérience */}
-      <section aria-labelledby="porte-title" className="section border-t border-white/10">
-        <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-4">
-            <h2 id="porte-title" className="text-title">Essayez une porte.</h2>
-            <p className="mt-6 text-lg text-[#c9c4dc]">Une mini-expérience construite pour ce site, dans l’esprit du jeu. Trois portes, trois destins, tirés au hasard à chaque partie.</p>
-          </div>
-          <div className="min-w-0 lg:col-span-7 lg:col-start-6"><DoorPicker /></div>
         </div>
       </section>
 
@@ -257,7 +228,7 @@ export default function GamingPage() {
         </div>
       </section>
 
-      <ContactCTA title={["Un monde", "à construire ?"]} text="Jeu, configurateur 3D, expérience interactive pour votre marque : parlons de votre idée." />
+      <FinalCTA />
     </div>
   );
 }

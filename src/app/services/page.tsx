@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { ServiceEmblem } from "@/components/ServiceEmblem";
-import { ContactCTA } from "@/components/sections/ContactCTA";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { ArrowIcon } from "@/components/icons";
 import { services } from "@/lib/services";
 import { pageMeta } from "@/lib/seo";
@@ -45,7 +45,7 @@ export default function ServicesPage() {
           ))}
         </ul>
       </section>
-      <ContactCTA />
+      <FinalCTA />
     </>
   );
 }
