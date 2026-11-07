@@ -1,0 +1,66 @@
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/JsonLd";
+import { organizationJsonLd } from "@/lib/seo";
+import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: {
+    default: "FDA Studio — Sites internet, intelligence artificielle, applications et jeux vidéo",
+    template: "%s | FDA Studio",
+  },
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  formatDetection: { telephone: false },
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0b",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+};
+
+/**
+ * CSP en balise meta : GitHub Pages ne permet pas d'en-têtes HTTP personnalisés.
+ * 'unsafe-inline' sur script-src est requis par l'hydratation de l'export statique Next.js.
+ */
+const csp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  `connect-src 'self' https://*.supabase.co`,
+  "base-uri 'self'",
+  "form-action 'self' mailto:",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="fr">
+      <head>
+        <meta httpEquiv="Content-Security-Policy" content={csp} />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <noscript>
+          <style>{`.reveal-line>span{transform:none!important}`}</style>
+        </noscript>
+      </head>
+      <body className="grain">
+        <JsonLd data={organizationJsonLd} />
+        <Header />
+        <main id="contenu">{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}

@@ -1,0 +1,18 @@
+/* FDA Studio — thème Tailwind CSS v4 (à importer après `@import "tailwindcss";`)
+   Classes générées : bg-fda-black, text-fda-silver, border-fda-line, ring-fda-blue, font-mono… */
+@theme {
+  --color-fda-black: #0A0A0B;
+  --color-fda-graphite: #2B2D31;
+  --color-fda-silver: #A7ABB2;
+  --color-fda-white: #FFFFFF;
+  --color-fda-surface: #141518;
+  --color-fda-line: #1E1F23;
+  --color-fda-muted: #C9CBD0;
+  --color-fda-paper: #F4F4F2;
+  --color-fda-titanium: #8A8D91;
+  --color-fda-blue: #2F5BFF;
+  --color-fda-violet: #6E4BFF;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}

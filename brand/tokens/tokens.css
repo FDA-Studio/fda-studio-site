@@ -1,0 +1,24 @@
+/* FDA Studio — tokens de marque (identité monogramme, nov. 2026) */
+:root {
+  /* Palette principale */
+  --fda-black: #0A0A0B;      /* fond principal */
+  --fda-graphite: #2B2D31;   /* texte sur fond clair, STUDIO version claire */
+  --fda-silver: #A7ABB2;     /* STUDIO sur fond sombre, texte secondaire sur noir (8,6:1) */
+  --fda-white: #FFFFFF;
+
+  /* Neutres d'interface (site) */
+  --fda-surface: #141518;    /* cartes, sections secondaires */
+  --fda-line: #1E1F23;       /* bordures, séparateurs sur fond sombre */
+  --fda-text-muted: #C9CBD0; /* texte courant secondaire sur noir (12,2:1) */
+  --fda-paper: #F4F4F2;      /* fond clair (documents, sections claires) */
+
+  /* Accents — jamais dans le symbole, jamais en aplat étendu */
+  --fda-titanium: #8A8D91;
+  --fda-blue: #2F5BFF;       /* CTA, focus, détail. Texte blanc dessus : 5,2:1 */
+  --fda-violet: #6E4BFF;     /* usage rare (produits, gaming) */
+
+  /* Typographie */
+  --fda-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --fda-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --fda-tracking-label: 0.14em; /* sur-titres en capitales, rappel de STUDIO */
+}
