@@ -94,12 +94,12 @@ body {
   font-family: var(--font-sans);
   font-size: 1.0625rem;
   line-height: 1.6;
-  background: transparent; /* le fond vit sur <html> : la toile 3D fixe (z-index -1) passe entre les deux */
+  background: var(--color-ink);
   caret-color: var(--color-accent-bright);
   accent-color: var(--color-accent);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
   font-feature-settings: "cv11", "ss01";
 }
 
@@ -459,6 +459,11 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
 /* --------------------------------------------------------------------------
    Le monde FDA : vol de caméra pré-rendu piloté par le scroll (moteur scroll-world)
    -------------------------------------------------------------------------- */
+/* Le moteur injecte, dans une couche CSS (@layer sw) déclarée après Tailwind, un style html/body
+   (fond crème, overflow-x hidden). Ces règles hors couche gardent la main :
+   fond du site, et `clip` plutôt que `hidden` — `hidden` sur <html>/<body> casse position: sticky
+   (fenêtre épinglée des démos IA). */
+html, body { background: var(--color-ink); overflow-x: clip; }
 .world {
   position: relative;
   --sw-bg: var(--color-ink);

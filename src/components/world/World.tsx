@@ -18,7 +18,7 @@ export function World() {
   useEffect(() => {
     const el = host.current;
     if (!el) return;
-    let world: { end: () => number; destroy: () => void } | null = null;
+    let world: { end: () => number; progress: (i: number) => number; destroy: () => void } | null = null;
     let disposed = false;
     let onScroll = () => {};
 
@@ -29,7 +29,7 @@ export function World() {
         topbar: false,
         atmosphere: false,
         hint: "Défilez pour entrer",
-        diveScroll: 1.5,
+        diveScroll: 1.7,
         crossfade: 0.08,
         sections: WORLD_SECTIONS.map((s, i) => ({
           id: s.id,
@@ -52,16 +52,22 @@ export function World() {
       });
       // Une fois le vol terminé, le monde (couches fixes) s'efface derrière la suite de la page.
       // Et si le son est activé : un souffle à chaque nouvelle scène, la porte à l'arrivée sur l'arche.
-      let scene = 0;
+      // Chaque scène est atteinte dans la seconde moitié de son segment : le son part à ce moment-là
+      // (la porte sonne quand la caméra arrive devant l'arche, pas au départ du couloir).
+      const arrived = new Set<number>();
       onScroll = () => {
         if (!world) return;
         const past = window.scrollY > world.end() - window.innerHeight * 0.4;
         el.dataset.past = past ? "true" : "false";
-        const active = Number(el.querySelector(".sw-route__dot.is-active")?.getAttribute("data-index") ?? -1);
-        if (active >= 0 && active !== scene) {
-          scene = active;
-          sfx(WORLD_SECTIONS[active]?.id === "jeux" ? "door" : "step");
-        }
+        WORLD_SECTIONS.forEach((s, i) => {
+          if (i === 0) return;
+          const p = world!.progress(i);
+          const at = s.id === "jeux" ? 0.62 : 0.5;
+          if (p >= at && p < 0.98 && !arrived.has(i)) {
+            arrived.add(i);
+            sfx(s.id === "jeux" ? "door" : "step");
+          } else if (p < at - 0.2 && arrived.has(i)) arrived.delete(i); // on remonte : réarmé
+        });
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });

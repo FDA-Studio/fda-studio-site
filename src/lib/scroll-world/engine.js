@@ -278,7 +278,8 @@ export function mountScrollWorld(container, config) {
   }
 
   function raf() {
-    const eps = isMobile() ? 0.02 : 0.008;   // coarser seek step on phones = fewer decodes
+    // (FDA) un pas de recherche d'au moins une image (24 i/s) : inutile de demander deux fois la même
+    const eps = isMobile() ? 0.045 : 0.03;
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
       if (!s.hasClip || !s.ready || !s.video) continue;
@@ -287,7 +288,7 @@ export function mountScrollWorld(container, config) {
       // cur keeps lerping, so we snap to the latest target the moment it's free.
       if (s.video.seeking) continue;
       if (!s.visible && Math.abs(s.cur - s.target) < 0.002) continue;
-      s.cur += (s.target - s.cur) * (reduce ? 1 : 0.18);
+      s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.22 : 0.16));
       const dur = s.video.duration || 1;
       const t = clamp(s.cur, 0, 0.999) * dur;
       if (Math.abs(s.video.currentTime - t) > eps) { try { s.video.currentTime = t; } catch (e) {} }
@@ -336,6 +337,8 @@ export function mountScrollWorld(container, config) {
   return {
     /** Fin de la piste en pixels (début de la page après le monde). */
     end: () => totalW * vh + vh,
+    /** Progression (0..1) du vol de la section i à la position de scroll actuelle. */
+    progress: (i) => { const seg = SECTIONS[i] && SECTIONS[i]._seg; if (!seg) return 0; const y = window.scrollY || window.pageYOffset; return clamp((y - seg.start) / (seg.end - seg.start), 0, 1); },
     destroy() {
       alive = false;
       window.removeEventListener('scroll', onScroll);

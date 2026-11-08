@@ -29,4 +29,4 @@ export interface ScrollWorldConfig {
   connectors?: (string | null)[];
   connectorsMobile?: (string | null)[];
 }
-export function mountScrollWorld(container: HTMLElement, config: ScrollWorldConfig): { end: () => number; destroy: () => void };
+export function mountScrollWorld(container: HTMLElement, config: ScrollWorldConfig): { end: () => number; progress: (i: number) => number; destroy: () => void };
