@@ -81,8 +81,11 @@ export function Stage() {
       let active = true; // la toile est-elle encore derrière un chapitre ?
       const measure = () => {
         const sy = window.scrollY;
-        centers = chapters().map((el) => {
+        centers = chapters().map((el, i) => {
           const r = el.getBoundingClientRect();
+          // Premier écran : la scène 0 correspond à la page vue depuis le haut (la section peut
+          // dépasser un écran sur téléphone) ; la transition commence dès qu'on défile.
+          if (i === 0) return sy + r.top + Math.min(r.height / 2, window.innerHeight / 2);
           return sy + r.top + r.height / 2;
         });
         // Au-delà du dernier chapitre, la matière se retire (scène « calme »)
@@ -96,9 +99,8 @@ export function Stage() {
             const text = el.querySelector<HTMLElement>("[data-stage-text]") ?? el;
             const sr = el.getBoundingClientRect();
             const tr = text.getBoundingClientRect();
-            // Position du texte dans la fenêtre quand le chapitre est centré (il peut être plus haut qu'un écran)
-            const shift = Math.max(0, (sr.height - vh) / 2);
-            const bottom = Math.min(1, Math.max(0.25, (tr.top - sr.top - shift) / vh));
+            // Position du titre dans la fenêtre quand le chapitre est à l'écran (le premier, vu depuis le haut)
+            const bottom = Math.min(1, Math.max(0.25, (tr.top - sr.top) / vh));
             return { top: (header + 8) / vh, bottom: bottom - 0.02 };
           });
           list.push({ top: 0.3, bottom: 0.7 }); // scène « calme »
