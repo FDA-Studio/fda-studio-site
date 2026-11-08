@@ -431,7 +431,8 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   // Positions de départ de l'assemblage : les éclats arrivent de loin, de partout
   const scatter = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) {
-    const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1), r = 6 + Math.random() * 10;
+    // Sur téléphone, la dispersion reste proche : le cadre est étroit et la caméra ne recule pas
+    const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1), r = device === "phone" ? 2.5 + Math.random() * 4 : 6 + Math.random() * 10;
     scatter[i * 3] = r * Math.sin(ph) * Math.cos(th);
     scatter[i * 3 + 1] = r * Math.cos(ph);
     scatter[i * 3 + 2] = -4 + r * Math.sin(ph) * Math.sin(th) * 0.6;
@@ -447,6 +448,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   let raf = 0;
   let last = performance.now();
   const cur = { x: 0, y: 0, z: 6.6, scale: 1 };
+  let firstFrame = true;
 
   const m = new THREE.Matrix4();
   const p = new THREE.Vector3();
@@ -621,7 +623,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       const place = (id: SceneId, b: { top: number; bottom: number }) => {
         const h = Math.max(0.12, b.bottom - b.top);
         const cy = (0.5 - (b.top + b.bottom) / 2) * visible;
-        const fit = (h * visible * 0.92) / OBJ_H[id];
+        const fit = (h * visible * 0.97) / OBJ_H[id];
         return { y: cy, s: Math.min(FRAMING[id].ms * 1.4, fit) };
       };
       const pa = place(SCENES[idx], bands[Math.min(idx, bands.length - 1)]);
@@ -634,10 +636,12 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       ty = fa.y + (fb.y - fa.y) * frac;
       ts = fa.s + (fb.s - fa.s) * frac;
     }
-    const k = reduced ? 1 : 1 - Math.exp(-dt * 6);
+    // Première image : cadrage immédiat (pas de glissement depuis une valeur par défaut)
+    const k = reduced || firstFrame ? 1 : 1 - Math.exp(-dt * 6);
     // Orbite : la caméra tourne autour de la matière d'une scène à l'autre
     const to = fa.orbit + (fb.orbit - fa.orbit) * frac;
-    orbitCur.v += (to - orbitCur.v) * (reduced ? 1 : 1 - Math.exp(-dt * 3.5));
+    orbitCur.v += (to - orbitCur.v) * (reduced || firstFrame ? 1 : 1 - Math.exp(-dt * 3.5));
+    firstFrame = false;
     cur.x += (tx - cur.x) * k;
     cur.y += (ty - cur.y) * k;
     cur.z += (tz - cur.z) * k;
@@ -646,8 +650,10 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
     world.scale.setScalar(cur.scale);
     // Ouverture : la caméra arrive de loin pendant l'assemblage
     const introEase = ease(intro);
-    const camZ = cur.z + (1 - introEase) * 9;
-    camera.position.set(Math.sin(orbitCur.v) * camZ, (1 - introEase) * 2.5, Math.cos(orbitCur.v) * camZ);
+    // Téléphone : recul et élévation réduits, pour que le monogramme reste cadré dès la première image
+    const dolly = device === "phone" ? 1.6 : 9, rise = device === "phone" ? 0.5 : 2.5;
+    const camZ = cur.z + (1 - introEase) * dolly;
+    camera.position.set(Math.sin(orbitCur.v) * camZ, (1 - introEase) * rise, Math.cos(orbitCur.v) * camZ);
     camera.lookAt(0, 0, 0);
     world.rotation.y = Math.sin(time * 0.12) * 0.06 + orbitCur.v * 0.35; // la matière suit un peu la caméra : plus de relief
     // Parallaxe curseur : la matière pivote doucement vers le pointeur
@@ -661,7 +667,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
     time += dt;
     uTime.value = time;
     // Assemblage d'ouverture sur l'horloge réelle (2,4 s), même si l'appareil rend peu d'images
-    if (intro < 1) intro = Math.min(1, (performance.now() - introStart) / 2400);
+    if (intro < 1) intro = Math.min(1, (performance.now() - introStart) / (device === "phone" ? 1800 : 2400));
     // Énergie : monte avec la vitesse de scroll, retombe en ~0,8 s
     const target = Math.min(1, Math.abs(velocity) * 0.35);
     energy += (target - energy) * (target > energy ? 1 - Math.exp(-dt * 10) : 1 - Math.exp(-dt * 2.5));
