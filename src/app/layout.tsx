@@ -37,7 +37,8 @@ const csp = [
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://doorknight.games",
-  "media-src 'self' https://doorknight.games",
+  // blob: — le moteur du monde 3D charge chaque segment vidéo en mémoire pour un défilement image à image
+  "media-src 'self' blob: https://doorknight.games",
   "font-src 'self'",
   `connect-src 'self' https://*.supabase.co`,
   "base-uri 'self'",

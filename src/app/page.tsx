@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Hero } from "@/components/sections/Hero";
-import { Chapters } from "@/components/home/Chapters";
-import { Stage } from "@/components/stage/Stage";
+import { World, WorldCopy } from "@/components/world/World";
 import { Creations } from "@/components/home/Creations";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { pageMeta } from "@/lib/seo";
@@ -20,9 +18,8 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Stage />
-      <Hero />
-      <Chapters />
+      <WorldCopy />
+      <World />
       <Creations />
       <FinalCTA />
     </>

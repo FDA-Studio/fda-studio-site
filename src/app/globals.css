@@ -454,72 +454,34 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
   .btn, .btn:hover, .btn:active, .chip:active { transform: none !important; }
   .demo-slide, .demo-slide[data-shown="true"] { transform: none; filter: none; transition: opacity 200ms ease; }
   .nav-link::after { transition: none; }
-  .chapter-3d .chapter-3d__text > * { transform: none; transition: opacity 300ms ease; }
 }
 
 /* --------------------------------------------------------------------------
-   La matière FDA : toile fixe derrière l'accueil, chapitres d'un écran
+   Le monde FDA : vol de caméra pré-rendu piloté par le scroll (moteur scroll-world)
    -------------------------------------------------------------------------- */
-.stage {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 900ms var(--ease-out);
-}
-.stage[data-state="ready"], .stage[data-state="fallback"] { opacity: 1; }
-.stage[data-active="false"] { opacity: 0; transition-duration: 600ms; }
-.stage-fallback { position: absolute; inset: 0; overflow: hidden; }
-.stage-fallback .glow-accent {
-  position: absolute; left: 50%; top: 32%; width: 90vmin; height: 90vmin;
-  transform: translate(-50%, -50%);
-}
-@media (min-width: 768px) {
-  .stage-fallback .glow-accent { left: 66%; top: 50%; width: 70vmin; height: 70vmin; }
-}
-/* Sur écran tactile, le glissement horizontal est laissé à la matière 3D ; le vertical fait défiler */
-#hero, .chapter-3d { touch-action: pan-y; }
-.chapter-3d {
+.world {
   position: relative;
-  min-height: 100svh;
-  display: flex;
-  align-items: flex-end;
-  padding-block: clamp(4rem, 10vh, 7rem);
+  --sw-bg: var(--color-ink);
+  --sw-ink: var(--color-paper);
+  --sw-ink-soft: var(--color-muted);
+  --sw-accent: var(--color-accent);
+  --sw-font-display: var(--font-display);
+  --sw-font-body: var(--font-sans);
+  transition: opacity 500ms var(--ease-out);
 }
-@media (min-width: 768px) { .chapter-3d { align-items: center; } }
-.chapter-3d__text {
-  padding-top: min(42svh, 24rem);
+/* Passé le dernier segment, les couches fixes du monde s'effacent derrière la page */
+.world[data-past="true"] { opacity: 0; pointer-events: none; }
+.world[data-past="true"] .sw-copylayer, .world[data-past="true"] .sw-route, .world[data-past="true"] .sw-stage { visibility: hidden; }
+.world .sw-scrollbar { top: auto; bottom: 0; height: 2px; }
+.world .sw-copy__num { color: var(--color-steel); }
+.world .sw-copy__eyebrow { letter-spacing: 0; text-transform: none; font-size: 0.95rem; font-weight: 500; }
+.world .sw-copy__title { font-weight: 600; letter-spacing: -0.04em; font-size: clamp(2.1rem, 4.2vw, 3.6rem); }
+.world .sw-copy__tags li { color: var(--color-soft); background: rgba(255,255,255,0.06); border-color: var(--color-line-strong); }
+.world .sw-btn--primary { color: var(--color-ink); background: var(--color-paper); }
+.world .sw-btn--ghost { color: var(--color-paper); border-color: var(--color-line-strong); }
+.world .sw-route__label { color: var(--color-paper); background: rgba(10,10,11,0.8); border-color: var(--color-line-strong); }
+.world .sw-hint { color: var(--color-muted); }
+.world .sw-copy { top: 54%; }
+@media (max-width: 860px) {
+  .world .sw-copy { top: auto; }
 }
-@media (min-width: 768px) { .chapter-3d__text { padding-top: 0; } }
-/* Voile de lisibilité sous le texte, surtout sur téléphone où la matière est au-dessus */
-.chapter-3d::before {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 62%;
-  background: linear-gradient(to top, var(--color-ink) 30%, transparent);
-  z-index: -1;
-  pointer-events: none;
-}
-@media (min-width: 768px) {
-  .chapter-3d::before { inset: 0 auto 0 0; width: 58%; height: auto; background: linear-gradient(to right, var(--color-ink) 20%, transparent); }
-}
-.chapter-3d--night::before { background: linear-gradient(to top, var(--color-night) 30%, transparent); }
-@media (min-width: 768px) {
-  .chapter-3d--night::before {
-    background: linear-gradient(to right, var(--color-night) 20%, transparent);
-    /* Le voile apparaît en douceur : pas de marche visible au passage de la nuit */
-    mask-image: linear-gradient(to bottom, transparent, #000 35%);
-  }
-}
-/* Entrée typographique : les lignes du chapitre montent l'une après l'autre (voir Stage) */
-html[data-stage] .chapter-3d .chapter-3d__text > * {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 700ms var(--ease-out-expo), transform 900ms var(--ease-out-expo);
-}
-.chapter-3d .chapter-3d__text > :nth-child(2) { transition-delay: 90ms; }
-.chapter-3d .chapter-3d__text > :nth-child(3) { transition-delay: 180ms; }
-html[data-stage] .chapter-3d[data-seen="true"] .chapter-3d__text > * { opacity: 1; transform: none; }
-.chapter-3d--night { background: linear-gradient(to bottom, transparent, rgba(13, 11, 28, 0.6) 40%, var(--color-night)); }
