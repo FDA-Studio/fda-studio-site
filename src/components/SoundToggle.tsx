@@ -16,7 +16,10 @@ export function SoundToggle({ className = "" }: { className?: string }) {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        engine.setDepth(window.scrollY / (window.innerHeight * 1.5));
+        // La nappe reste pleine tant qu'on est dans le monde (vol de caméra), puis s'éloigne
+        const world = document.querySelector<HTMLElement>(".world .sw-track");
+        const start = world ? Math.max(0, world.offsetHeight - window.innerHeight) : 0;
+        engine.setDepth((window.scrollY - start) / (window.innerHeight * 1.5));
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });

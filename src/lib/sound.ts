@@ -4,7 +4,8 @@
  * - Coupé par défaut : rien ne joue tant que le visiteur n'a pas activé le son lui-même
  *   (règles d'autoplay des navigateurs et critère WCAG 1.4.2).
  * - Sons générés avec ElevenLabs (Music v2.5 et Sound Effects), puis montés et normalisés (public/sounds) :
- *   ambient.mp3 : nappe de 48 s bouclée sans couture (fondu à puissance constante)
+ *   ambient.mp3 : musique du monde (électronique cinématique, ~99 BPM), boucle de 24 mesures
+ *     montée sur le temps (fondu à puissance constante d'un temps), −20 LUFS
  *   power-on.mp3 : ouverture · transition.mp3 : changement de démo · tick.mp3 : appui
  *   door.mp3 : porte Door Knight · chime.mp3 : demande envoyée
  * - Les fichiers ne sont téléchargés qu'à l'activation : aucun impact sur le chargement de la page.
@@ -124,6 +125,13 @@ class SoundEngine {
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.loop = true;
+    // Boucle sans couture : on ignore le silence ajouté par l'encodeur MP3 au début et à la fin
+    const data = buf.getChannelData(0);
+    let a = 0, b = data.length - 1;
+    while (a < b && Math.abs(data[a]) < 0.002) a++;
+    while (b > a && Math.abs(data[b]) < 0.002) b--;
+    src.loopStart = a / buf.sampleRate;
+    src.loopEnd = (b + 1) / buf.sampleRate;
 
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
@@ -137,7 +145,7 @@ class SoundEngine {
     filter.frequency.exponentialRampToValueAtTime(5200, now + 4);
 
     src.connect(filter).connect(gain).connect(this.master!);
-    src.start(now);
+    src.start(now, src.loopStart);
 
     // Respiration lente du filtre (une oscillation toutes les ~14 s)
     const lfo = ctx.createOscillator();

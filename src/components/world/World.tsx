@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { WORLD_SECTIONS, worldAsset } from "./config";
+import { sfx } from "@/lib/sound";
 
 /**
  * Le monde FDA Studio : un vol de caméra continu, pré-rendu, piloté par le scroll.
  * Six segments de 8 s enchaînés image à image (le dernier photogramme d'un segment est
  * la première image du suivant), joués par le moteur scroll-world (lecture par position).
+ * Téléphone : une seconde chaîne rendue en 9:16, composée pour le portrait (pas un recadrage).
  * Le texte SEO/accessibilité est rendu côté serveur (voir WorldCopy) ; le moteur
  * reconstruit la mise en scène côté client.
  */
@@ -33,6 +35,7 @@ export function World() {
           id: s.id,
           label: s.label,
           still: worldAsset(`still_${i}.webp`),
+          stillMobile: worldAsset(`still_${i}-m.webp`),
           clip: worldAsset(`vid/leg_${i}.mp4`),
           clipMobile: worldAsset(`vid/leg_${i}-m.mp4`),
           accent: s.accent,
@@ -47,11 +50,18 @@ export function World() {
         })),
         connectors: [],
       });
-      // Une fois le vol terminé, le monde (couches fixes) s'efface derrière la suite de la page
+      // Une fois le vol terminé, le monde (couches fixes) s'efface derrière la suite de la page.
+      // Et si le son est activé : un souffle à chaque nouvelle scène, la porte à l'arrivée sur l'arche.
+      let scene = 0;
       onScroll = () => {
         if (!world) return;
         const past = window.scrollY > world.end() - window.innerHeight * 0.4;
         el.dataset.past = past ? "true" : "false";
+        const active = Number(el.querySelector(".sw-route__dot.is-active")?.getAttribute("data-index") ?? -1);
+        if (active >= 0 && active !== scene) {
+          scene = active;
+          sfx(WORLD_SECTIONS[active]?.id === "jeux" ? "door" : "step");
+        }
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
