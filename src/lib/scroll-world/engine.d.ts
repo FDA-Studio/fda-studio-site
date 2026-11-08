@@ -10,6 +10,8 @@ export interface ScrollWorldSection {
   linger?: number;
   copyAt?: number;
   remap?: number[];
+  frames?: { base: string; count: number; ext?: string };
+  framesMobile?: { base: string; count: number; ext?: string };
   eyebrow?: string;
   title?: string;
   body?: string;

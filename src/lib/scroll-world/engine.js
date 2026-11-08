@@ -95,7 +95,10 @@ export function mountScrollWorld(container, config) {
                    copyAt: (s.copyAt != null) ? s.copyAt : 0.5,
                    // remap (FDA) : table scroll→temps à pas égaux de mouvement visuel mesuré dans le film,
                    // pour que chaque pixel de scroll produise la même quantité de mouvement à l'écran.
-                   remap: Array.isArray(s.remap) && s.remap.length > 1 ? s.remap : null };
+                   remap: Array.isArray(s.remap) && s.remap.length > 1 ? s.remap : null,
+                   // frames (FDA) : séquence d'images { base, count, ext } dessinée sur un canvas
+                   // (recherche vidéo asynchrone remplacée par un dessin immédiat de l'image voulue)
+                   frames: s.frames || null, framesM: s.framesMobile || null };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -190,6 +193,7 @@ export function mountScrollWorld(container, config) {
   let laidOutW = window.innerWidth;   // width the current layout was computed at (see onResize)
 
   function layout() {
+    SEGMENTS.forEach(s => { if (s.canvas) { sizeCanvas(s); const n = frameSpec(s).count; drawFrame(s, clamp(s.cur, 0, 1) * (n - 1)); } });
     vh = window.innerHeight;
     laidOutW = window.innerWidth;
     stageX = window.innerWidth > 860 ? 4 : 0;
@@ -247,6 +251,7 @@ export function mountScrollWorld(container, config) {
    */
   function preloadAll(onProgress) {
     if (reduce) { onProgress && onProgress(1); return Promise.resolve(); }
+    if (SEGMENTS.some(s => s.frames)) return preloadFrames(onProgress);
     const list = SEGMENTS.filter(s => s.clip && !s.loading);
     const urls = list.map(s => (isMobile() && s.clipM) ? s.clipM : s.clip);
     list.forEach(s => { s.loading = true; });
@@ -265,6 +270,77 @@ export function mountScrollWorld(container, config) {
         };
         return Promise.all([worker(), worker()]).then(() => { onProgress && onProgress(1); });
       });
+  }
+
+  // ---- (FDA) séquences d'images sur canvas -------------------------------------------
+  const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 2 : 1.5);
+  function frameSpec(s) { return (isMobile() && s.framesM) ? s.framesM : s.frames; }
+  function frameUrl(spec, i) { return spec.base + String(i + 1).padStart(3, '0') + '.' + (spec.ext || 'webp'); }
+  function preloadFrames(onProgress) {
+    const list = SEGMENTS.filter(s => frameSpec(s) && !s.loading);
+    list.forEach(s => { s.loading = true; s.blobs = new Array(frameSpec(s).count).fill(null); s.cache = new Map(); s.decoding = new Map(); s.lastDrawn = -1; });
+    const jobs = []; list.forEach(s => { const spec = frameSpec(s); for (let i = 0; i < spec.count; i++) jobs.push([s, i]); });
+    const total = jobs.length; let done = 0, next = 0;
+    const report = () => onProgress && onProgress(done / total);
+    const worker = () => {
+      const k = next++; if (k >= jobs.length) return Promise.resolve();
+      const [s, i] = jobs[k];
+      return fetch(frameUrl(frameSpec(s), i)).then(r => r.ok ? r.blob() : null).catch(() => null)
+        .then(b => { s.blobs[i] = b; done++; report(); }).then(worker);
+    };
+    return Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]).then(() => {
+      list.forEach(s => {
+        const c = document.createElement('canvas'); c.className = 'sw-scene__video';
+        s.el.appendChild(c); s.canvas = c; s.ctx2d = c.getContext('2d', { alpha: false });
+        s.hasClip = true; s.ready = true; sizeCanvas(s);
+        // la première image est prête tout de suite : plus d'affiche à attendre
+        decodeFrame(s, 0).then(() => { drawFrame(s, 0); s.el.classList.add('has-clip'); });
+      });
+      onProgress && onProgress(1);
+    });
+  }
+  function sizeCanvas(s) {
+    if (!s.canvas) return;
+    const w = Math.round(window.innerWidth * DPR), h = Math.round(window.innerHeight * DPR);
+    if (s.canvas.width !== w || s.canvas.height !== h) { s.canvas.width = w; s.canvas.height = h; s.lastDrawn = -1; }
+  }
+  function decodeFrame(s, i) {
+    if (s.cache.has(i)) return Promise.resolve(s.cache.get(i));
+    if (s.decoding.has(i)) return s.decoding.get(i);
+    const b = s.blobs[i]; if (!b) return Promise.resolve(null);
+    const p = createImageBitmap(b).then(bm => { s.cache.set(i, bm); s.decoding.delete(i); trimCache(s, i); return bm; })
+      .catch(() => { s.decoding.delete(i); return null; });
+    s.decoding.set(i, p); return p;
+  }
+  function trimCache(s, around) {
+    const keep = isMobile() ? 18 : 28;
+    if (s.cache.size <= keep) return;
+    for (const k of Array.from(s.cache.keys()).sort((a, b) => Math.abs(b - around) - Math.abs(a - around))) {
+      if (s.cache.size <= keep) break;
+      try { s.cache.get(k).close(); } catch (e) {}
+      s.cache.delete(k);
+    }
+  }
+  function prefetchFrames(s, i, dir) {
+    const n = frameSpec(s).count;
+    for (let d = 0; d <= 6; d++) { const a = i + d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
+    for (let d = 1; d <= 2; d++) { const a = i - d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
+  }
+  // Dessin « cover » (comme object-fit: cover, point d'ancrage légèrement au-dessus du centre)
+  function drawBitmap(ctx, bm, W, H, alpha) {
+    const r = Math.max(W / bm.width, H / bm.height);
+    const w = bm.width * r, h = bm.height * r;
+    ctx.globalAlpha = alpha; ctx.drawImage(bm, (W - w) / 2, (H - h) * 0.42, w, h);
+  }
+  function drawFrame(s, pos) {
+    const n = frameSpec(s).count; const ctx = s.ctx2d, W = s.canvas.width, H = s.canvas.height;
+    const i0 = Math.min(n - 1, Math.floor(pos)), i1 = Math.min(n - 1, i0 + 1), f = pos - i0;
+    const a = s.cache.get(i0), b = s.cache.get(i1);
+    if (!a && !b) return false;
+    if (a) drawBitmap(ctx, a, W, H, 1);
+    if (b && f > 0.02 && a) drawBitmap(ctx, b, W, H, f);
+    else if (b && !a) drawBitmap(ctx, b, W, H, 1);
+    ctx.globalAlpha = 1; s.lastDrawn = pos; return true;
   }
 
   function read() {
@@ -324,6 +400,15 @@ export function mountScrollWorld(container, config) {
     const eps = isMobile() ? 0.045 : 0.03;
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
+      if (s.canvas) {
+        if (!s.visible) continue;
+        const prev = s.cur;
+        s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.3 : 0.22));
+        const n = frameSpec(s).count; const pos = clamp(s.cur, 0, 1) * (n - 1);
+        prefetchFrames(s, Math.round(pos), s.target - prev);
+        if (Math.abs(pos - s.lastDrawn) > 0.02) drawFrame(s, pos);
+        continue;
+      }
       if (!s.hasClip || !s.ready || !s.video) continue;
       // Never queue a seek while the decoder is still resolving the last one.
       // On phones a fast flick would otherwise pile up seeks and freeze the clip;
@@ -391,7 +476,7 @@ export function mountScrollWorld(container, config) {
       window.removeEventListener('load', layout);
       window.removeEventListener('pointerdown', onFirstGesture);
       window.removeEventListener('touchstart', onFirstGesture);
-      SEGMENTS.forEach(s => { if (s.video) { try { URL.revokeObjectURL(s.video.src); } catch (e) {} } });
+      SEGMENTS.forEach(s => { if (s.video) { try { URL.revokeObjectURL(s.video.src); } catch (e) {} } if (s.cache) { s.cache.forEach(bm => { try { bm.close(); } catch (e) {} }); s.cache.clear(); } s.blobs = null; });
       container.replaceChildren();
       container.classList.remove('sw-root');
     },
