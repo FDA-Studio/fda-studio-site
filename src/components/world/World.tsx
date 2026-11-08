@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Gate } from "./Gate";
 import { WORLD_SECTIONS, worldAsset } from "./config";
 import motion from "./motion.json";
+import motionM from "./motion-m.json";
 import { getSound, sfx } from "@/lib/sound";
 
 /**
@@ -23,7 +24,7 @@ export function World() {
   useEffect(() => {
     const el = host.current;
     if (!el) return;
-    let world: { end: () => number; progress: (i: number) => number; preload: (cb?: (p: number) => void) => Promise<void>; destroy: () => void } | null = null;
+    let world: { end: () => number; progress: (i: number) => number; time: (i: number) => number; preload: (cb?: (p: number) => void) => Promise<void>; destroy: () => void } | null = null;
     let disposed = false;
     let onScroll = () => {};
 
@@ -46,6 +47,7 @@ export function World() {
           accent: s.accent,
           copyAt: s.copyAt,
           remap: (motion as Record<string, number[]>)[String(i)],
+          remapMobile: (motionM as Record<string, number[]>)[String(i)],
           eyebrow: s.eyebrow,
           title: s.title,
           body: s.body,
@@ -56,25 +58,37 @@ export function World() {
       });
       // Une fois le vol terminé, le monde (couches fixes) s'efface derrière la suite de la page.
       // Et si le son est activé : un souffle à chaque nouvelle scène, la porte à l'arrivée sur l'arche.
-      // Chaque scène est atteinte dans la seconde moitié de son segment : le son part à ce moment-là
-      // (la porte sonne quand la caméra arrive devant l'arche, pas au départ du couloir).
+      // Les déclenchements suivent le temps du film réellement affiché (pas la position de scroll) :
+      // la porte sonne quand elle s'ouvre à l'image, et ce moment diffère entre le film 16:9
+      // (image 106 sur 193) et le film portrait du téléphone (image 62).
       const arrived = new Set<number>();
+      const mobile = window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(max-width: 860px)").matches;
+      const DOOR_AT = mobile ? 62 / 192 : 106 / 192;
+      const SCENE_AT = 0.45;
       onScroll = () => {
         if (!world) return;
         const past = window.scrollY > world.end() - window.innerHeight * 0.4;
         el.dataset.past = past ? "true" : "false";
         WORLD_SECTIONS.forEach((s, i) => {
           if (i === 0) return;
-          const p = world!.progress(i);
-          const at = s.id === "jeux" ? 0.62 : 0.5;
-          if (p >= at && p < 0.98 && !arrived.has(i)) {
+          const t = world!.time(i);
+          const at = s.id === "jeux" ? DOOR_AT : SCENE_AT;
+          if (t >= at && t < 0.98 && !arrived.has(i)) {
             arrived.add(i);
             sfx(s.id === "jeux" ? "door" : "step");
-          } else if (p < at - 0.2 && arrived.has(i)) arrived.delete(i); // on remonte : réarmé
+          } else if (t < at - 0.15 && arrived.has(i)) arrived.delete(i); // on remonte : réarmé
         });
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
+      // Le temps du film continue d'évoluer après le dernier événement de scroll (lissage) :
+      // on relit l'état à chaque image tant que le vol est à l'écran.
+      const tick = () => {
+        if (disposed) return;
+        if (el.dataset.past !== "true") onScroll();
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
       // Tous les films et tous les sons en mémoire avant d'ouvrir les portes :
       // la musique démarre à l'instant du clic « Entrer avec le son ».
       Promise.all([

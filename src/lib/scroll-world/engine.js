@@ -96,6 +96,8 @@ export function mountScrollWorld(container, config) {
                    // remap (FDA) : table scroll→temps à pas égaux de mouvement visuel mesuré dans le film,
                    // pour que chaque pixel de scroll produise la même quantité de mouvement à l'écran.
                    remap: Array.isArray(s.remap) && s.remap.length > 1 ? s.remap : null,
+                   // remapMobile (FDA) : même table mesurée sur la chaîne portrait (un autre film)
+                   remapM: Array.isArray(s.remapMobile) && s.remapMobile.length > 1 ? s.remapMobile : null,
                    // frames (FDA) : séquence d'images { base, count, ext } dessinée sur un canvas
                    // (recherche vidéo asynchrone remplacée par un dessin immédiat de l'image voulue)
                    frames: s.frames || null, framesM: s.framesMobile || null };
@@ -357,7 +359,8 @@ export function mountScrollWorld(container, config) {
       const s = SEGMENTS[i];
       if (y > s.start - 1.6 * vh && y < s.end + 1.6 * vh) loadClip(s);
       const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
-      s.target = s.remap ? remapTime(s.remap, local) : (s.linger ? lingerEase(local, s.linger) : local);
+      const tab = (isMobile() && s.remapM) ? s.remapM : s.remap;
+      s.target = tab ? remapTime(tab, local) : (s.linger ? lingerEase(local, s.linger) : local);
       let outside = 0;
       // (FDA) le dernier segment reste affiché après sa fin : la page suivante recouvre le monde
       if (y < s.start) outside = s.start - y; else if (y > s.end && i < NSEG - 1) outside = y - s.end;
@@ -472,6 +475,8 @@ export function mountScrollWorld(container, config) {
     preload: preloadAll,
     /** Progression (0..1) du vol de la section i à la position de scroll actuelle. */
     progress: (i) => { const seg = SECTIONS[i] && SECTIONS[i]._seg; if (!seg) return 0; const y = window.scrollY || window.pageYOffset; return clamp((y - seg.start) / (seg.end - seg.start), 0, 1); },
+    /** Temps du film (0..1) effectivement affiché pour la section i (après remap et lissage). */
+    time: (i) => { const seg = SECTIONS[i] && SECTIONS[i]._seg; return seg ? clamp(seg.cur || 0, 0, 1) : 0; },
     destroy() {
       alive = false;
       window.removeEventListener('scroll', onScroll);
