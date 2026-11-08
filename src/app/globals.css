@@ -159,6 +159,16 @@ p { text-wrap: pretty; }
   line-height: 1.1;
 }
 
+/* Le slogan de marque, une fois, en clôture de page */
+.slogan {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 11.5vw, 11rem);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  color: var(--color-paper);
+}
+
 .outline-text {
   color: transparent;
   -webkit-text-stroke: 1px rgba(237, 237, 237, 0.28);

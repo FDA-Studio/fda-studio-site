@@ -19,8 +19,8 @@ export function Footer() {
           </ul>
         </div>
 
-        <p aria-hidden className="outline-text pointer-events-none mt-16 select-none whitespace-nowrap text-[min(18vw,19rem)] font-semibold leading-[0.8] tracking-[-0.06em]">
-          FDA Studio
+        <p lang="en" className="slogan mt-20 md:mt-28">
+          We build<br />what&rsquo;s next.
         </p>
 
         <p className="mt-8 border-t border-line pt-6 text-sm text-muted">
