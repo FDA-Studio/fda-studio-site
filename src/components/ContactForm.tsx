@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { budgets, contactSchema, needs, timelines } from "@/lib/validations/contact";
 import { site } from "@/lib/site";
 import { ArrowIcon, CheckIcon } from "./icons";
+import { sfx } from "@/lib/sound";
 
 type Errors = Partial<Record<string, string>>;
 type Status = "idle" | "sending" | "sent" | "mail" | "error";
@@ -23,6 +24,11 @@ export function ContactForm() {
     const besoin = new URLSearchParams(window.location.search).get("besoin");
     if (besoin && needs.some((n) => n.value === besoin)) setSelectedNeeds([besoin]);
   }, []);
+
+  // Petit carillon quand la demande part (ou est prête dans la messagerie)
+  useEffect(() => {
+    if (status === "sent" || status === "mail") sfx("chime");
+  }, [status]);
 
   const toggleNeed = (v: string) => setSelectedNeeds((cur) => (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]));
 

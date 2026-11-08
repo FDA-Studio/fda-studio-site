@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/site";
+import { getSound, sfx } from "@/lib/sound";
 import { usePaused } from "@/components/motion/Live";
 import { motionPause, reducedMotion } from "@/lib/motion";
 
@@ -17,6 +18,36 @@ export function GameVisual() {
   const video = useRef<HTMLVideoElement>(null);
   const [mode, setMode] = useState<"poster" | "video" | "webp">("poster");
   const paused = usePaused();
+
+  // La porte s'ouvre quand la Chevalière entre à l'écran, ou quand on active le son devant elle
+  // (au plus une fois toutes les 20 s, si le son est activé)
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    let visible = false;
+    let last = 0;
+    const door = () => {
+      if (!visible || performance.now() - last < 20000) return;
+      last = performance.now();
+      sfx("door");
+    };
+    const io = new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        door();
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    // Juste après l'ouverture sonore, pour ne pas couvrir l'impact
+    const off = getSound().subscribe((on) => {
+      if (on) window.setTimeout(door, 1600);
+    });
+    return () => {
+      io.disconnect();
+      off();
+    };
+  }, []);
 
   useEffect(() => {
     if (reducedMotion()) return;

@@ -14,6 +14,7 @@ export function SoundHint() {
   return (
     <button
       type="button"
+      data-sound-toggle
       onClick={() => getSound().toggle()}
       aria-pressed={on}
       className="inline-flex min-h-11 items-center gap-3 text-sm text-muted transition-colors duration-150 hover:text-paper"

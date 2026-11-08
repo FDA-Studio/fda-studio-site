@@ -3,6 +3,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { SoundEvents } from "@/components/SoundEvents";
 import { organizationJsonLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
       </head>
       <body>
+        <SoundEvents />
         <JsonLd data={organizationJsonLd} />
         <Header />
         <main id="contenu">{children}</main>

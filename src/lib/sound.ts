@@ -8,7 +8,12 @@
  * - Les fichiers ne sont téléchargés qu'à l'activation : aucun impact sur le chargement de la page.
  */
 
-type Sfx = "tick" | "door";
+/**
+ * tick : appui sur un bouton ou un lien · door : arrivée sur l'univers Door Knight
+ * step : changement de chapitre des démos IA · blip : progression dans une démo (hauteur = étape)
+ * chime : demande de contact prête ou envoyée
+ */
+type Sfx = "tick" | "door" | "step" | "blip" | "chime";
 type Listener = (on: boolean) => void;
 
 import { asset } from "./site";
@@ -36,6 +41,9 @@ class SoundEngine {
   private listeners = new Set<Listener>();
   private lastTick = 0;
   private keepAlive: HTMLAudioElement | null = null;
+  private ambientLayer: AudioBufferSourceNode | null = null;
+  private lfo: OscillatorNode | null = null;
+  private noise: AudioBuffer | null = null;
   enabled = false;
 
   subscribe(fn: Listener) {
@@ -127,6 +135,30 @@ class SoundEngine {
 
     src.connect(filter).connect(gain).connect(this.master!);
     src.start(now, 0.06);
+
+    // Seconde couche une octave plus bas, décalée et très légèrement désaccordée :
+    // les deux boucles ne retombent jamais en phase, la nappe évolue au lieu de se répéter.
+    const layer = ctx.createBufferSource();
+    layer.buffer = buf;
+    layer.loop = true;
+    layer.loopStart = 0.06;
+    layer.loopEnd = buf.duration - 0.06;
+    layer.playbackRate.value = 0.497;
+    const layerGain = ctx.createGain();
+    layerGain.gain.value = 0.45;
+    layer.connect(layerGain).connect(filter);
+    layer.start(now + 0.8, buf.duration / 2);
+
+    // Respiration lente du filtre (une oscillation toutes les ~14 s)
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = 0.07;
+    const lfoDepth = ctx.createGain();
+    lfoDepth.gain.value = 700;
+    lfo.connect(lfoDepth).connect(filter.frequency);
+    lfo.start(now + 4);
+
+    this.ambientLayer = layer;
+    this.lfo = lfo;
     this.ambientSource = src;
     this.ambientGain = gain;
     this.ambientFilter = filter;
@@ -140,6 +172,10 @@ class SoundEngine {
     this.ambientGain.gain.setValueAtTime(this.ambientGain.gain.value, now);
     this.ambientGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
     this.ambientSource.stop(now + 0.65);
+    this.ambientLayer?.stop(now + 0.65);
+    this.lfo?.stop(now + 0.65);
+    this.ambientLayer = null;
+    this.lfo = null;
     this.ambientSource = null;
     this.ambientGain = null;
     this.ambientFilter = null;
@@ -218,16 +254,80 @@ class SoundEngine {
     return this.enabled ? this.disable() : this.enable();
   }
 
-  /** Effet ponctuel ; sans effet si le son est coupé. */
-  play(name: Sfx) {
-    if (!this.enabled) return;
-    if (name === "tick") {
-      const t = performance.now();
-      if (t - this.lastTick < 60) return; // anti-mitraillage
-      this.lastTick = t;
-      this.shot("tick", 0.55, 0.96 + Math.random() * 0.08);
-    } else {
-      this.shot("door", 0.9);
+  /** Note courte synthétisée (sinus + harmonique douce), enveloppe percussive. */
+  private tone(freq: number, gain: number, dur = 0.18, delay = 0) {
+    const ctx = this.ctx;
+    if (!ctx || !this.master) return;
+    const t = ctx.currentTime + delay;
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.exponentialRampToValueAtTime(gain, t + 0.008);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    env.connect(this.master);
+    for (const [mult, level, type] of [[1, 1, "sine"], [2, 0.18, "triangle"]] as const) {
+      const osc = ctx.createOscillator();
+      osc.type = type;
+      osc.frequency.value = freq * mult;
+      const g = ctx.createGain();
+      g.gain.value = level;
+      osc.connect(g).connect(env);
+      osc.start(t);
+      osc.stop(t + dur + 0.02);
+    }
+  }
+
+  /** Souffle filtré qui balaie l'aigu : transition entre deux démos. */
+  private whoosh() {
+    const ctx = this.ctx;
+    if (!ctx || !this.master) return;
+    if (!this.noise) {
+      const len = Math.floor(ctx.sampleRate * 0.6);
+      this.noise = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = this.noise.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const t = ctx.currentTime;
+    const src = ctx.createBufferSource();
+    src.buffer = this.noise;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.Q.value = 1.4;
+    bp.frequency.setValueAtTime(420, t);
+    bp.frequency.exponentialRampToValueAtTime(2600, t + 0.32);
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.exponentialRampToValueAtTime(0.16, t + 0.09);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    src.connect(bp).connect(env).connect(this.master);
+    src.start(t);
+    src.stop(t + 0.5);
+  }
+
+  /** Effet ponctuel ; sans effet si le son est coupé. `n` règle la hauteur du blip. */
+  play(name: Sfx, n = 0) {
+    if (!this.enabled || !this.ctx || this.ctx.state !== "running") return;
+    const t = performance.now();
+    switch (name) {
+      case "tick":
+        if (t - this.lastTick < 60) return; // anti-mitraillage
+        this.lastTick = t;
+        this.shot("tick", 0.45, 0.96 + Math.random() * 0.08);
+        break;
+      case "door":
+        this.shot("door", 0.8);
+        break;
+      case "step":
+        this.whoosh();
+        this.tone(659.25, 0.05, 0.35, 0.12); // mi, discret
+        break;
+      case "blip":
+        // Gamme pentatonique de la : chaque étape monte d'un degré, jamais de fausse note
+        this.tone(440 * Math.pow(2, [0, 2, 4, 7, 9, 12, 14, 16][n % 8] / 12), 0.045, 0.14);
+        break;
+      case "chime":
+        this.tone(659.25, 0.09, 0.5);
+        this.tone(987.77, 0.07, 0.7, 0.11);
+        break;
     }
   }
 
@@ -248,7 +348,7 @@ export function getSound(): SoundEngine {
 }
 
 /** Raccourci pour les composants : joue un effet si le son est activé. */
-export function sfx(name: Sfx) {
+export function sfx(name: Sfx, n = 0) {
   if (typeof window === "undefined" || !engine) return;
-  engine.play(name);
+  engine.play(name, n);
 }

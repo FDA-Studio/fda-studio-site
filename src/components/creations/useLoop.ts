@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLive } from "@/components/motion/Live";
+import { sfx } from "@/lib/sound";
 
 /**
  * Fait avancer un compteur d'étapes en boucle, seulement quand la zone <Live> parente tourne
@@ -26,6 +27,7 @@ export function useLoop<T extends HTMLElement>(durations: number[]) {
       timer = window.setTimeout(() => {
         current.current = (current.current + 1) % durations.length;
         setStep(current.current);
+        if (current.current > 0) sfx("blip", current.current);
         next();
       }, durations[current.current]);
     };

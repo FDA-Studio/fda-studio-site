@@ -6,6 +6,7 @@ import { ChatAssistant } from "@/components/creations/ChatAssistant";
 import { Automation } from "@/components/creations/Automation";
 import { DocReader } from "@/components/creations/DocReader";
 import { Live, PauseButton } from "@/components/motion/Live";
+import { sfx } from "@/lib/sound";
 
 const items = [
   { title: "Répondre au téléphone", line: "L’agent vocal décroche, comprend, déplace le rendez-vous et confirme par SMS. Jour et nuit.", Demo: VoiceAgent },
@@ -39,6 +40,16 @@ function FrameBar({ title }: { title?: string }) {
 export function Creations() {
   const [active, setActive] = useState(0);
   const steps = useRef<(HTMLLIElement | null)[]>([]);
+  const first = useRef(true);
+
+  // Changement de chapitre : un souffle et une note (si le son est activé)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    sfx("step");
+  }, [active]);
 
   useEffect(() => {
     const io = new IntersectionObserver(
