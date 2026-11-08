@@ -66,10 +66,10 @@ export function Stage() {
 
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
-      const lowPower = window.innerWidth < 768 || coarse || (navigator.hardwareConcurrency ?? 8) <= 4;
+      const device = window.innerWidth < 768 ? "phone" : coarse ? "tablet" : "desktop";
       let stage: StageHandle;
       try {
-        stage = createStage(host, { lowPower, reduced });
+        stage = createStage(host, { device, reduced });
       } catch {
         return setState("fallback");
       }
@@ -147,12 +147,32 @@ export function Stage() {
       const ro = new ResizeObserver(onResize);
       ro.observe(document.body);
 
+      // Souris : la matière suit et s'écarte du curseur. Doigt : même chose tant qu'il touche l'écran
+      // (un glissement horizontal déplace les éclats ; le vertical fait défiler la page, voir touch-action).
+      const toNdc = (e: PointerEvent): [number, number] => [(e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1];
+      let touchActive = false;
       const onPointer = (e: PointerEvent) => {
-        if (e.pointerType === "touch") return;
-        stage.setPointer((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1, true);
+        if (e.pointerType === "touch" && !touchActive) return;
+        const [x, y] = toNdc(e);
+        stage.setPointer(x, y, true);
+      };
+      const onDown = (e: PointerEvent) => {
+        if (e.pointerType !== "touch") return;
+        touchActive = true;
+        const [x, y] = toNdc(e);
+        stage.setPointer(x, y, true);
+      };
+      const onUp = (e: PointerEvent) => {
+        if (e.pointerType !== "touch") return;
+        touchActive = false;
+        const [x, y] = toNdc(e);
+        stage.setPointer(x, y, false);
       };
       const onLeave = () => stage.setPointer(0, 0, false);
       window.addEventListener("pointermove", onPointer, { passive: true });
+      window.addEventListener("pointerdown", onDown, { passive: true });
+      window.addEventListener("pointerup", onUp, { passive: true });
+      window.addEventListener("pointercancel", onUp, { passive: true });
       document.addEventListener("pointerleave", onLeave);
 
       const start = () => {
@@ -171,6 +191,9 @@ export function Stage() {
         window.removeEventListener("scroll", onScroll);
         window.removeEventListener("resize", onResize);
         window.removeEventListener("pointermove", onPointer);
+        window.removeEventListener("pointerdown", onDown);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
         document.removeEventListener("pointerleave", onLeave);
         document.removeEventListener("visibilitychange", onVisibility);
         stage.dispose();

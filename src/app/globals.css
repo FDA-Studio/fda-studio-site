@@ -478,6 +478,8 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
 @media (min-width: 768px) {
   .stage-fallback .glow-accent { left: 66%; top: 50%; width: 70vmin; height: 70vmin; }
 }
+/* Sur écran tactile, le glissement horizontal est laissé à la matière 3D ; le vertical fait défiler */
+#hero, .chapter-3d { touch-action: pan-y; }
 .chapter-3d {
   position: relative;
   min-height: 100svh;

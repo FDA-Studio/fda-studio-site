@@ -15,7 +15,8 @@ import { ARCH, PHONES, WEB_PANES, buildShapes, type SceneId, type ShapeTarget } 
 export const SCENES: SceneId[] = ["hero", "web", "ai", "apps", "gaming", "quiet"];
 
 export interface StageOptions {
-  lowPower: boolean;
+  /** Classe d'appareil : même mise en scène partout, budget adapté (éclats, pixels, anticrénelage). */
+  device: "phone" | "tablet" | "desktop";
   reduced: boolean;
 }
 
@@ -184,11 +185,12 @@ function uiTexture(kind: "web" | "phone", seed: number): THREE.CanvasTexture {
 }
 
 export function createStage(host: HTMLElement, opts: StageOptions): Stage {
-  const { lowPower, reduced } = opts;
-  const N = lowPower ? 1400 : 3600;
-  const bloomOn = !lowPower;
+  const { device, reduced } = opts;
+  const lowPower = device !== "desktop";
+  const N = device === "phone" ? 2200 : device === "tablet" ? 3000 : 3600;
+  const bloomOn = true;
 
-  const renderer = new THREE.WebGLRenderer({ antialias: !lowPower, alpha: true, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPower ? 1.5 : 2));
   // Avec le bloom, le rendu passe par une cible intermédiaire : fond opaque couleur de la page
   renderer.setClearColor(0x0a0a0b, bloomOn ? 1 : 0);
@@ -361,7 +363,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   scene.add(grid);
 
   // ---- Étincelles : poussière lumineuse qui s'affole pendant les transitions
-  const sparkN = lowPower ? 300 : 900;
+  const sparkN = device === "phone" ? 500 : 900;
   const sparkPos = new Float32Array(sparkN * 3);
   const sparkSeed = new Float32Array(sparkN);
   for (let i = 0; i < sparkN; i++) {
@@ -407,9 +409,12 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   let composer: EffectComposer | null = null;
   let bloom: UnrealBloomPass | null = null;
   if (bloomOn) {
-    composer = new EffectComposer(renderer);
+    // Anticrénelage multi-échantillons sur la cible intermédiaire (le canvas n'en a plus avec le post-traitement)
+    const size = renderer.getDrawingBufferSize(new THREE.Vector2());
+    const target = new THREE.WebGLRenderTarget(size.x, size.y, { samples: lowPower ? 2 : 4 });
+    composer = new EffectComposer(renderer, target);
     composer.addPass(new RenderPass(scene, camera));
-    bloom = new UnrealBloomPass(new THREE.Vector2(host.clientWidth || 1, host.clientHeight || 1), 0.55, 0.9, 0.78);
+    bloom = new UnrealBloomPass(new THREE.Vector2(host.clientWidth || 1, host.clientHeight || 1), 0.4, 0.8, 0.9);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
   }
@@ -419,6 +424,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   let velocity = 0; // vitesse de scroll demandée
   let energy = 0; // turbulence lissée (0 = calme)
   let intro = reduced ? 1 : 0; // assemblage d'ouverture : 0 = dispersé, 1 = monogramme
+  const introStart = performance.now();
   let sceneIndex = -1;
   let sceneCb: ((i: number) => void) | null = null;
   const orbitCur = { v: 0 };
@@ -436,6 +442,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   const pointer = new THREE.Vector2();
   const pointerTarget = new THREE.Vector2();
   let pointerActive = false;
+  let pushAmt = 0; // force du repoussement, lissée (le doigt qui se lève laisse la matière se refermer)
   let time = 0;
   let raf = 0;
   let last = performance.now();
@@ -466,7 +473,9 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
 
     // Curseur projeté sur le plan de la matière (repoussement local)
     let push = false;
-    if (pointerActive && !reduced) {
+    // Rayon d'action du doigt ou du curseur : constant à l'écran, quelle que soit l'échelle de la scène
+    const pushR = 0.5 / Math.max(0.15, cur.scale);
+    if (pushAmt > 0.01 && !reduced) {
       ray.setFromCamera(pointer, camera);
       if (ray.ray.intersectPlane(plane, cursorWorld)) {
         world.worldToLocal(cursorWorld);
@@ -514,11 +523,11 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
         tmp.subVectors(p, cursorWorld);
         tmp.z = 0;
         const d = tmp.length();
-        if (d < 0.55 && d > 0.0001) {
-          const f = 1 - d / 0.55;
-          tmp.multiplyScalar((f * f * 0.22) / d);
+        if (d < pushR && d > 0.0001) {
+          const f = (1 - d / pushR) * pushAmt;
+          tmp.multiplyScalar((f * f * pushR * 0.45) / d);
           p.add(tmp);
-          p.z += f * 0.2;
+          p.z += f * pushR * 0.35;
         }
       }
       qa.set(a.quat[i4], a.quat[i4 + 1], a.quat[i4 + 2], a.quat[i4 + 3]);
@@ -591,8 +600,8 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
     const sw = (time * 0.11) % 1;
     sweep.position.set(-6 + sw * 12, 4.5, 5.5);
     sweep.target.position.set(world.position.x, world.position.y, 0);
-    sweep.intensity = (bloomOn ? 55 : 35) * Math.sin(sw * Math.PI) * (0.6 + transitAmt);
-    if (bloom) bloom.strength = 0.45 + transitAmt * 0.35 + gms * 0.35 + energy * 0.4 + (1 - intro) * 0.5;
+    sweep.intensity = 16 * Math.sin(sw * Math.PI) * (0.6 + transitAmt);
+    if (bloom) bloom.strength = 0.3 + transitAmt * 0.3 + gms * 0.3 + energy * 0.3 + (1 - intro) * 0.4;
     uAccent.value.copy(ACCENTS[SCENES[idx]]).lerp(ACCENTS[SCENES[idx + 1]], frac);
     const mixA = SCENES[idx] === "hero" ? 0.06 : 0.22;
     const mixB = SCENES[idx + 1] === "hero" ? 0.06 : 0.22;
@@ -600,6 +609,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   }
 
   function updateFraming(dt: number) {
+    if (reduced) pushAmt = pointerActive ? 1 : 0;
     const idx = Math.min(Math.floor(timeline), SCENES.length - 2);
     const frac = smooth(timeline - idx);
     const fa = FRAMING[SCENES[idx]], fb = FRAMING[SCENES[idx + 1]];
@@ -641,7 +651,8 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
     camera.lookAt(0, 0, 0);
     world.rotation.y = Math.sin(time * 0.12) * 0.06 + orbitCur.v * 0.35; // la matière suit un peu la caméra : plus de relief
     // Parallaxe curseur : la matière pivote doucement vers le pointeur
-    pointer.lerp(pointerTarget, reduced ? 1 : 1 - Math.exp(-dt * 4));
+    pointer.lerp(pointerTarget, reduced ? 1 : 1 - Math.exp(-dt * (pointerActive ? 8 : 4)));
+    pushAmt += ((pointerActive ? 1 : 0) - pushAmt) * (1 - Math.exp(-dt * (pointerActive ? 10 : 3)));
     rig.rotation.y = pointer.x * 0.14;
     rig.rotation.x = -pointer.y * 0.1;
   }
@@ -649,7 +660,8 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   function frame(dt: number) {
     time += dt;
     uTime.value = time;
-    if (intro < 1) intro = Math.min(1, intro + dt / 2.4);
+    // Assemblage d'ouverture sur l'horloge réelle (2,4 s), même si l'appareil rend peu d'images
+    if (intro < 1) intro = Math.min(1, (performance.now() - introStart) / 2400);
     // Énergie : monte avec la vitesse de scroll, retombe en ~0,8 s
     const target = Math.min(1, Math.abs(velocity) * 0.35);
     energy += (target - energy) * (target > energy ? 1 - Math.exp(-dt * 10) : 1 - Math.exp(-dt * 2.5));
