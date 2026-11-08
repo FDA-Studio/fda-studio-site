@@ -52,4 +52,4 @@ export function Intro() {
 }
 
 /** Script inline : décide avant le premier affichage si l'intro doit jouer. */
-export const introScript = `try{if(!sessionStorage.getItem('fda-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&location.pathname==='/'&&matchMedia('(min-width: 768px)').matches){document.documentElement.classList.add('intro')}}catch(e){}`;
+export const introScript = `try{if(!sessionStorage.getItem('fda-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&location.pathname==='/'){document.documentElement.classList.add('intro')}}catch(e){}`;

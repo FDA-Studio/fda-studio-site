@@ -57,15 +57,15 @@ export function GameVisual() {
           loop
           playsInline
           preload="none"
-          poster={asset("/gaming/knight-f-poster.webp")}
+          poster={asset("/media/knight-f-poster.webp")}
           style={{ aspectRatio: "554 / 760" }}
           disablePictureInPicture
         >
-          <source src={asset("/gaming/knight-f.webm")} type='video/webm; codecs="vp9"' />
+          <source src={asset("/media/knight-f.webm")} type='video/webm; codecs="vp9"' />
         </video>
       ) : (
         <img
-          src={asset(mode === "webp" ? "/gaming/knight-f.webp" : "/gaming/knight-f-poster.webp")}
+          src={asset(mode === "webp" ? "/media/knight-f.webp" : "/media/knight-f-poster.webp")}
           alt=""
           width={350}
           height={480}

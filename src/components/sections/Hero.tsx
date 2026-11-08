@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { HeroCanvas } from "@/components/hero/HeroCanvas";
 import { ArrowIcon } from "@/components/icons";
 import { SoundHint } from "@/components/SoundHint";
@@ -35,10 +34,10 @@ export function Hero() {
           </ul>
           <div className="hero-fade flex flex-col gap-5 md:items-end" style={{ ["--i" as string]: 2 }}>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/contact/" className="btn btn-primary">
+              <a href="#contact" className="btn btn-primary">
                 Démarrer un projet
                 <span className="btn-icon"><ArrowIcon /></span>
-              </Link>
+              </a>
               <a href="#expertises" className="btn btn-ghost">Nos expertises</a>
             </div>
             <SoundHint />

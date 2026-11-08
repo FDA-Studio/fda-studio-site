@@ -34,11 +34,12 @@ export const site = {
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const asset = (path: string) => `${basePath}${path}`;
 
+/** Site d'une seule page : navigation par ancres. */
 export const nav = [
-  { href: "/services/", label: "Expertises" },
-  { href: "/work/", label: "Réalisations" },
-  { href: "/gaming/", label: "Gaming" },
-  { href: "/about/", label: "Studio" },
+  { id: "expertises", label: "Expertises" },
+  { id: "creations", label: "Créations IA" },
+  { id: "doorknight", label: "Door Knight" },
+  { id: "contact", label: "Contact" },
 ] as const;
 
 export const externalLinks = {
