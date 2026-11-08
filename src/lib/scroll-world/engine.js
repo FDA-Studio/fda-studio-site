@@ -273,7 +273,7 @@ export function mountScrollWorld(container, config) {
   }
 
   // ---- (FDA) séquences d'images sur canvas -------------------------------------------
-  const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 2 : 1.5);
+  const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 2 : 2);
   function frameSpec(s) { return (isMobile() && s.framesM) ? s.framesM : s.frames; }
   function frameUrl(spec, i) { return spec.base + String(i + 1).padStart(3, '0') + '.' + (spec.ext || 'webp'); }
   function preloadFrames(onProgress) {
@@ -288,7 +288,8 @@ export function mountScrollWorld(container, config) {
       return fetch(frameUrl(frameSpec(s), i)).then(r => r.ok ? r.blob() : null).catch(() => null)
         .then(b => { s.blobs[i] = b; done++; report(); }).then(worker);
     };
-    return Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]).then(() => {
+    // 10 téléchargements en parallèle : le temps de chargement suit le débit, pas la latence
+    return Promise.all(Array.from({ length: 10 }, worker)).then(() => {
       list.forEach(s => {
         const c = document.createElement('canvas'); c.className = 'sw-scene__video';
         s.el.appendChild(c); s.canvas = c; s.ctx2d = c.getContext('2d', { alpha: false });
@@ -315,7 +316,7 @@ export function mountScrollWorld(container, config) {
     s.decoding.set(i, p); return p;
   }
   function trimCache(s, around) {
-    const keep = isMobile() ? 24 : 40;
+    const keep = isMobile() ? 16 : 40; // mémoire : ~16 × 6,5 Mo sur téléphone
     if (s.cache.size <= keep) return;
     for (const k of Array.from(s.cache.keys()).sort((a, b) => Math.abs(b - around) - Math.abs(a - around))) {
       if (s.cache.size <= keep) break;

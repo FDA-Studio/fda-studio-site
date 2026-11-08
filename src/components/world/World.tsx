@@ -42,7 +42,7 @@ export function World() {
           still: worldAsset(`still_${i}.webp`),
           stillMobile: worldAsset(`still_${i}-m.webp`),
           frames: { base: worldAsset(`frames/d${i}/`), count: 193 },
-          framesMobile: { base: worldAsset(`frames/m${i}/`), count: 121 },
+          framesMobile: { base: worldAsset(`frames/m${i}/`), count: 193 },
           accent: s.accent,
           copyAt: s.copyAt,
           remap: (motion as Record<string, number[]>)[String(i)],
