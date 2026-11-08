@@ -1,6 +1,7 @@
 import { WebVisual } from "@/components/visuals/WebVisual";
 import { AIVisual } from "@/components/visuals/AIVisual";
 import { AppVisual } from "@/components/visuals/AppVisual";
+import Link from "next/link";
 import { Live, PauseButton } from "@/components/motion/Live";
 
 const items = [
@@ -9,18 +10,24 @@ const items = [
     line: "Sites vitrines, e-commerce et pages de conversion. Rapides, bien référencés, faciles à faire évoluer.",
     Visual: WebVisual,
     wide: true,
+    href: "/creation-site-internet-tours/",
+    cta: "Voir l’offre sites internet",
   },
   {
     title: "Intelligence artificielle",
     line: "Agents vocaux, assistants et automatisations branchés sur votre CRM et vos e-mails. Un humain valide.",
     Visual: AIVisual,
     wide: false,
+    href: "/agence-ia-tours/",
+    cta: "Voir l’offre intelligence artificielle",
   },
   {
     title: "Applications",
     line: "Applications web, iOS et Android, SaaS et tableaux de bord, de la maquette à la publication.",
     Visual: AppVisual,
     wide: false,
+    href: "/developpement-application-tours/",
+    cta: "Voir l’offre applications",
   },
 ] as const;
 
@@ -41,7 +48,7 @@ export function Expertises() {
         </div>
 
         <div className="mt-14 grid gap-4 md:mt-20 md:grid-cols-2 md:gap-5">
-          {items.map(({ title, line, Visual, wide }) => (
+          {items.map(({ title, line, Visual, wide, href, cta }) => (
             <article
               key={title}
               className={`tile grid overflow-hidden ${wide ? "md:col-span-2 md:grid-cols-12 md:items-center" : ""}`}
@@ -49,6 +56,7 @@ export function Expertises() {
               <div className={`p-6 md:p-10 ${wide ? "md:col-span-5" : ""}`}>
                 <h3 className="tile-title">{title}</h3>
                 <p className="mt-3 max-w-md text-soft">{line}</p>
+                <Link href={href} className="group mt-5 inline-flex min-h-11 items-center text-paper"><span className="link-line">{cta}</span></Link>
               </div>
               <Live className={`relative min-w-0 px-6 pb-8 md:px-10 md:pb-10 ${wide ? "md:col-span-7 md:py-10" : ""}`}>
                 <Visual />

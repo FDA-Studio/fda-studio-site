@@ -12,6 +12,9 @@ export function Footer() {
             <a href={`mailto:${site.email}`} className="link-line mt-6 inline-block text-xl text-paper">{site.email}</a>
           </div>
           <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted">
+            <li><Link href="/creation-site-internet-tours/" className="link-line hover:text-paper">Création de site internet à Tours</Link></li>
+            <li><Link href="/agence-ia-tours/" className="link-line hover:text-paper">Agence IA à Tours</Link></li>
+            <li><Link href="/developpement-application-tours/" className="link-line hover:text-paper">Applications mobiles et web</Link></li>
             <li><Link href="/gaming/" className="link-line hover:text-paper">Gaming</Link></li>
             <li><a href={site.group.url} target="_blank" rel="noopener noreferrer" className="link-line hover:text-paper">Groupe FDA<span className="sr-only"> (nouvel onglet)</span></a></li>
             <li><Link href="/mentions-legales/" className="link-line hover:text-paper">Mentions légales</Link></li>

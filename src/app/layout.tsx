@@ -10,7 +10,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "FDA Studio — Sites internet, intelligence artificielle, applications et jeux vidéo",
+    default: "FDA Studio — Agence web et IA à Tours : sites, applications, IA",
     template: "%s | FDA Studio",
   },
   description: site.description,

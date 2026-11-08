@@ -22,7 +22,7 @@ export const site = {
   group: { name: "Groupe FDA", url: "https://fdaholding.fr" },
   tagline: "We build what's next.",
   description:
-    "FDA Studio conçoit des sites internet premium, intègre l'intelligence artificielle dans les entreprises, développe des applications web et mobiles et crée des jeux vidéo. Studio technologique du groupe FDA.",
+    "Agence web et IA près de Tours : création de sites internet, intégration de l'intelligence artificielle, applications mobiles et jeux vidéo, partout en France.",
   /**
    * Point d'envoi du formulaire de contact (fonction serveur, voir /supabase/functions/contact).
    * Tant qu'il n'est pas configuré, le formulaire prépare un e-mail complet dans le client de messagerie.
