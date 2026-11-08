@@ -292,9 +292,11 @@ export function mountScrollWorld(container, config) {
       list.forEach(s => {
         const c = document.createElement('canvas'); c.className = 'sw-scene__video';
         s.el.appendChild(c); s.canvas = c; s.ctx2d = c.getContext('2d', { alpha: false });
+        s.ctx2d.imageSmoothingEnabled = true; s.ctx2d.imageSmoothingQuality = 'high';
         s.hasClip = true; s.ready = true; sizeCanvas(s);
         // la première image est prête tout de suite : plus d'affiche à attendre
         decodeFrame(s, 0).then(() => { drawFrame(s, 0); s.el.classList.add('has-clip'); });
+        decodeFrame(s, 1); decodeFrame(s, 2);
       });
       onProgress && onProgress(1);
     });
@@ -313,18 +315,20 @@ export function mountScrollWorld(container, config) {
     s.decoding.set(i, p); return p;
   }
   function trimCache(s, around) {
-    const keep = isMobile() ? 18 : 28;
+    const keep = isMobile() ? 24 : 40;
     if (s.cache.size <= keep) return;
     for (const k of Array.from(s.cache.keys()).sort((a, b) => Math.abs(b - around) - Math.abs(a - around))) {
       if (s.cache.size <= keep) break;
+      if (k < 3) continue;
       try { s.cache.get(k).close(); } catch (e) {}
       s.cache.delete(k);
     }
   }
   function prefetchFrames(s, i, dir) {
     const n = frameSpec(s).count;
-    for (let d = 0; d <= 6; d++) { const a = i + d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
-    for (let d = 1; d <= 2; d++) { const a = i - d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
+    const ahead = isMobile() ? 8 : 12;
+    for (let d = 0; d <= ahead; d++) { const a = i + d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
+    for (let d = 1; d <= 3; d++) { const a = i - d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
   }
   // Dessin « cover » (comme object-fit: cover, point d'ancrage légèrement au-dessus du centre)
   function drawBitmap(ctx, bm, W, H, alpha) {
@@ -334,13 +338,12 @@ export function mountScrollWorld(container, config) {
   }
   function drawFrame(s, pos) {
     const n = frameSpec(s).count; const ctx = s.ctx2d, W = s.canvas.width, H = s.canvas.height;
-    const i0 = Math.min(n - 1, Math.floor(pos)), i1 = Math.min(n - 1, i0 + 1), f = pos - i0;
-    const a = s.cache.get(i0), b = s.cache.get(i1);
-    if (!a && !b) return false;
-    if (a) drawBitmap(ctx, a, W, H, 1);
-    if (b && f > 0.02 && a) drawBitmap(ctx, b, W, H, f);
-    else if (b && !a) drawBitmap(ctx, b, W, H, 1);
-    ctx.globalAlpha = 1; s.lastDrawn = pos; return true;
+    // image la plus proche, dessinée nette (pas de fondu entre deux images : un fondu lit comme du flou)
+    const i = Math.max(0, Math.min(n - 1, Math.round(pos)));
+    let bm = s.cache.get(i);
+    if (!bm) { for (let d = 1; d <= 3 && !bm; d++) bm = s.cache.get(i - d) || s.cache.get(i + d); }
+    if (!bm) return false;
+    drawBitmap(ctx, bm, W, H, 1); s.lastDrawn = pos; return true;
   }
 
   function read() {
@@ -406,7 +409,7 @@ export function mountScrollWorld(container, config) {
         s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.3 : 0.22));
         const n = frameSpec(s).count; const pos = clamp(s.cur, 0, 1) * (n - 1);
         prefetchFrames(s, Math.round(pos), s.target - prev);
-        if (Math.abs(pos - s.lastDrawn) > 0.02) drawFrame(s, pos);
+        if (Math.round(pos) !== Math.round(s.lastDrawn)) drawFrame(s, pos);
         continue;
       }
       if (!s.hasClip || !s.ready || !s.video) continue;
