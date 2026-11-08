@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Gate } from "./Gate";
 import { WORLD_SECTIONS, worldAsset } from "./config";
 import motion from "./motion.json";
-import { sfx } from "@/lib/sound";
+import { getSound, sfx } from "@/lib/sound";
 
 /**
  * Le monde FDA Studio : un vol de caméra continu, pré-rendu, piloté par le scroll.
@@ -75,8 +75,12 @@ export function World() {
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
-      // Tous les films en mémoire avant d'ouvrir les portes
-      world.preload((p) => { if (!disposed) setProgress(p); }).then(() => { if (!disposed) { setProgress(1); setReady(true); } });
+      // Tous les films et tous les sons en mémoire avant d'ouvrir les portes :
+      // la musique démarre à l'instant du clic « Entrer avec le son ».
+      Promise.all([
+        world.preload((p) => { if (!disposed) setProgress(p); }),
+        getSound().prefetch(),
+      ]).then(() => { if (!disposed) { setProgress(1); setReady(true); } });
     })();
 
     return () => {

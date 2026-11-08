@@ -8,7 +8,8 @@
  *     montée sur le temps (fondu à puissance constante d'un temps), −20 LUFS
  *   power-on.mp3 : ouverture · transition.mp3 : changement de démo · tick.mp3 : appui
  *   door.mp3 : porte Door Knight · chime.mp3 : demande envoyée
- * - Les fichiers ne sont téléchargés qu'à l'activation : aucun impact sur le chargement de la page.
+ * - Sur l'accueil, les fichiers sont téléchargés et décodés derrière l'écran d'arrivée (prefetch) :
+ *   la musique part à l'instant du clic. Ailleurs, ils ne sont chargés qu'à l'activation.
  */
 
 /**
@@ -85,9 +86,39 @@ class SoundEngine {
   }
 
   private pending = new Map<keyof typeof FILES, Promise<void>>();
+  private prefetched: Promise<void> | null = null;
+
+  /**
+   * Télécharge et décode tous les sons avant tout geste de l'utilisateur (écran d'arrivée),
+   * pour que la musique parte à l'instant du clic « Entrer avec le son ».
+   * Le décodage passe par un contexte hors-ligne, autorisé sans geste : les AudioBuffer
+   * obtenus se jouent ensuite dans n'importe quel contexte (ré-échantillonnage automatique).
+   */
+  prefetch(): Promise<void> {
+    if (this.prefetched) return this.prefetched;
+    const keys = Object.keys(FILES) as (keyof typeof FILES)[];
+    this.prefetched = Promise.all(
+      keys.map(async (key) => {
+        if (this.buffers.has(key)) return;
+        try {
+          const res = await fetch(FILES[key]);
+          if (!res.ok) throw new Error(`sound ${key}: ${res.status}`);
+          const data = await res.arrayBuffer();
+          const Offline = window.OfflineAudioContext ?? (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext }).webkitOfflineAudioContext;
+          const off = new Offline(1, 1, 48000);
+          const buf = await off.decodeAudioData(data);
+          if (!this.buffers.has(key)) this.buffers.set(key, buf);
+        } catch {
+          /* ce son sera rechargé à l'activation (loadOne) */
+        }
+      }),
+    ).then(() => undefined);
+    return this.prefetched;
+  }
 
   /** Charge un son une seule fois ; les autres continuent en parallèle. */
   private loadOne(key: keyof typeof FILES): Promise<void> {
+    if (this.buffers.has(key)) return Promise.resolve();
     const cached = this.pending.get(key);
     if (cached) return cached;
     const ctx = this.ctx!;
