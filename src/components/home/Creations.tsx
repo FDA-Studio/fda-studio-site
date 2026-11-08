@@ -82,8 +82,9 @@ export function Creations() {
                   </div>
                   <h3 className="mt-4 text-[clamp(1.9rem,4vw,3.5rem)] md:mt-6 font-semibold leading-[0.95] tracking-[-0.045em]">{title}</h3>
                   <p className="mt-3 max-w-sm text-sm text-soft md:mt-4 md:text-base">{line}</p>
+                  <p className="sr-only">Démonstration animée de ce concept.</p>
                 </div>
-                <div className="relative h-[27rem] overflow-hidden border-t border-line bg-ink md:col-span-7 md:h-auto md:min-h-[32rem] md:border-l md:border-t-0">
+                <div aria-hidden="true" className="relative h-[27rem] overflow-hidden border-t border-line bg-ink md:col-span-7 md:h-auto md:min-h-[32rem] md:border-l md:border-t-0">
                   <Demo />
                 </div>
               </article>

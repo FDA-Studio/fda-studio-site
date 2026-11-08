@@ -54,7 +54,7 @@ export function Automation() {
         </ol>
       </div>
 
-      <div className={`rounded-2xl border border-line-strong bg-raised p-4 transition-all duration-500 ${step >= 5 ? "translate-y-0 opacity-100" : "translate-y-2 opacity-40"}`}>
+      <div className={`rounded-2xl border border-line-strong bg-raised p-4 transition-all duration-500 ${step >= 5 ? "translate-y-0 opacity-100" : "translate-y-2 opacity-80"}`}>
         <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Résultat</p>
         <p className="mt-1 text-sm text-paper">Demande traitée en 38 secondes. Devis prêt à envoyer après relecture.</p>
       </div>

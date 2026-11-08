@@ -54,7 +54,7 @@ export function DocReader() {
         <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Données extraites</p>
         <dl className="mt-3 space-y-1.5 sm:space-y-2">
           {fields.map(([k, v], i) => (
-            <div key={k} className={`flex items-baseline justify-between gap-3 border-b border-line pb-2 text-sm transition-all duration-500 ${found > i ? "translate-x-0 opacity-100" : "translate-x-2 opacity-20"}`}>
+            <div key={k} className={`flex items-baseline justify-between gap-3 border-b border-line pb-2 text-sm transition-all duration-500 ${found > i ? "translate-x-0 opacity-100" : "translate-x-2 opacity-80"}`}>
               <dt className="text-muted">{k}</dt>
               <dd className="text-right text-paper">{found > i ? v : "…"}</dd>
             </div>

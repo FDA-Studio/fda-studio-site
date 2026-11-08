@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Pas de génération de code à l'exécution : compatible avec la CSP (pas de 'unsafe-eval')
+z.config({ jitless: true });
+
 /** Schéma partagé par le formulaire (navigateur) et la fonction serveur (revalidation). */
 export const needs = [
   { value: "web", label: "Site internet" },
