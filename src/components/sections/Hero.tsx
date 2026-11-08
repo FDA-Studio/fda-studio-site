@@ -17,7 +17,7 @@ export function Hero() {
       </div>
 
       <div className="wrap flex flex-1 flex-col justify-end pb-10 pt-[40svh] md:pb-16 md:pt-32">
-        <h1 id="hero-title" className="hero-title max-w-[14ch]">
+        <h1 id="hero-title" data-stage-text className="hero-title max-w-[14ch]">
           <span className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: 0 }}>Sites, applications</span></span>
           <span className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: 1 }}>et agents IA</span></span>
           <span className="reveal-line"><span className="hero-rise text-muted" style={{ ["--i" as string]: 2 }}>pour les entreprises.</span></span>

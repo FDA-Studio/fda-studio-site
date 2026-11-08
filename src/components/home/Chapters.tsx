@@ -53,7 +53,7 @@ export function Chapters() {
         >
           <div className="wrap grid md:grid-cols-12">
             <div className="chapter-3d__text md:col-span-6 lg:col-span-5">
-              <h3 id={`chapter-${c.id}`} className="section-title">{c.title}</h3>
+              <h3 id={`chapter-${c.id}`} data-stage-text className="section-title">{c.title}</h3>
               <p className="mt-6 max-w-md text-lg leading-relaxed text-soft">{c.text}</p>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
                 <Link href={c.href} className="btn btn-ghost">

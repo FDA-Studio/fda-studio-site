@@ -19,7 +19,11 @@ export interface Stage {
   /** Position continue sur la ligne du temps : 0 = monogramme … 4 = porte, 5 = calme. */
   setTimeline(t: number): void;
   setPointer(x: number, y: number, active: boolean): void;
-  setLayout(narrow: boolean): void;
+  /**
+   * Cadrage téléphone : pour chaque scène, la bande libre de l'écran (au-dessus du texte),
+   * en fractions de la hauteur de la fenêtre (0 = haut). `null` = grand écran, cadrage fixe.
+   */
+  setBands(bands: { top: number; bottom: number }[] | null): void;
   start(): void;
   stop(): void;
   renderOnce(): void;
@@ -327,7 +331,9 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
 
   // ---- État
   let timeline = 0;
-  let narrow = false;
+  let bands: { top: number; bottom: number }[] | null = null;
+  // Hauteur approximative de chaque forme (unités scène), pour l'ajuster à la bande libre
+  const OBJ_H: Record<SceneId, number> = { hero: 2.8, web: 3.6, ai: 3.2, apps: 3.4, gaming: 3.6, quiet: 1 };
   const pointer = new THREE.Vector2();
   const pointerTarget = new THREE.Vector2();
   let pointerActive = false;
@@ -474,10 +480,27 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
     const idx = Math.min(Math.floor(timeline), SCENES.length - 2);
     const frac = smooth(timeline - idx);
     const fa = FRAMING[SCENES[idx]], fb = FRAMING[SCENES[idx + 1]];
-    const tx = narrow ? fa.mx + (fb.mx - fa.mx) * frac : fa.x + (fb.x - fa.x) * frac;
-    const ty = narrow ? fa.my + (fb.my - fa.my) * frac : fa.y + (fb.y - fa.y) * frac;
     const tz = fa.z + (fb.z - fa.z) * frac;
-    const ts = narrow ? fa.ms + (fb.ms - fa.ms) * frac : fa.s + (fb.s - fa.s) * frac;
+    let tx: number, ty: number, ts: number;
+    if (bands) {
+      // Téléphone : la forme est centrée dans la bande libre et réduite pour y tenir
+      const visible = 2 * tz * Math.tan((camera.fov * Math.PI) / 360); // hauteur visible à la profondeur de la matière
+      const place = (id: SceneId, b: { top: number; bottom: number }) => {
+        const h = Math.max(0.12, b.bottom - b.top);
+        const cy = (0.5 - (b.top + b.bottom) / 2) * visible;
+        const fit = (h * visible * 0.92) / OBJ_H[id];
+        return { y: cy, s: Math.min(FRAMING[id].ms * 1.4, fit) };
+      };
+      const pa = place(SCENES[idx], bands[Math.min(idx, bands.length - 1)]);
+      const pb = place(SCENES[idx + 1], bands[Math.min(idx + 1, bands.length - 1)]);
+      tx = fa.mx + (fb.mx - fa.mx) * frac;
+      ty = pa.y + (pb.y - pa.y) * frac;
+      ts = pa.s + (pb.s - pa.s) * frac;
+    } else {
+      tx = fa.x + (fb.x - fa.x) * frac;
+      ty = fa.y + (fb.y - fa.y) * frac;
+      ts = fa.s + (fb.s - fa.s) * frac;
+    }
     const k = reduced ? 1 : 1 - Math.exp(-dt * 6);
     cur.x += (tx - cur.x) * k;
     cur.y += (ty - cur.y) * k;
@@ -545,7 +568,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       pointerTarget.set(x, y);
       pointerActive = active;
     },
-    setLayout(n) { narrow = n; },
+    setBands(b) { bands = b; },
     start,
     stop,
     renderOnce,

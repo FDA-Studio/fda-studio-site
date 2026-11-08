@@ -77,7 +77,23 @@ export function Stage() {
         });
         // Au-delà du dernier chapitre, la matière se retire (scène « calme »)
         if (centers.length) centers.push(centers[centers.length - 1] + window.innerHeight * 0.9);
-        stage.setLayout(window.innerWidth < 768);
+        // Téléphone : bande libre par chapitre = de l'en-tête jusqu'au haut du texte,
+        // mesurée dans le chapitre lui-même (les chapitres font un écran de haut)
+        if (window.innerWidth < 768) {
+          const vh = window.innerHeight;
+          const header = document.querySelector("header")?.getBoundingClientRect().height ?? 64;
+          const list = chapters().map((el) => {
+            const text = el.querySelector<HTMLElement>("[data-stage-text]") ?? el;
+            const sr = el.getBoundingClientRect();
+            const tr = text.getBoundingClientRect();
+            // Position du texte dans la fenêtre quand le chapitre est centré (il peut être plus haut qu'un écran)
+            const shift = Math.max(0, (sr.height - vh) / 2);
+            const bottom = Math.min(1, Math.max(0.25, (tr.top - sr.top - shift) / vh));
+            return { top: (header + 8) / vh, bottom: bottom - 0.02 };
+          });
+          list.push({ top: 0.3, bottom: 0.7 }); // scène « calme »
+          stage.setBands(list);
+        } else stage.setBands(null);
       };
       const timeline = () => {
         if (centers.length < 2) return 0;
