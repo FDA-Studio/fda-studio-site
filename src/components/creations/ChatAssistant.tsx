@@ -19,7 +19,7 @@ export function ChatAssistant() {
       </div>
 
       <div className="flex flex-1 flex-col justify-end gap-3 py-5">
-        <div className={`ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-paper px-4 py-2.5 text-sm text-ink transition-all duration-500 ${step >= 1 ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+        <div className={`ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-paper px-4 py-2.5 text-sm text-ink transition-[transform,opacity] duration-300 ease-out ${step >= 1 ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
           Où en est ma commande n° 20481 ?
         </div>
 
@@ -32,7 +32,7 @@ export function ChatAssistant() {
           Consultation du suivi transporteur…
         </div>
 
-        <div className={`max-w-[88%] rounded-2xl rounded-bl-md border border-line-strong bg-raised px-4 py-3 text-sm leading-relaxed text-paper transition-all duration-500 ${step >= 3 ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+        <div className={`max-w-[88%] rounded-2xl rounded-bl-md border border-line-strong bg-raised px-4 py-3 text-sm leading-relaxed text-paper transition-[transform,opacity] duration-300 ease-out ${step >= 3 ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
           <span className={step === 3 && typed.length < answer.length ? "caret" : ""}>{typed}</span>
           <span className={`mt-3 flex flex-wrap gap-2 transition-opacity duration-500 ${step >= 4 ? "opacity-100" : "opacity-0"}`}>
             <span className={`rounded-full px-3 py-1 text-xs transition-colors ${step >= 5 ? "bg-accent text-white" : "border border-line-strong text-soft"}`}>Oui, par SMS</span>
@@ -40,7 +40,7 @@ export function ChatAssistant() {
           </span>
         </div>
 
-        <p className={`text-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-opacity duration-500 ${step >= 5 ? "opacity-100" : "opacity-0"}`}>
+        <p className={`text-center text-xs text-muted transition-opacity duration-500 ${step >= 5 ? "opacity-100" : "opacity-0"}`}>
           Suivi activé · ticket fermé automatiquement
         </p>
       </div>

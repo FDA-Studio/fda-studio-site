@@ -40,9 +40,9 @@ export function AIVisual() {
         <circle cx="490" cy="180" r="16" fill="#0a0a0b" stroke="#2f5bff" />
         <path d="M483 180l5 5 9-10" fill="none" stroke="#6f8bff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <div className="relative mt-4 flex flex-wrap justify-center gap-2 font-mono text-[11px] tracking-[0.08em] text-muted">
-        {["Demande reçue", "Intention détectée", "Action préparée", "Validation humaine"].map((t, i) => (
-          <span key={t} className="rounded-full border border-line-strong px-3 py-1.5" style={{ animation: `pulse-dot 4s ${i * 1}s ease-in-out infinite` }}>
+      <div className="relative mt-4 flex flex-wrap justify-center gap-2 text-xs text-muted">
+        {["Demande reçue", "Intention détectée", "Action préparée", "Validation humaine"].map((t) => (
+          <span key={t} className="rounded-full border border-line-strong px-3 py-1.5">
             {t}
           </span>
         ))}

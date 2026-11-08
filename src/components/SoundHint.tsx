@@ -16,11 +16,9 @@ export function SoundHint() {
       type="button"
       onClick={() => getSound().toggle()}
       aria-pressed={on}
-      className="group inline-flex items-center gap-3 text-sm text-muted transition-colors hover:text-paper"
+      className="inline-flex min-h-11 items-center gap-3 text-sm text-muted transition-colors duration-150 hover:text-paper"
     >
-      <span className={`relative grid h-2 w-2 place-items-center rounded-full ${on ? "bg-accent" : "bg-steel"}`} aria-hidden>
-        {!on && <span className="absolute inset-0 rounded-full bg-accent-bright opacity-60" style={{ animation: "pulse-dot 1.8s infinite" }} />}
-      </span>
+      <span className={`h-2 w-2 rounded-full ${on ? "bg-accent" : "bg-steel"}`} aria-hidden />
       <span className="link-line">{on ? "Expérience sonore activée" : "Activer l’expérience sonore"}</span>
     </button>
   );

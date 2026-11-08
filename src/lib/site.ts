@@ -37,7 +37,7 @@ export const asset = (path: string) => `${basePath}${path}`;
 /** Site d'une seule page : navigation par ancres. */
 export const nav = [
   { id: "expertises", label: "Expertises" },
-  { id: "creations", label: "Créations IA" },
+  { id: "creations", label: "Démos IA" },
   { id: "doorknight", label: "Door Knight" },
   { id: "contact", label: "Contact" },
 ] as const;

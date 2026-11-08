@@ -14,7 +14,7 @@ function Line({ who, text, active, done }: { who: string; text: string; active: 
   const ai = who === "Agent IA";
   return (
     <div className={`transition-opacity duration-500 ${active || done ? "opacity-100" : "opacity-0"}`}>
-      <p className={`font-mono text-[10px] uppercase tracking-[0.14em] ${ai ? "text-accent-bright" : "text-muted"}`}>{who}</p>
+      <p className={`text-xs ${ai ? "text-accent-bright" : "text-muted"}`}>{who}</p>
       <p className={`mt-1 text-sm leading-snug md:text-base ${ai ? "text-paper" : "text-soft"} ${active && typed.length < text.length ? "caret" : ""}`}>{typed}</p>
     </div>
   );
@@ -35,10 +35,10 @@ export function VoiceAgent() {
           </span>
           <div>
             <p className="text-sm font-medium text-paper">Appel entrant</p>
-            <p className="font-mono text-[11px] text-muted">Agent vocal · 00:{String(8 + step * 6).padStart(2, "0")}</p>
+            <p className="tabular text-xs text-muted">Agent vocal · 00:{String(8 + step * 6).padStart(2, "0")}</p>
           </div>
         </div>
-        <span className="rounded-full border border-line-strong px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">En ligne</span>
+        <span className="rounded-full border border-line-strong px-2.5 py-1 text-xs text-muted">En ligne</span>
       </div>
 
       {/* Forme d'onde */}

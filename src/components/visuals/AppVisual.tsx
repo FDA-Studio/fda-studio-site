@@ -8,7 +8,7 @@ export function AppVisual() {
       {/* Tableau de bord en arrière-plan */}
       <div className="absolute left-0 top-10 hidden w-[62%] rounded-2xl border border-line-strong bg-ink/90 p-4 sm:block">
         <div className="flex gap-2">
-          {["+12 %", "4,7/5", "1 h 40"].map((k) => (
+          {["18 devis", "42 clients", "7 tâches"].map((k) => (
             <div key={k} className="flex-1 rounded-lg border border-line p-2">
               <div className="h-1.5 w-8 rounded bg-line-strong" />
               <div className="mt-2 font-display text-sm text-paper">{k}</div>

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
-import { Marquee } from "@/components/home/Marquee";
-import { Statement } from "@/components/home/Statement";
-import { ExpertiseRail } from "@/components/home/ExpertiseRail";
+import { Expertises } from "@/components/home/Expertises";
 import { Creations } from "@/components/home/Creations";
 import { DoorKnightSpot } from "@/components/home/DoorKnightSpot";
 import { FinalCTA } from "@/components/home/FinalCTA";
@@ -23,9 +21,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Marquee />
-      <Statement />
-      <ExpertiseRail />
+      <Expertises />
       <Creations />
       <DoorKnightSpot />
       <FinalCTA />

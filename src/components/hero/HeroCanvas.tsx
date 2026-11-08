@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motionPause } from "@/lib/motion";
 import { particlesFragment, particlesVertex, sculptureFragment, sculptureVertex } from "./shaders";
 
 /**
@@ -227,7 +228,7 @@ export function HeroCanvas({ variant = "home" }: { variant?: "home" | "compact" 
         raf = requestAnimationFrame(loop);
       };
       const start = () => {
-        if (reduced || raf || !visible || document.hidden) return;
+        if (reduced || raf || !visible || document.hidden || motionPause.get()) return;
         last = performance.now();
         raf = requestAnimationFrame(loop);
       };
@@ -261,12 +262,14 @@ export function HeroCanvas({ variant = "home" }: { variant?: "home" | "compact" 
       };
       renderer.domElement.addEventListener("webglcontextlost", onLost);
 
+      const offPause = motionPause.subscribe((p) => (p ? stop() : start()));
       start();
 
       const prevCleanup = cleanup;
       cleanup = () => {
         prevCleanup();
         stop();
+        offPause();
         io.disconnect();
         ro.disconnect();
         window.removeEventListener("pointermove", onPointer);
@@ -291,7 +294,7 @@ export function HeroCanvas({ variant = "home" }: { variant?: "home" | "compact" 
   }, [variant]);
 
   return (
-    <div ref={hostRef} className="canvas-fade absolute inset-0" aria-hidden>
+    <div ref={hostRef} className="hero-media absolute inset-0" aria-hidden>
       {failed && (
         // Repli sans 3D temps réel : sculpture statique en CSS/SVG, même composition
         <div className="absolute inset-0">

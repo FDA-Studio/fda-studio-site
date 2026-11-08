@@ -1,49 +1,38 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLive } from "@/components/motion/Live";
 
 /**
- * Fait avancer un compteur d'étapes en boucle, uniquement quand l'élément est visible.
- * `durations[i]` = temps passé à l'étape i (ms). Avec « réduire les animations », reste sur la dernière étape.
+ * Fait avancer un compteur d'étapes en boucle, seulement quand la zone <Live> parente tourne
+ * (visible et pas en pause). Elle reprend là où elle s'était arrêtée.
+ * Avec « réduire les animations », reste sur la dernière étape, l'état complet.
  */
 export function useLoop<T extends HTMLElement>(durations: number[]) {
   const ref = useRef<T>(null);
   const [step, setStep] = useState(0);
+  const live = useLive();
+  const current = useRef(0);
   const key = durations.join(",");
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setStep(durations.length - 1);
       return;
     }
+    if (!live) return;
     let timer = 0;
-    let current = 0;
-    let running = false;
     const next = () => {
       timer = window.setTimeout(() => {
-        current = (current + 1) % durations.length;
-        setStep(current);
+        current.current = (current.current + 1) % durations.length;
+        setStep(current.current);
         next();
-      }, durations[current]);
+      }, durations[current.current]);
     };
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !running) {
-        running = true;
-        next();
-      } else if (!e.isIntersecting && running) {
-        running = false;
-        window.clearTimeout(timer);
-      }
-    }, { threshold: 0.25 });
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      window.clearTimeout(timer);
-    };
+    next();
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, live]);
 
   return { ref, step };
 }

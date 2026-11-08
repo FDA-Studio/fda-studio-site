@@ -7,7 +7,7 @@ import { Logo } from "./brand/Logo";
 import { nav, site } from "@/lib/site";
 import { SoundToggle } from "./SoundToggle";
 
-/** Lien d'ancre : défilement fluide sur l'accueil, retour à l'accueil depuis les pages légales. */
+/** Lien d'ancre : défilement natif sur l'accueil, retour à l'accueil depuis les pages légales. */
 function useAnchor() {
   const pathname = usePathname();
   const home = pathname === "/";
@@ -18,8 +18,8 @@ function useAnchor() {
       const el = document.getElementById(id);
       if (!el) return;
       e.preventDefault();
-      if (window.__lenis) window.__lenis.scrollTo(el, { offset: id === "contact" ? 0 : -8, duration: 1.4 });
-      else el.scrollIntoView({ behavior: "smooth" });
+      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollIntoView({ behavior: smooth ? "smooth" : "auto" });
       history.replaceState(null, "", `#${id}`);
     },
   });
@@ -28,34 +28,12 @@ function useAnchor() {
 export function Header() {
   const anchor = useAnchor();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
-
-  // Fond après 24 px et section active
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    nav.forEach((n) => {
-      const el = document.getElementById(n.id);
-      if (el) io.observe(el);
-    });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      io.disconnect();
-    };
-  }, []);
 
   // Menu mobile : verrouillage du scroll, Échap, piège du focus
   useEffect(() => {
     if (!open) return;
-    window.__lenis?.stop();
     document.body.style.overflow = "hidden";
     menuRef.current?.querySelector<HTMLElement>("a")?.focus();
     const onKey = (e: KeyboardEvent) => {
@@ -73,7 +51,6 @@ export function Header() {
     document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
-      window.__lenis?.start();
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);
@@ -97,11 +74,9 @@ export function Header() {
         Aller au contenu
       </a>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-500 ${
-          scrolled && !open ? "border-b border-line/70 bg-ink/70 backdrop-blur-xl" : "border-b border-transparent"
-        }`}
+        className="fixed inset-x-0 top-0 z-50 border-b border-line bg-ink"
       >
-        <div className="wrap flex h-[4.25rem] items-center justify-between md:h-20">
+        <div className="wrap flex h-16 items-center justify-between md:h-[4.5rem]">
           <Link href="/" aria-label="FDA Studio, accueil" className="relative z-10 -m-2 p-2">
             <Logo variant="horizontal" decorative className="h-[2.2rem] w-auto text-white md:h-10" studioColor="var(--color-muted)" />
           </Link>
@@ -111,8 +86,7 @@ export function Header() {
               <a
                 key={item.id}
                 {...go(item.id)}
-                aria-current={active === item.id ? "location" : undefined}
-                className={`link-line text-[0.9375rem] tracking-[-0.01em] transition-colors ${active === item.id ? "text-paper" : "text-muted hover:text-paper"}`}
+                className="nav-link"
               >
                 {item.label}
               </a>
@@ -121,7 +95,7 @@ export function Header() {
 
           <div className="flex items-center gap-3">
             <SoundToggle className="relative z-10" />
-            <a {...go("contact")} className="btn btn-primary hidden !h-11 !px-5 text-sm sm:inline-flex">
+            <a {...go("contact")} className="btn btn-primary btn-sm hidden sm:inline-flex">
               Démarrer un projet
             </a>
             <button
@@ -134,8 +108,8 @@ export function Header() {
               onClick={() => setOpen((v) => !v)}
             >
               <span className="relative block h-3 w-5">
-                <span className={`absolute left-0 block h-px w-5 bg-paper transition-transform duration-500 ${open ? "top-1.5 rotate-45" : "top-0"}`} />
-                <span className={`absolute left-0 block h-px w-5 bg-paper transition-transform duration-500 ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+                <span className={`absolute left-0 block h-px w-5 bg-paper transition-transform duration-200 ease-out ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+                <span className={`absolute left-0 block h-px w-5 bg-paper transition-transform duration-200 ease-out ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
               </span>
             </button>
           </div>
@@ -143,19 +117,16 @@ export function Header() {
       </header>
 
       {/* Menu mobile plein écran */}
-      <div id="menu-mobile" ref={menuRef} role="dialog" aria-modal="true" aria-label="Menu" hidden={!open} className="fixed inset-0 z-40 bg-ink md:hidden">
-        <div className="glow-accent pointer-events-none absolute -right-40 top-20 h-96 w-96 opacity-60" />
+      <div id="menu-mobile" ref={menuRef} role="dialog" aria-modal="true" aria-label="Menu" hidden={!open} className="menu-sheet fixed inset-0 z-40 bg-ink md:hidden">
         <div className="wrap flex h-full flex-col pb-10 pt-28">
           <nav aria-label="Navigation mobile" className="flex flex-col">
-            {nav.map((item, i) => (
+            {nav.map((item) => (
               <a
                 key={item.id}
                 {...go(item.id)}
-                style={{ ["--i" as string]: i }}
-                className="hero-fade flex items-baseline justify-between border-b border-line py-5 text-[2.4rem] font-semibold leading-none tracking-[-0.04em]"
+                className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
               >
                 {item.label}
-                <span className={`h-2 w-2 rounded-full ${active === item.id ? "bg-accent" : "bg-transparent"}`} aria-hidden />
               </a>
             ))}
           </nav>
