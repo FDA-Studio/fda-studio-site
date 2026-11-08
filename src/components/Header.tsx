@@ -82,11 +82,11 @@ export function Header() {
           </Link>
 
           <nav aria-label="Navigation principale" className="hidden items-center gap-9 md:flex">
-            {nav.slice(0, 3).map((item) =>
+            {nav.filter((item) => item.id !== "contact").map((item) =>
               item.page ? (
-                <Link key={item.id} href={item.page} className="nav-link">
+                <a key={item.id} href={item.page} className="nav-link">
                   {item.label}
-                </Link>
+                </a>
               ) : (
                 <a key={item.id} {...go(item.id)} className="nav-link">
                   {item.label}
@@ -124,14 +124,14 @@ export function Header() {
           <nav aria-label="Navigation mobile" className="flex flex-col">
             {nav.map((item) =>
               item.page ? (
-                <Link
+                <a
                   key={item.id}
                   href={item.page}
                   onClick={() => setOpen(false)}
                   className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
                 >
                   {item.label}
-                </Link>
+                </a>
               ) : (
                 <a
                   key={item.id}
