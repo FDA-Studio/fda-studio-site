@@ -58,29 +58,6 @@ export default function GamingPage() {
         </div>
       </section>
 
-      {/* Les quatre classes, telles que les présente doorknight.games */}
-      <section aria-labelledby="classes-title" className="section bg-ink">
-        <div className="wrap">
-          <div className="grid gap-6 md:grid-cols-12 md:items-end">
-            <h2 id="classes-title" className="section-title md:col-span-7">Quatre classes de héros.</h2>
-            <p className="text-lg text-soft md:col-span-5">Chacune a son style de combat et sa capacité signature.</p>
-          </div>
-          <ul className="mt-14 grid grid-cols-2 gap-4 md:mt-20 lg:grid-cols-4 lg:gap-5">
-            {dk.classes.map((c) => (
-              <li key={c.name} className="tile overflow-hidden">
-                <div className="aspect-[4/5] bg-[radial-gradient(closest-side,rgba(110,75,255,0.28),transparent)]">
-                  <img src={c.img} alt={`${c.name}, classe de Door Knight`} loading="lazy" decoding="async" className="h-full w-full object-contain p-4" />
-                </div>
-                <div className="p-5 md:p-6">
-                  <h3 className="tile-title">{c.name}</h3>
-                  <p className="mt-2 text-sm text-soft md:text-base">{c.text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* Clôture : renvoi vers le formulaire de contact */}
       <section aria-labelledby="gaming-cta" className="section border-t border-line">
         <div className="wrap grid gap-8 md:grid-cols-12 md:items-end">

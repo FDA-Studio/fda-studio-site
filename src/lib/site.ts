@@ -38,7 +38,6 @@ export const asset = (path: string) => `${basePath}${path}`;
 export const nav: { id: string; label: string; page?: string }[] = [
   { id: "expertises", label: "Expertises" },
   { id: "creations", label: "Démos IA" },
-  { id: "experience", label: "Studio 3D", page: "/experience/" },
   { id: "gaming", label: "Gaming", page: "/gaming/" },
   { id: "contact", label: "Contact" },
 ];

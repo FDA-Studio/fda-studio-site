@@ -41,9 +41,6 @@ export function Hero() {
               <a href="#creations" className="btn btn-ghost">Voir les démos IA</a>
             </div>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 md:justify-end">
-              <a href="/experience/" className="inline-flex min-h-11 items-center gap-2 text-sm text-paper">
-                <span className="link-line">Entrer dans le studio en 3D</span>
-              </a>
               <SoundHint />
             </div>
           </div>

@@ -11,6 +11,7 @@ const map: [string, string][] = [
   ["/work", "/#creations"],
   ["/about", "/"],
   ["/contact", "/#contact"],
+  ["/experience", "/"],
 ];
 
 export function LegacyRedirect() {
