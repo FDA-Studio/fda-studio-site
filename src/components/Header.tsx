@@ -82,15 +82,17 @@ export function Header() {
           </Link>
 
           <nav aria-label="Navigation principale" className="hidden items-center gap-9 md:flex">
-            {nav.slice(0, 3).map((item) => (
-              <a
-                key={item.id}
-                {...go(item.id)}
-                className="nav-link"
-              >
-                {item.label}
-              </a>
-            ))}
+            {nav.slice(0, 3).map((item) =>
+              item.page ? (
+                <Link key={item.id} href={item.page} className="nav-link">
+                  {item.label}
+                </Link>
+              ) : (
+                <a key={item.id} {...go(item.id)} className="nav-link">
+                  {item.label}
+                </a>
+              ),
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -120,15 +122,26 @@ export function Header() {
       <div id="menu-mobile" ref={menuRef} role="dialog" aria-modal="true" aria-label="Menu" hidden={!open} className="menu-sheet fixed inset-0 z-40 bg-ink md:hidden">
         <div className="wrap flex h-full flex-col pb-10 pt-28">
           <nav aria-label="Navigation mobile" className="flex flex-col">
-            {nav.map((item) => (
-              <a
-                key={item.id}
-                {...go(item.id)}
-                className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
-              >
-                {item.label}
-              </a>
-            ))}
+            {nav.map((item) =>
+              item.page ? (
+                <Link
+                  key={item.id}
+                  href={item.page}
+                  onClick={() => setOpen(false)}
+                  className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.id}
+                  {...go(item.id)}
+                  className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
+                >
+                  {item.label}
+                </a>
+              ),
+            )}
           </nav>
           <div className="mt-auto space-y-5">
             <a {...go("contact")} className="btn btn-primary w-full">Démarrer un projet</a>

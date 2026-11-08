@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./brand/Logo";
-import { externalLinks, site } from "@/lib/site";
+import { site } from "@/lib/site";
 
 export function Footer() {
   return (
@@ -12,7 +12,7 @@ export function Footer() {
             <a href={`mailto:${site.email}`} className="link-line mt-6 inline-block text-xl text-paper">{site.email}</a>
           </div>
           <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted">
-            <li><a href={externalLinks.doorknight} target="_blank" rel="noopener noreferrer" className="link-line hover:text-paper">Door Knight<span className="sr-only"> (nouvel onglet)</span></a></li>
+            <li><Link href="/gaming/" className="link-line hover:text-paper">Gaming</Link></li>
             <li><a href={site.group.url} target="_blank" rel="noopener noreferrer" className="link-line hover:text-paper">Groupe FDA<span className="sr-only"> (nouvel onglet)</span></a></li>
             <li><Link href="/mentions-legales/" className="link-line hover:text-paper">Mentions légales</Link></li>
             <li><Link href="/confidentialite/" className="link-line hover:text-paper">Confidentialité</Link></li>

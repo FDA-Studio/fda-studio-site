@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { Expertises } from "@/components/home/Expertises";
 import { Creations } from "@/components/home/Creations";
-import { DoorKnightSpot } from "@/components/home/DoorKnightSpot";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -23,7 +22,6 @@ export default function HomePage() {
       <Hero />
       <Expertises />
       <Creations />
-      <DoorKnightSpot />
       <FinalCTA />
     </>
   );

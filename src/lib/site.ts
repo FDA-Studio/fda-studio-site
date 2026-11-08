@@ -34,13 +34,13 @@ export const site = {
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const asset = (path: string) => `${basePath}${path}`;
 
-/** Site d'une seule page : navigation par ancres. */
-export const nav = [
+/** Navigation : ancres de l'accueil, plus la page Gaming. */
+export const nav: { id: string; label: string; page?: string }[] = [
   { id: "expertises", label: "Expertises" },
   { id: "creations", label: "Démos IA" },
-  { id: "doorknight", label: "Door Knight" },
+  { id: "gaming", label: "Gaming", page: "/gaming/" },
   { id: "contact", label: "Contact" },
-] as const;
+];
 
 export const externalLinks = {
   doorknight: "https://doorknight.games",

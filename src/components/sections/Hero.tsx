@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HeroCanvas } from "@/components/hero/HeroCanvas";
 import { ArrowIcon } from "@/components/icons";
 import { SoundHint } from "@/components/SoundHint";
@@ -29,7 +30,7 @@ export function Hero() {
               FDA Studio conçoit, développe et met en ligne vos sites, vos applications web et mobiles, et des assistants IA branchés sur vos outils.
             </p>
             <p className="hero-fade mt-4 text-sm text-muted" style={{ ["--i" as string]: 1 }}>
-              Studio du groupe FDA, à Fondettes près de Tours. Créateur du jeu mobile Door Knight.
+              Studio du groupe FDA, à Fondettes près de Tours. Créateur du jeu mobile <Link href="/gaming/" className="link-line text-soft hover:text-paper">Door Knight</Link>.
             </p>
           </div>
           <div className="hero-fade flex flex-col gap-5 md:col-span-6 md:items-end lg:col-span-7" style={{ ["--i" as string]: 2 }}>

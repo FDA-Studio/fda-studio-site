@@ -7,7 +7,6 @@ const map: [string, string][] = [
   ["/services/ia", "/#creations"],
   ["/services", "/#expertises"],
   ["/work", "/#creations"],
-  ["/gaming", "/#doorknight"],
   ["/about", "/"],
   ["/contact", "/#contact"],
 ];
