@@ -20,6 +20,9 @@ const FILES = {
   tick: asset("/sounds/tick.mp3"),
 } as const;
 
+/** Piste muette jouée par un élément <audio> : fait passer iOS en mode « lecture ». */
+const SILENCE = asset("/sounds/silence.mp3");
+
 const AMBIENT_LEVEL = 0.32;
 
 class SoundEngine {
@@ -32,6 +35,7 @@ class SoundEngine {
   private loading: Promise<void> | null = null;
   private listeners = new Set<Listener>();
   private lastTick = 0;
+  private keepAlive: HTMLAudioElement | null = null;
   enabled = false;
 
   subscribe(fn: Listener) {
@@ -59,8 +63,13 @@ class SoundEngine {
 
     document.addEventListener("visibilitychange", () => {
       if (!this.ctx) return;
-      if (document.hidden) this.ctx.suspend();
-      else if (this.enabled) this.ctx.resume();
+      if (document.hidden) {
+        this.ctx.suspend();
+        this.keepAlive?.pause();
+      } else if (this.enabled) {
+        this.ctx.resume();
+        this.keepAlive?.play().catch(() => {});
+      }
     });
   }
 
@@ -138,7 +147,11 @@ class SoundEngine {
 
   /** À appeler uniquement depuis un geste de l'utilisateur (clic, tap, touche). */
   async enable() {
+    // Tout ce qui suit jusqu'au premier « await » s'exécute dans le geste de l'utilisateur,
+    // seule fenêtre où iOS et Android autorisent l'audio.
+    this.unlockMobile();
     this.setup();
+    this.primeContext();
     await this.ctx!.resume();
     this.enabled = true;
     this.emit();
@@ -156,7 +169,43 @@ class SoundEngine {
     this.startAmbient();
   }
 
+  /**
+   * iOS range le Web Audio dans la catégorie « ambiant » : il est coupé par le bouton silencieux
+   * de l'iPhone. On demande la catégorie « lecture » (Safari 17+), et pour les versions plus
+   * anciennes on joue en boucle une piste muette dans un élément <audio>, ce qui a le même effet.
+   */
+  private unlockMobile() {
+    const nav = navigator as Navigator & { audioSession?: { type: string } };
+    try {
+      if (nav.audioSession) nav.audioSession.type = "playback";
+    } catch {
+      /* API absente ou refusée : la piste muette prend le relais */
+    }
+    if (!this.keepAlive) {
+      const el = new Audio(SILENCE);
+      el.loop = true;
+      el.preload = "auto";
+      el.setAttribute("playsinline", "");
+      el.volume = 0.01;
+      this.keepAlive = el;
+    }
+    this.keepAlive.play().catch(() => {
+      /* sans conséquence : le Web Audio reste utilisable si le téléphone n'est pas en silencieux */
+    });
+  }
+
+  /** Joue un échantillon vide immédiatement : déverrouille le contexte sur les anciens Safari. */
+  private primeContext() {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const src = ctx.createBufferSource();
+    src.buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    src.connect(ctx.destination);
+    src.start(0);
+  }
+
   disable() {
+    this.keepAlive?.pause();
     this.enabled = false;
     this.stopAmbient();
     this.emit();
