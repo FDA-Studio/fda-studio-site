@@ -3,8 +3,10 @@
  *
  * - Coupé par défaut : rien ne joue tant que le visiteur n'a pas activé le son lui-même
  *   (règles d'autoplay des navigateurs et critère WCAG 1.4.2).
- * - Sons générés avec ElevenLabs Sound Effects puis retravaillés (public/sounds) :
- *   power-on.mp3 (activation), ambient.mp3 (nappe en boucle), door.mp3 (portes), tick.mp3 (interface).
+ * - Sons générés avec ElevenLabs (Music v2.5 et Sound Effects), puis montés et normalisés (public/sounds) :
+ *   ambient.mp3 : nappe de 48 s bouclée sans couture (fondu à puissance constante)
+ *   power-on.mp3 : ouverture · transition.mp3 : changement de démo · tick.mp3 : appui
+ *   door.mp3 : porte Door Knight · chime.mp3 : demande envoyée
  * - Les fichiers ne sont téléchargés qu'à l'activation : aucun impact sur le chargement de la page.
  */
 
@@ -23,12 +25,14 @@ const FILES = {
   ambient: asset("/sounds/ambient.mp3"),
   door: asset("/sounds/door.mp3"),
   tick: asset("/sounds/tick.mp3"),
+  transition: asset("/sounds/transition.mp3"),
+  chime: asset("/sounds/chime.mp3"),
 } as const;
 
 /** Piste muette jouée par un élément <audio> : fait passer iOS en mode « lecture ». */
 const SILENCE = asset("/sounds/silence.mp3");
 
-const AMBIENT_LEVEL = 0.32;
+const AMBIENT_LEVEL = 0.42;
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
@@ -37,11 +41,9 @@ class SoundEngine {
   private ambientFilter: BiquadFilterNode | null = null;
   private ambientSource: AudioBufferSourceNode | null = null;
   private buffers = new Map<keyof typeof FILES, AudioBuffer>();
-  private loading: Promise<void> | null = null;
   private listeners = new Set<Listener>();
   private lastTick = 0;
   private keepAlive: HTMLAudioElement | null = null;
-  private ambientLayer: AudioBufferSourceNode | null = null;
   private lfo: OscillatorNode | null = null;
   private noise: AudioBuffer | null = null;
   enabled = false;
@@ -81,21 +83,25 @@ class SoundEngine {
     });
   }
 
-  private load(): Promise<void> {
-    if (this.loading) return this.loading;
+  private pending = new Map<keyof typeof FILES, Promise<void>>();
+
+  /** Charge un son une seule fois ; les autres continuent en parallèle. */
+  private loadOne(key: keyof typeof FILES): Promise<void> {
+    const cached = this.pending.get(key);
+    if (cached) return cached;
     const ctx = this.ctx!;
-    this.loading = Promise.all(
-      (Object.keys(FILES) as (keyof typeof FILES)[]).map(async (key) => {
-        const res = await fetch(FILES[key]);
+    const p = fetch(FILES[key])
+      .then((res) => {
         if (!res.ok) throw new Error(`sound ${key}: ${res.status}`);
-        const data = await res.arrayBuffer();
-        this.buffers.set(key, await ctx.decodeAudioData(data));
-      }),
-    ).then(() => undefined);
-    this.loading.catch(() => {
-      this.loading = null;
-    });
-    return this.loading;
+        return res.arrayBuffer();
+      })
+      .then((data) => ctx.decodeAudioData(data))
+      .then((buf) => {
+        this.buffers.set(key, buf);
+      });
+    p.catch(() => this.pending.delete(key));
+    this.pending.set(key, p);
+    return p;
   }
 
   private shot(key: keyof typeof FILES, gain = 1, rate = 1) {
@@ -118,9 +124,6 @@ class SoundEngine {
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.loop = true;
-    // Le MP3 ajoute quelques millisecondes de silence aux extrémités : on boucle à l'intérieur
-    src.loopStart = 0.06;
-    src.loopEnd = buf.duration - 0.06;
 
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
@@ -134,30 +137,16 @@ class SoundEngine {
     filter.frequency.exponentialRampToValueAtTime(5200, now + 4);
 
     src.connect(filter).connect(gain).connect(this.master!);
-    src.start(now, 0.06);
-
-    // Seconde couche une octave plus bas, décalée et très légèrement désaccordée :
-    // les deux boucles ne retombent jamais en phase, la nappe évolue au lieu de se répéter.
-    const layer = ctx.createBufferSource();
-    layer.buffer = buf;
-    layer.loop = true;
-    layer.loopStart = 0.06;
-    layer.loopEnd = buf.duration - 0.06;
-    layer.playbackRate.value = 0.497;
-    const layerGain = ctx.createGain();
-    layerGain.gain.value = 0.45;
-    layer.connect(layerGain).connect(filter);
-    layer.start(now + 0.8, buf.duration / 2);
+    src.start(now);
 
     // Respiration lente du filtre (une oscillation toutes les ~14 s)
     const lfo = ctx.createOscillator();
     lfo.frequency.value = 0.07;
     const lfoDepth = ctx.createGain();
-    lfoDepth.gain.value = 700;
+    lfoDepth.gain.value = 500;
     lfo.connect(lfoDepth).connect(filter.frequency);
     lfo.start(now + 4);
 
-    this.ambientLayer = layer;
     this.lfo = lfo;
     this.ambientSource = src;
     this.ambientGain = gain;
@@ -172,9 +161,7 @@ class SoundEngine {
     this.ambientGain.gain.setValueAtTime(this.ambientGain.gain.value, now);
     this.ambientGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
     this.ambientSource.stop(now + 0.65);
-    this.ambientLayer?.stop(now + 0.65);
     this.lfo?.stop(now + 0.65);
-    this.ambientLayer = null;
     this.lfo = null;
     this.ambientSource = null;
     this.ambientGain = null;
@@ -191,18 +178,24 @@ class SoundEngine {
     await this.ctx!.resume();
     this.enabled = true;
     this.emit();
+    // L'ouverture part dès que son fichier (17 Ko) est là ; la nappe (670 Ko) suit dès qu'elle arrive.
+    const keys = Object.keys(FILES) as (keyof typeof FILES)[];
+    keys.forEach((k) => void this.loadOne(k).catch(() => {}));
     try {
-      await this.load();
+      await this.loadOne("power");
     } catch {
       this.enabled = false;
       this.emit();
       return;
     }
     if (!this.enabled) return;
-    // Impact grave + sa version octaviée très douce, puis ouverture de la nappe
-    this.shot("power", 1);
-    this.shot("power", 0.25, 0.5);
-    this.startAmbient();
+    this.shot("power", 0.9);
+    try {
+      await this.loadOne("ambient");
+    } catch {
+      return;
+    }
+    if (this.enabled) this.startAmbient();
   }
 
   /**
@@ -311,22 +304,25 @@ class SoundEngine {
       case "tick":
         if (t - this.lastTick < 60) return; // anti-mitraillage
         this.lastTick = t;
-        this.shot("tick", 0.45, 0.96 + Math.random() * 0.08);
+        this.shot("tick", 0.5, 0.97 + Math.random() * 0.06);
         break;
       case "door":
-        this.shot("door", 0.8);
+        this.shot("door", 0.7);
         break;
       case "step":
-        this.whoosh();
-        this.tone(659.25, 0.05, 0.35, 0.12); // mi, discret
+        if (this.buffers.has("transition")) this.shot("transition", 0.42);
+        else this.whoosh();
         break;
       case "blip":
         // Gamme pentatonique de la : chaque étape monte d'un degré, jamais de fausse note
         this.tone(440 * Math.pow(2, [0, 2, 4, 7, 9, 12, 14, 16][n % 8] / 12), 0.045, 0.14);
         break;
       case "chime":
-        this.tone(659.25, 0.09, 0.5);
-        this.tone(987.77, 0.07, 0.7, 0.11);
+        if (this.buffers.has("chime")) this.shot("chime", 0.8);
+        else {
+          this.tone(659.25, 0.09, 0.5);
+          this.tone(987.77, 0.07, 0.7, 0.11);
+        }
         break;
     }
   }
