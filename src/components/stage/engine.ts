@@ -1,5 +1,9 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ARCH, PHONES, WEB_PANES, buildShapes, type SceneId, type ShapeTarget } from "./shapes";
 
 /**
@@ -19,6 +23,10 @@ export interface Stage {
   /** Position continue sur la ligne du temps : 0 = monogramme … 4 = porte, 5 = calme. */
   setTimeline(t: number): void;
   setPointer(x: number, y: number, active: boolean): void;
+  /** Vitesse de scroll normalisée (écrans par seconde) : la matière se trouble quand on défile vite. */
+  setVelocity(v: number): void;
+  /** Appelé quand la scène entière (index) change — pour le son. */
+  onScene(cb: (index: number) => void): void;
   /**
    * Cadrage téléphone : pour chaque scène, la bande libre de l'écran (au-dessus du texte),
    * en fractions de la hauteur de la fenêtre (0 = haut). `null` = grand écran, cadrage fixe.
@@ -41,13 +49,14 @@ const ACCENTS: Record<SceneId, THREE.Color> = {
 };
 // Cadrage par scène : décalage de la matière (x, y) et recul caméra
 // s / ms : échelle de la matière sur grand écran / sur téléphone
-const FRAMING: Record<SceneId, { x: number; y: number; z: number; s: number; mx: number; my: number; ms: number }> = {
-  hero: { x: 1.75, y: 0.1, z: 6.6, s: 0.62, mx: 0, my: 1.05, ms: 0.3 },
-  web: { x: 1.2, y: 0.05, z: 6.9, s: 0.7, mx: 0, my: 1.2, ms: 0.3 },
-  ai: { x: 1.35, y: 0, z: 6.4, s: 0.74, mx: 0, my: 1.2, ms: 0.38 },
-  apps: { x: 1.35, y: 0.1, z: 7.0, s: 0.74, mx: 0, my: 1.15, ms: 0.32 },
-  gaming: { x: 1.4, y: 0.15, z: 7.2, s: 0.8, mx: 0, my: 1.2, ms: 0.36 },
-  quiet: { x: 0, y: 0, z: 7.5, s: 1, mx: 0, my: 0, ms: 1 },
+// orbit : angle de la caméra autour de la matière (rad) — elle tourne d'une scène à l'autre
+const FRAMING: Record<SceneId, { x: number; y: number; z: number; s: number; orbit: number; mx: number; my: number; ms: number }> = {
+  hero: { x: 1.95, y: 0.05, z: 6.6, s: 0.74, orbit: 0, mx: 0, my: 1.05, ms: 0.3 },
+  web: { x: 1.25, y: 0.05, z: 6.9, s: 0.82, orbit: -0.26, mx: 0.12, my: 1.2, ms: 0.3 },
+  ai: { x: 1.1, y: 0, z: 6.4, s: 0.84, orbit: 0.3, mx: 0, my: 1.2, ms: 0.38 },
+  apps: { x: 1.45, y: 0.1, z: 7.0, s: 0.84, orbit: -0.2, mx: 0, my: 1.15, ms: 0.32 },
+  gaming: { x: 1.0, y: 0.15, z: 7.2, s: 0.86, orbit: 0.12, mx: 0, my: 1.2, ms: 0.36 },
+  quiet: { x: 0, y: 0, z: 7.5, s: 1, orbit: 0, mx: 0, my: 0, ms: 1 },
 };
 
 const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -176,11 +185,13 @@ function uiTexture(kind: "web" | "phone", seed: number): THREE.CanvasTexture {
 
 export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   const { lowPower, reduced } = opts;
-  const N = lowPower ? 1200 : 2400;
+  const N = lowPower ? 1400 : 3600;
+  const bloomOn = !lowPower;
 
   const renderer = new THREE.WebGLRenderer({ antialias: !lowPower, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPower ? 1.5 : 2));
-  renderer.setClearColor(0x000000, 0);
+  // Avec le bloom, le rendu passe par une cible intermédiaire : fond opaque couleur de la page
+  renderer.setClearColor(0x0a0a0b, bloomOn ? 1 : 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.95;
   renderer.domElement.setAttribute("aria-hidden", "true");
@@ -329,8 +340,96 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
   portal.visible = false;
   extras.add(portal);
 
+  // ---- Sol : grille infinie en perspective, qui s'efface au loin
+  const gridMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: { uTime, uAccent, uStrength: { value: 0.5 } },
+    vertexShader: `varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: `varying vec3 vP; uniform float uTime; uniform vec3 uAccent; uniform float uStrength;
+      void main(){
+        vec2 g = abs(fract(vP.xy * 0.6 - vec2(0.0, uTime * 0.04)) - 0.5);
+        float line = 1.0 - smoothstep(0.0, 0.06, min(g.x, g.y));
+        float d = length(vP.xy);
+        float fade = smoothstep(9.0, 1.5, d) * smoothstep(0.0, 1.2, d);
+        vec3 col = mix(vec3(0.5), uAccent, 0.55);
+        gl_FragColor = vec4(col * line, line * fade * 0.22 * uStrength); }`,
+  });
+  const grid = new THREE.Mesh(new THREE.PlaneGeometry(24, 24), gridMat);
+  grid.rotation.x = -Math.PI / 2;
+  grid.position.y = -1.7;
+  scene.add(grid);
+
+  // ---- Étincelles : poussière lumineuse qui s'affole pendant les transitions
+  const sparkN = lowPower ? 300 : 900;
+  const sparkPos = new Float32Array(sparkN * 3);
+  const sparkSeed = new Float32Array(sparkN);
+  for (let i = 0; i < sparkN; i++) {
+    sparkPos[i * 3] = (Math.random() - 0.5) * 7;
+    sparkPos[i * 3 + 1] = (Math.random() - 0.5) * 5;
+    sparkPos[i * 3 + 2] = (Math.random() - 0.5) * 5;
+    sparkSeed[i] = Math.random();
+  }
+  const sparkGeo = new THREE.BufferGeometry();
+  sparkGeo.setAttribute("position", new THREE.BufferAttribute(sparkPos, 3));
+  sparkGeo.setAttribute("aSeed", new THREE.BufferAttribute(sparkSeed, 1));
+  const sparkMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uTime, uAccent, uEnergy: { value: 0 }, uPixelRatio: { value: renderer.getPixelRatio() } },
+    vertexShader: `attribute float aSeed; varying float vA; uniform float uTime; uniform float uEnergy; uniform float uPixelRatio;
+      void main(){
+        vec3 p = position;
+        float t = uTime * (0.2 + aSeed * 0.4);
+        p.x += sin(t + aSeed * 20.0) * (0.4 + uEnergy * 1.6);
+        p.y += cos(t * 1.3 + aSeed * 11.0) * (0.3 + uEnergy * 1.2);
+        p.z += sin(t * 0.7 + aSeed * 5.0) * 0.4;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = (1.2 + aSeed * 2.2) * uPixelRatio * (6.0 / -mv.z) * (1.0 + uEnergy * 1.5);
+        vA = 0.25 + 0.75 * fract(aSeed * 7.0 + uTime * 0.3);
+        gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: `varying float vA; uniform vec3 uAccent; uniform float uEnergy;
+      void main(){ float d = length(gl_PointCoord - 0.5); if (d > 0.5) discard;
+        float a = smoothstep(0.5, 0.0, d) * vA * (0.25 + uEnergy);
+        gl_FragColor = vec4(mix(vec3(0.85), uAccent, 0.6) * a * 1.6, a); }`,
+  });
+  const sparks = new THREE.Points(sparkGeo, sparkMat);
+  sparks.frustumCulled = false;
+  world.add(sparks);
+
+  // ---- Lumière de balayage : une barre de lumière traverse la matière en continu
+  const sweep = new THREE.SpotLight(0xffffff, 0, 14, 0.5, 0.6, 1.2);
+  sweep.position.set(0, 4, 5);
+  scene.add(sweep, sweep.target);
+
+  // ---- Post-traitement : lueur sur les éléments brillants (ordinateur seulement)
+  let composer: EffectComposer | null = null;
+  let bloom: UnrealBloomPass | null = null;
+  if (bloomOn) {
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    bloom = new UnrealBloomPass(new THREE.Vector2(host.clientWidth || 1, host.clientHeight || 1), 0.55, 0.9, 0.78);
+    composer.addPass(bloom);
+    composer.addPass(new OutputPass());
+  }
+
   // ---- État
   let timeline = 0;
+  let velocity = 0; // vitesse de scroll demandée
+  let energy = 0; // turbulence lissée (0 = calme)
+  let intro = reduced ? 1 : 0; // assemblage d'ouverture : 0 = dispersé, 1 = monogramme
+  let sceneIndex = -1;
+  let sceneCb: ((i: number) => void) | null = null;
+  const orbitCur = { v: 0 };
+  // Positions de départ de l'assemblage : les éclats arrivent de loin, de partout
+  const scatter = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1), r = 6 + Math.random() * 10;
+    scatter[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    scatter[i * 3 + 1] = r * Math.cos(ph);
+    scatter[i * 3 + 2] = -4 + r * Math.sin(ph) * Math.sin(th) * 0.6;
+  }
   let bands: { top: number; bottom: number }[] | null = null;
   // Hauteur approximative de chaque forme (unités scène), pour l'ajuster à la bande libre
   const OBJ_H: Record<SceneId, number> = { hero: 2.8, web: 3.6, ai: 3.2, apps: 3.4, gaming: 3.6, quiet: 1 };
@@ -396,6 +495,20 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
         const ph = seed * 6.283;
         p.x += Math.sin(time * 0.6 + ph) * 0.012;
         p.y += Math.cos(time * 0.5 + ph * 1.3) * 0.016;
+        // Turbulence : plus on défile vite, plus la matière se disperse (puis se ressoude)
+        if (energy > 0.002) {
+          const e = energy * (0.4 + seed);
+          p.x += Math.sin(time * 3.1 + ph * 3.0) * e * 0.9;
+          p.y += Math.cos(time * 2.7 + ph * 2.0) * e * 0.7;
+          p.z += Math.sin(time * 2.3 + ph) * e * 1.4;
+        }
+        // Assemblage d'ouverture : chaque éclat rejoint sa place depuis le lointain
+        if (intro < 1) {
+          const li = ease(clamp01((intro - seed * 0.45) / 0.55));
+          p.x = scatter[i3] + (p.x - scatter[i3]) * li;
+          p.y = scatter[i3 + 1] + (p.y - scatter[i3 + 1]) * li;
+          p.z = scatter[i3 + 2] + (p.z - scatter[i3 + 2]) * li;
+        }
       }
       if (push) {
         tmp.subVectors(p, cursorWorld);
@@ -411,9 +524,9 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       qa.set(a.quat[i4], a.quat[i4 + 1], a.quat[i4 + 2], a.quat[i4 + 3]);
       qb.set(b.quat[i4], b.quat[i4 + 1], b.quat[i4 + 2], b.quat[i4 + 3]);
       q.copy(qa).slerp(qb, lt);
-      if (transit) {
-        // Vrille pendant le vol
-        const spin = Math.sin(lt * Math.PI) * (1 + seed * 2);
+      if (transit || energy > 0.002 || intro < 1) {
+        // Vrille pendant le vol, la turbulence et l'assemblage
+        const spin = Math.sin(lt * Math.PI) * (1 + seed * 2) + energy * (2 + seed * 4) + (1 - intro) * (3 + seed * 6);
         qa.setFromAxisAngle(tmp.set(seed - 0.5, 1, 0).normalize(), spin);
         q.multiply(qa);
       }
@@ -467,9 +580,19 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
     accentLight.intensity = gms * 18;
     fog.density = 0.045 + gms * 0.02;
 
-    // Teinte des éclats : mélange des accents des deux scènes voisines
+    // Étincelles et grille : plus vives pendant les transitions et le scroll rapide
     const idx = Math.min(Math.floor(timeline), SCENES.length - 2);
     const frac = smooth(timeline - idx);
+    const transitAmt = Math.sin(clamp01(timeline - idx) * Math.PI);
+    sparkMat.uniforms.uEnergy.value = Math.min(1, transitAmt * 0.8 + energy * 1.5 + (1 - intro) * 0.8);
+    gridMat.uniforms.uStrength.value = 0.35 + gms * 0.9 + transitAmt * 0.4;
+    grid.position.y = -1.7 - gms * 0.25;
+    // Lumière de balayage : traverse la matière de gauche à droite toutes les ~9 s
+    const sw = (time * 0.11) % 1;
+    sweep.position.set(-6 + sw * 12, 4.5, 5.5);
+    sweep.target.position.set(world.position.x, world.position.y, 0);
+    sweep.intensity = (bloomOn ? 55 : 35) * Math.sin(sw * Math.PI) * (0.6 + transitAmt);
+    if (bloom) bloom.strength = 0.45 + transitAmt * 0.35 + gms * 0.35 + energy * 0.4 + (1 - intro) * 0.5;
     uAccent.value.copy(ACCENTS[SCENES[idx]]).lerp(ACCENTS[SCENES[idx + 1]], frac);
     const mixA = SCENES[idx] === "hero" ? 0.06 : 0.22;
     const mixB = SCENES[idx + 1] === "hero" ? 0.06 : 0.22;
@@ -502,33 +625,52 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       ts = fa.s + (fb.s - fa.s) * frac;
     }
     const k = reduced ? 1 : 1 - Math.exp(-dt * 6);
+    // Orbite : la caméra tourne autour de la matière d'une scène à l'autre
+    const to = fa.orbit + (fb.orbit - fa.orbit) * frac;
+    orbitCur.v += (to - orbitCur.v) * (reduced ? 1 : 1 - Math.exp(-dt * 3.5));
     cur.x += (tx - cur.x) * k;
     cur.y += (ty - cur.y) * k;
     cur.z += (tz - cur.z) * k;
     cur.scale += (ts - cur.scale) * k;
     world.position.set(cur.x, cur.y, 0);
     world.scale.setScalar(cur.scale);
-    camera.position.z = cur.z;
+    // Ouverture : la caméra arrive de loin pendant l'assemblage
+    const introEase = ease(intro);
+    const camZ = cur.z + (1 - introEase) * 9;
+    camera.position.set(Math.sin(orbitCur.v) * camZ, (1 - introEase) * 2.5, Math.cos(orbitCur.v) * camZ);
+    camera.lookAt(0, 0, 0);
+    world.rotation.y = Math.sin(time * 0.12) * 0.06 + orbitCur.v * 0.35; // la matière suit un peu la caméra : plus de relief
     // Parallaxe curseur : la matière pivote doucement vers le pointeur
     pointer.lerp(pointerTarget, reduced ? 1 : 1 - Math.exp(-dt * 4));
     rig.rotation.y = pointer.x * 0.14;
     rig.rotation.x = -pointer.y * 0.1;
-    world.rotation.y = Math.sin(time * 0.12) * 0.06;
   }
 
   function frame(dt: number) {
     time += dt;
     uTime.value = time;
+    if (intro < 1) intro = Math.min(1, intro + dt / 2.4);
+    // Énergie : monte avec la vitesse de scroll, retombe en ~0,8 s
+    const target = Math.min(1, Math.abs(velocity) * 0.35);
+    energy += (target - energy) * (target > energy ? 1 - Math.exp(-dt * 10) : 1 - Math.exp(-dt * 2.5));
+    velocity *= Math.exp(-dt * 6);
+    const si = Math.round(timeline);
+    if (si !== sceneIndex) {
+      if (sceneIndex >= 0) sceneCb?.(si);
+      sceneIndex = si;
+    }
     updateFraming(dt);
     updateShards();
     updateExtras();
-    renderer.render(scene, camera);
+    if (composer) composer.render();
+    else renderer.render(scene, camera);
   }
 
   function resize() {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
+    composer?.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
@@ -569,6 +711,8 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       pointerActive = active;
     },
     setBands(b) { bands = b; },
+    setVelocity(v) { velocity = v; },
+    onScene(cb) { sceneCb = cb; },
     start,
     stop,
     renderOnce,
@@ -586,6 +730,7 @@ export function createStage(host: HTMLElement, opts: StageOptions): Stage {
       webPanes.forEach(({ screen }) => (screen.material as THREE.MeshBasicMaterial).map?.dispose());
       phoneScreens.forEach((mesh) => (mesh.material as THREE.MeshBasicMaterial).map?.dispose());
       scene.environment?.dispose();
+      composer?.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     },

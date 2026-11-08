@@ -454,6 +454,7 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
   .btn, .btn:hover, .btn:active, .chip:active { transform: none !important; }
   .demo-slide, .demo-slide[data-shown="true"] { transform: none; filter: none; transition: opacity 200ms ease; }
   .nav-link::after { transition: none; }
+  .chapter-3d .chapter-3d__text > * { transform: none; transition: opacity 300ms ease; }
 }
 
 /* --------------------------------------------------------------------------
@@ -510,4 +511,13 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
     mask-image: linear-gradient(to bottom, transparent, #000 35%);
   }
 }
+/* Entrée typographique : les lignes du chapitre montent l'une après l'autre (voir Stage) */
+html[data-stage] .chapter-3d .chapter-3d__text > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 700ms var(--ease-out-expo), transform 900ms var(--ease-out-expo);
+}
+.chapter-3d .chapter-3d__text > :nth-child(2) { transition-delay: 90ms; }
+.chapter-3d .chapter-3d__text > :nth-child(3) { transition-delay: 180ms; }
+html[data-stage] .chapter-3d[data-seen="true"] .chapter-3d__text > * { opacity: 1; transform: none; }
 .chapter-3d--night { background: linear-gradient(to bottom, transparent, rgba(13, 11, 28, 0.6) 40%, var(--color-night)); }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motionPause } from "@/lib/motion";
+import { sfx } from "@/lib/sound";
 import type { Stage as StageHandle } from "./engine";
 
 /**
@@ -18,6 +19,15 @@ export function Stage() {
     if (!host) return;
     let disposed = false;
     let cleanup = () => {};
+
+    // Entrée des chapitres : titre, texte et bouton montent quand le chapitre arrive à l'écran.
+    // Indépendant de la 3D (fonctionne aussi en repli) ; sans JavaScript, le texte reste visible.
+    document.documentElement.dataset.stage = "1";
+    const seen = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { (e.target as HTMLElement).dataset.seen = "true"; seen.unobserve(e.target); } }),
+      { threshold: 0.3 },
+    );
+    document.querySelectorAll<HTMLElement>("[data-scene]").forEach((el) => seen.observe(el));
 
     const whenIdle = () =>
       new Promise<void>((resolve) => {
@@ -117,11 +127,19 @@ export function Stage() {
       measure();
       update();
       let ticking = false;
+      let lastY = window.scrollY, lastT = performance.now();
       const onScroll = () => {
+        // Vitesse en écrans par seconde, pour la turbulence de la matière
+        const now = performance.now();
+        const dtv = Math.max(16, now - lastT) / 1000;
+        stage.setVelocity((window.scrollY - lastY) / window.innerHeight / dtv);
+        lastY = window.scrollY; lastT = now;
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(() => { update(); ticking = false; });
       };
+      // Un souffle à chaque changement de scène (si le son est activé)
+      stage.onScene(() => sfx("step"));
       const onResize = () => { measure(); update(); };
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onResize);
@@ -161,6 +179,8 @@ export function Stage() {
 
     return () => {
       disposed = true;
+      seen.disconnect();
+      delete document.documentElement.dataset.stage;
       cleanup();
     };
   }, []);
