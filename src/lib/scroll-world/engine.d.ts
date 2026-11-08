@@ -9,6 +9,7 @@ export interface ScrollWorldSection {
   scroll?: number;
   linger?: number;
   copyAt?: number;
+  remap?: number[];
   eyebrow?: string;
   title?: string;
   body?: string;

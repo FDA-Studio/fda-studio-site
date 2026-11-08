@@ -92,7 +92,10 @@ export function mountScrollWorld(container, config) {
                    accent: s.accent, w: s.scroll || DIVE_W, linger: s.linger || 0,
                    // copyAt (FDA) : position (0..1) du segment où le texte culmine — en travelling continu,
                    // la première moitié d'un segment est le trajet vers la scène, le texte arrive donc tard.
-                   copyAt: (s.copyAt != null) ? s.copyAt : 0.5 };
+                   copyAt: (s.copyAt != null) ? s.copyAt : 0.5,
+                   // remap (FDA) : table scroll→temps à pas égaux de mouvement visuel mesuré dans le film,
+                   // pour que chaque pixel de scroll produise la même quantité de mouvement à l'écran.
+                   remap: Array.isArray(s.remap) && s.remap.length > 1 ? s.remap : null };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -181,6 +184,7 @@ export function mountScrollWorld(container, config) {
   // Per-section dwell: monotone remap of scroll→time so the camera settles mid-scene
   // (where the copy peaks) and moves quicker near the seams. L=0 linear, L=1 full
   // mid-scene pause. f(0)=0, f(1)=1 always, so seam frames are untouched.
+  const remapTime = (tab, x) => { const n = tab.length - 1; const p = clamp(x) * n; const i = Math.min(n - 1, Math.floor(p)); return tab[i] + (tab[i + 1] - tab[i]) * (p - i); };
   const lingerEase = (x, L) => { L = clamp(L); const c = x - 0.5; return (1 - L) * x + L * (4 * c * c * c + 0.5); };
   let vh = window.innerHeight, stageX = 0, totalW = 0, activeIndex = -1, ticking = false;
   let laidOutW = window.innerWidth;   // width the current layout was computed at (see onResize)
@@ -235,7 +239,7 @@ export function mountScrollWorld(container, config) {
       const s = SEGMENTS[i];
       if (y > s.start - 1.6 * vh && y < s.end + 1.6 * vh) loadClip(s);
       const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
-      s.target = s.linger ? lingerEase(local, s.linger) : local;
+      s.target = s.remap ? remapTime(s.remap, local) : (s.linger ? lingerEase(local, s.linger) : local);
       let outside = 0;
       // (FDA) le dernier segment reste affiché après sa fin : la page suivante recouvre le monde
       if (y < s.start) outside = s.start - y; else if (y > s.end && i < NSEG - 1) outside = y - s.end;

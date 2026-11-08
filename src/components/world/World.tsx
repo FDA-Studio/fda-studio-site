@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { WORLD_SECTIONS, worldAsset } from "./config";
+import motion from "./motion.json";
 import { sfx } from "@/lib/sound";
 
 /**
@@ -29,7 +30,7 @@ export function World() {
         topbar: false,
         atmosphere: false,
         hint: "Défilez pour entrer",
-        diveScroll: 1.7,
+        diveScroll: 1.9,
         crossfade: 0.08,
         sections: WORLD_SECTIONS.map((s, i) => ({
           id: s.id,
@@ -39,9 +40,8 @@ export function World() {
           clip: worldAsset(`vid/leg_${i}.mp4`),
           clipMobile: worldAsset(`vid/leg_${i}-m.mp4`),
           accent: s.accent,
-          scroll: s.scroll,
-          linger: s.linger,
           copyAt: s.copyAt,
+          remap: (motion as Record<string, number[]>)[String(i)],
           eyebrow: s.eyebrow,
           title: s.title,
           body: s.body,

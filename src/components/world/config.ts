@@ -12,8 +12,6 @@ export interface WorldSection {
   title: string;
   body: string;
   tags: string[];
-  scroll?: number;
-  linger?: number;
   /** Moment du segment (0..1) où le texte culmine : la scène apparaît dans la seconde moitié du vol. */
   copyAt?: number;
   cta?: Cta;
@@ -29,8 +27,6 @@ export const WORLD_SECTIONS: WorldSection[] = [
     title: "Sites, applications et agents IA pour les entreprises.",
     body: "Un studio qui dessine, code et branche l’IA. Un seul interlocuteur, de la maquette à la mise en ligne.",
     tags: [],
-    scroll: 1.7,
-    linger: 0.35,
   },
   {
     id: "sites",
@@ -80,7 +76,6 @@ export const WORLD_SECTIONS: WorldSection[] = [
     title: "Votre prochain produit commence ici.",
     body: "Décrivez votre besoin en quelques lignes : nous revenons vers vous avec une première proposition.",
     tags: [],
-    scroll: 1.8,
     cta: {
       primary: { label: "Démarrer un projet", href: "#contact" },
       secondary: { label: "Voir les démos IA", href: "#creations" },
