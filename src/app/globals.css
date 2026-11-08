@@ -94,7 +94,7 @@ body {
   font-family: var(--font-sans);
   font-size: 1.0625rem;
   line-height: 1.6;
-  background: var(--color-ink);
+  background: transparent; /* le fond vit sur <html> : la toile 3D fixe (z-index -1) passe entre les deux */
   caret-color: var(--color-accent-bright);
   accent-color: var(--color-accent);
   -webkit-font-smoothing: antialiased;
@@ -353,7 +353,6 @@ p { text-wrap: pretty; }
 
 .hero-rise { animation: rise 700ms var(--ease-out-expo) both; animation-delay: calc(80ms + var(--i, 0) * 80ms); }
 .hero-fade { animation: fade-up 520ms var(--ease-out-expo) both; animation-delay: calc(480ms + var(--i, 0) * 60ms); }
-.hero-media { animation: settle 1100ms var(--ease-out-expo) both; }
 
 /* Menu mobile : fondu court */
 .menu-sheet:not([hidden]) { animation: fade 200ms var(--ease-out) both; }
@@ -419,7 +418,6 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
    Elles ne tournent que dans une zone <Live> visible et hors pause.
    -------------------------------------------------------------------------- */
 [data-live="off"] *,
-html[data-paused="true"] .hero-media * { animation-play-state: paused !important; }
 
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes spin-slow { to { transform: rotate(360deg); } }
@@ -451,9 +449,65 @@ html[data-paused="true"] .hero-media * { animation-play-state: paused !important
    On garde fondus et changements de couleur, on retire déplacements et boucles.
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .hero-rise, .hero-fade, .hero-media { animation: fade 300ms ease both; animation-delay: 0ms; }
-  [data-live] *, .hero-media *, .caret::after { animation: none !important; }
+  .hero-rise, .hero-fade { animation: fade 300ms ease both; animation-delay: 0ms; }
+  [data-live] *, .caret::after { animation: none !important; }
   .btn, .btn:hover, .btn:active, .chip:active { transform: none !important; }
   .demo-slide, .demo-slide[data-shown="true"] { transform: none; filter: none; transition: opacity 200ms ease; }
   .nav-link::after { transition: none; }
 }
+
+/* --------------------------------------------------------------------------
+   La matière FDA : toile fixe derrière l'accueil, chapitres d'un écran
+   -------------------------------------------------------------------------- */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-out);
+}
+.stage[data-state="ready"], .stage[data-state="fallback"] { opacity: 1; }
+.stage[data-active="false"] { opacity: 0; transition-duration: 600ms; }
+.stage-fallback { position: absolute; inset: 0; overflow: hidden; }
+.stage-fallback .glow-accent {
+  position: absolute; left: 50%; top: 32%; width: 90vmin; height: 90vmin;
+  transform: translate(-50%, -50%);
+}
+@media (min-width: 768px) {
+  .stage-fallback .glow-accent { left: 66%; top: 50%; width: 70vmin; height: 70vmin; }
+}
+.chapter-3d {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding-block: clamp(4rem, 10vh, 7rem);
+}
+@media (min-width: 768px) { .chapter-3d { align-items: center; } }
+.chapter-3d__text {
+  padding-top: min(42svh, 24rem);
+}
+@media (min-width: 768px) { .chapter-3d__text { padding-top: 0; } }
+/* Voile de lisibilité sous le texte, surtout sur téléphone où la matière est au-dessus */
+.chapter-3d::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  background: linear-gradient(to top, var(--color-ink) 30%, transparent);
+  z-index: -1;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .chapter-3d::before { inset: 0 auto 0 0; width: 58%; height: auto; background: linear-gradient(to right, var(--color-ink) 20%, transparent); }
+}
+.chapter-3d--night::before { background: linear-gradient(to top, var(--color-night) 30%, transparent); }
+@media (min-width: 768px) {
+  .chapter-3d--night::before {
+    background: linear-gradient(to right, var(--color-night) 20%, transparent);
+    /* Le voile apparaît en douceur : pas de marche visible au passage de la nuit */
+    mask-image: linear-gradient(to bottom, transparent, #000 35%);
+  }
+}
+.chapter-3d--night { background: linear-gradient(to bottom, transparent, rgba(13, 11, 28, 0.6) 40%, var(--color-night)); }
