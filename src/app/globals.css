@@ -464,6 +464,10 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
    fond du site, et `clip` plutôt que `hidden` — `hidden` sur <html>/<body> casse position: sticky
    (fenêtre épinglée des démos IA). */
 html, body { background: var(--color-ink); overflow-x: clip; }
+/* Tant que la musique n'a pas démarré (ordinateur : il faut un clic ou une touche), le bouton son respire */
+html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2.4s ease-in-out infinite; }
+@keyframes sound-breathe { 0%, 100% { box-shadow: 0 0 0 0 rgba(47, 91, 255, 0); } 50% { box-shadow: 0 0 0 6px rgba(47, 91, 255, 0.25); border-color: var(--color-accent); } }
+@media (prefers-reduced-motion: reduce) { html[data-sound-auto="waiting"] [data-sound-toggle] { animation: none; } }
 .world {
   position: relative;
   --sw-bg: var(--color-ink);

@@ -242,6 +242,8 @@ class SoundEngine {
   }
 
   disable() {
+    // Choix explicite du visiteur : on s'en souvient, le son ne redémarrera pas tout seul
+    try { localStorage.setItem("fda-sound", "off"); } catch { /* stockage indisponible */ }
     this.keepAlive?.pause();
     this.enabled = false;
     this.stopAmbient();
@@ -252,8 +254,12 @@ class SoundEngine {
   }
 
   toggle() {
-    return this.enabled ? this.disable() : this.enable();
+    if (this.enabled) return this.disable();
+    try { localStorage.setItem("fda-sound", "on"); } catch { /* stockage indisponible */ }
+    return this.enable();
   }
+
+
 
   /** Note courte synthétisée (sinus + harmonique douce), enveloppe percussive. */
   private tone(freq: number, gain: number, dur = 0.18, delay = 0) {
@@ -343,6 +349,11 @@ class SoundEngine {
     this.ambientGain.gain.setTargetAtTime(AMBIENT_LEVEL * (1 - d * 0.55), now, 0.4);
     this.ambientFilter.frequency.setTargetAtTime(5200 - d * 3800, now, 0.4);
   }
+}
+
+/** Le visiteur a-t-il déjà coupé le son lui-même ? (choix mémorisé par disable) */
+export function soundOptedOut() {
+  try { return localStorage.getItem("fda-sound") === "off"; } catch { return false; }
 }
 
 let engine: SoundEngine | null = null;
