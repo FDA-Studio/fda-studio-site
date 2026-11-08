@@ -476,11 +476,28 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
   --sw-accent: var(--color-accent);
   --sw-font-display: var(--font-display);
   --sw-font-body: var(--font-sans);
-  transition: opacity 500ms var(--ease-out);
 }
-/* Passé le dernier segment, les couches fixes du monde s'effacent derrière la page */
-.world[data-past="true"] { opacity: 0; pointer-events: none; }
-.world[data-past="true"] .sw-copylayer, .world[data-past="true"] .sw-route, .world[data-past="true"] .sw-stage { visibility: hidden; }
+/* Sortie du monde, pilotée par le scroll (--out : 0 film plein → 1 noir, voir World.tsx) :
+   la caméra continue d'avancer (zoom léger) pendant que l'image s'éteint ; le texte, la route
+   et la barre de progression s'effacent deux fois plus vite. */
+.world .sw-stage {
+  transform-origin: 50% 42%;
+  transform: scale(calc(1 + 0.1 * var(--out, 0)));
+  filter: brightness(calc(1 - 0.85 * var(--out, 0)));
+}
+.world .sw-copylayer, .world .sw-route, .world .sw-scrollbar { opacity: calc(1 - min(1, 2.2 * var(--out, 0))); }
+.world[data-past="true"] { pointer-events: none; }
+.world[data-past="true"] .sw-copylayer, .world[data-past="true"] .sw-route, .world[data-past="true"] .sw-stage, .world[data-past="true"] .sw-scrollbar { visibility: hidden; }
+/* La section suivante remonte par-dessus le dernier écran du film, avec un voile dégradé :
+   les démos émergent de l'obscurité au lieu d'apparaître d'un bloc. */
+#creations {
+  z-index: 45;
+  padding-top: calc(42vh + var(--section-y) * 0.6);
+  background: linear-gradient(to bottom, rgba(15, 16, 18, 0) 0%, rgba(15, 16, 18, 0.6) 20vh, var(--color-graphite) 42vh);
+}
+@media (prefers-reduced-motion: reduce) {
+  .world .sw-stage { transform: none; }
+}
 .world .sw-scrollbar { top: auto; bottom: 0; height: 2px; }
 .world .sw-copy__num { color: var(--color-steel); }
 .world .sw-copy__eyebrow { letter-spacing: 0; text-transform: none; font-size: 0.95rem; font-weight: 500; }

@@ -67,8 +67,13 @@ export function World() {
       const SCENE_AT = 0.45;
       onScroll = () => {
         if (!world) return;
-        const past = window.scrollY > world.end() - window.innerHeight * 0.4;
-        el.dataset.past = past ? "true" : "false";
+        // Sortie du monde pilotée par le scroll : sur le dernier écran, la caméra continue
+        // d'avancer (léger zoom) pendant que l'image s'assombrit et que la section suivante
+        // monte par-dessus avec un dégradé. --out va de 0 (film plein) à 1 (noir).
+        const vh = window.innerHeight;
+        const out = Math.min(1, Math.max(0, (window.scrollY - (world.end() - vh)) / vh));
+        el.style.setProperty("--out", out.toFixed(3));
+        el.dataset.past = out >= 1 ? "true" : "false";
         WORLD_SECTIONS.forEach((s, i) => {
           if (i === 0) return;
           const t = world!.time(i);

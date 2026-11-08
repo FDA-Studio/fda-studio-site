@@ -412,7 +412,13 @@ export function mountScrollWorld(container, config) {
         const prev = s.cur;
         s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.3 : 0.22));
         const n = frameSpec(s).count; const pos = clamp(s.cur, 0, 1) * (n - 1);
-        prefetchFrames(s, Math.round(pos), s.target - prev);
+        // (FDA) on décode autour de la destination (là où le scroll va), pas autour de la position
+        // lissée : sur un saut (point de la route, flick rapide), la file de décodage n'est plus
+        // inondée des images du trajet, et l'image d'arrivée est prête tout de suite.
+        const tpos = clamp(s.target, 0, 1) * (n - 1);
+        if (s.decoding.size < 20) prefetchFrames(s, Math.round(tpos), s.target - prev);
+        else decodeFrame(s, Math.round(tpos));
+        if (Math.abs(tpos - pos) > 2) decodeFrame(s, Math.round(pos));
         if (Math.round(pos) !== Math.round(s.lastDrawn)) drawFrame(s, pos);
         continue;
       }
