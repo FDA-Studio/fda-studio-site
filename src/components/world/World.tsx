@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Gate } from "./Gate";
 import { WORLD_SECTIONS, worldAsset } from "./config";
 import motion from "./motion.json";
 import { sfx } from "@/lib/sound";
@@ -15,11 +16,14 @@ import { sfx } from "@/lib/sound";
  */
 export function World() {
   const host = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [entered, setEntered] = useState(false);
 
   useEffect(() => {
     const el = host.current;
     if (!el) return;
-    let world: { end: () => number; progress: (i: number) => number; destroy: () => void } | null = null;
+    let world: { end: () => number; progress: (i: number) => number; preload: (cb?: (p: number) => void) => Promise<void>; destroy: () => void } | null = null;
     let disposed = false;
     let onScroll = () => {};
 
@@ -71,6 +75,8 @@ export function World() {
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
+      // Tous les films en mémoire avant d'ouvrir les portes
+      world.preload((p) => { if (!disposed) setProgress(p); }).then(() => { if (!disposed) { setProgress(1); setReady(true); } });
     })();
 
     return () => {
@@ -80,7 +86,12 @@ export function World() {
     };
   }, []);
 
-  return <div ref={host} className="world" aria-hidden />;
+  return (
+    <>
+      {!entered && <Gate progress={progress} ready={ready} onEnter={() => setEntered(true)} />}
+      <div ref={host} className="world" data-entered={entered ? "true" : "false"} aria-hidden />
+    </>
+  );
 }
 
 /** Contenu du monde rendu côté serveur : lu par Google et les lecteurs d'écran. */

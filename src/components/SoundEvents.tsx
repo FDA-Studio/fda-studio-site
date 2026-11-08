@@ -19,7 +19,7 @@ export function SoundEvents() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const auto = (e: Event) => {
       // Le bouton son garde son propre comportement (sinon : activé par le geste, puis coupé par le clic)
-      if ((e.target as HTMLElement | null)?.closest?.("[data-sound-toggle]")) return;
+      if ((e.target as HTMLElement | null)?.closest?.("[data-sound-toggle], [data-sound-gate]")) return;
       if (engine.enabled || reduced || soundOptedOut()) return;
       void engine.enable();
     };

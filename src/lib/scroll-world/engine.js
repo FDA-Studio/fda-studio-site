@@ -205,15 +205,20 @@ export function mountScrollWorld(container, config) {
     window.scrollTo({ top: seg.start + (seg.end - seg.start) * 0.5, behavior: reduce ? 'auto' : 'smooth' });
   }
 
-  function loadClip(s) {
-    // Under prefers-reduced-motion we never load the clips at all — the stills stay up
-    // and simply cross-dissolve as you scroll. No scrubbed video motion, no decode cost.
-    if (reduce || s.loading || !s.clip) return;
-    s.loading = true;
-    // Serve the lighter mobile encode on phones when one was provided.
-    const url = (isMobile() && s.clipM) ? s.clipM : s.clip;
-    fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404')))
-      .then(blob => {
+  // (FDA) téléchargement avec progression, pour l'écran d'arrivée
+  function fetchBlob(url, onBytes) {
+    return fetch(url).then(r => {
+      if (!r.ok) throw new Error('404');
+      if (!r.body || !onBytes) return r.blob();
+      const reader = r.body.getReader(); const chunks = []; let got = 0;
+      const pump = () => reader.read().then(({ done, value }) => {
+        if (done) return new Blob(chunks, { type: 'video/mp4' });
+        chunks.push(value); got += value.length; onBytes(value.length); return pump();
+      });
+      return pump();
+    });
+  }
+  function attachClip(s, blob) {
         const v = document.createElement('video');
         v.className = 'sw-scene__video';
         v.muted = true; v.playsInline = true; v.preload = 'auto';
@@ -226,7 +231,40 @@ export function mountScrollWorld(container, config) {
         v.addEventListener('seeked', () => { s.el.classList.add('has-clip'); }, { once: true });
         v.addEventListener('loadeddata', () => { try { v.pause(); } catch (e) {} if (userReady) primeVideo(v); });
         s.el.appendChild(v); s.video = v; s.hasClip = true;
-      }).catch(() => { s.loading = false; });
+  }
+  function loadClip(s) {
+    // Under prefers-reduced-motion we never load the clips at all — the stills stay up
+    // and simply cross-dissolve as you scroll. No scrubbed video motion, no decode cost.
+    if (reduce || s.loading || !s.clip) return;
+    s.loading = true;
+    // Serve the lighter mobile encode on phones when one was provided.
+    const url = (isMobile() && s.clipM) ? s.clipM : s.clip;
+    fetchBlob(url).then(blob => attachClip(s, blob)).catch(() => { s.loading = false; });
+  }
+  /**
+   * (FDA) Précharge tous les segments (deux à la fois) et rapporte la progression 0..1.
+   * Les tailles sont lues en HEAD pour une progression en octets ; sinon, par segment.
+   */
+  function preloadAll(onProgress) {
+    if (reduce) { onProgress && onProgress(1); return Promise.resolve(); }
+    const list = SEGMENTS.filter(s => s.clip && !s.loading);
+    const urls = list.map(s => (isMobile() && s.clipM) ? s.clipM : s.clip);
+    list.forEach(s => { s.loading = true; });
+    return Promise.all(urls.map(u => fetch(u, { method: 'HEAD' }).then(r => +r.headers.get('content-length') || 0).catch(() => 0)))
+      .then(sizes => {
+        const total = sizes.reduce((a, b) => a + b, 0) || list.length; let got = 0;
+        const report = () => onProgress && onProgress(Math.min(1, got / total));
+        let next = 0;
+        const worker = () => {
+          const k = next++; if (k >= list.length) return Promise.resolve();
+          const perByte = sizes[k] > 0;
+          return fetchBlob(urls[k], perByte ? (n) => { got += n; report(); } : null)
+            .then(blob => { attachClip(list[k], blob); if (!perByte) { got += 1; report(); } })
+            .catch(() => { list[k].loading = false; got += perByte ? sizes[k] : 1; report(); })
+            .then(worker);
+        };
+        return Promise.all([worker(), worker()]).then(() => { onProgress && onProgress(1); });
+      });
   }
 
   function read() {
@@ -341,6 +379,8 @@ export function mountScrollWorld(container, config) {
   return {
     /** Fin de la piste en pixels (début de la page après le monde). */
     end: () => totalW * vh + vh,
+    /** Précharge tous les films ; `onProgress` reçoit 0..1. */
+    preload: preloadAll,
     /** Progression (0..1) du vol de la section i à la position de scroll actuelle. */
     progress: (i) => { const seg = SECTIONS[i] && SECTIONS[i]._seg; if (!seg) return 0; const y = window.scrollY || window.pageYOffset; return clamp((y - seg.start) / (seg.end - seg.start), 0, 1); },
     destroy() {

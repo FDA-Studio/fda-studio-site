@@ -491,6 +491,35 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .world .sw-route__label { color: var(--color-paper); background: rgba(10,10,11,0.8); border-color: var(--color-line-strong); }
 .world .sw-hint { color: var(--color-muted); }
 .world .sw-copy { top: 54%; }
+/* Avant l'entrée, l'indice « défilez » reste caché */
+.world[data-entered="false"] .sw-hint { opacity: 0 !important; }
+
+/* --------------------------------------------------------------------------
+   Écran d'arrivée
+   -------------------------------------------------------------------------- */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--color-ink);
+  padding: var(--gutter);
+  transition: opacity 800ms var(--ease-out), visibility 0s linear 800ms;
+}
+.gate[data-leaving="true"] { opacity: 0; visibility: hidden; pointer-events: none; }
+.gate__inner { display: flex; flex-direction: column; align-items: center; text-align: center; width: min(100%, 26rem); animation: fade-up 700ms var(--ease-out-expo) both; }
+.gate__logo { width: clamp(3.5rem, 10vw, 5rem); height: auto; color: var(--color-paper); animation: gate-pulse 3s ease-in-out infinite; }
+@keyframes gate-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.gate__title { margin-top: 1.25rem; font-size: 0.95rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); }
+.gate__line { margin-top: 2rem; font-size: 1.05rem; color: var(--color-soft); min-height: 3.2em; }
+.gate__bar { position: relative; width: 100%; height: 2px; margin-top: 1rem; background: var(--color-line-strong); overflow: hidden; border-radius: 1px; }
+.gate__bar span { position: absolute; inset: 0; background: var(--color-paper); transform-origin: 0 50%; transition: transform 300ms linear; }
+.gate__actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; width: 100%; }
+@media (min-width: 480px) { .gate__actions { flex-direction: row; justify-content: center; } }
+.gate .btn[disabled] { opacity: 0.35; cursor: wait; transform: none; }
+.gate__hint { margin-top: 1.5rem; font-size: 0.8rem; color: var(--color-muted); }
+@media (prefers-reduced-motion: reduce) { .gate__logo { animation: none; } .gate__inner { animation: none; } }
 @media (max-width: 860px) {
   .world .sw-copy { top: auto; }
 }
