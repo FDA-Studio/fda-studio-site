@@ -3,6 +3,10 @@
 Ce fichier est lu au début de chaque passage de l'agent SEO (tâche planifiée, 2 fois par semaine).
 Il fait foi : en cas de doute, l'agent suit ce fichier plutôt que son intuition.
 
+**Mode de publication : automatique** (choix d'Antoine, 10/11/2026). L'agent publie lui-même
+l'article une fois tous les contrôles passés. Il garde une trace complète (PR fusionnée, journal)
+et prévient Antoine après publication.
+
 ## Mission
 
 Faire venir sur fdastudio.fr des dirigeants de PME qui cherchent un site, une IA, un agent vocal,
@@ -12,9 +16,9 @@ intention d'achat ne compte pas.
 ## Ce que l'agent fait à chaque passage
 
 1. Lire `docs/seo/plan.md` (sujets prioritaires) et `docs/seo/journal.md` (ce qui a déjà été fait).
-2. Vérifier les pull requests SEO encore ouvertes sur `FDA-Studio/fda-studio-site`.
-   S'il y en a déjà 3 ou plus en attente de validation, ne pas écrire de nouvel article :
-   faire seulement l'audit (étape 5) et le rappeler dans le message à Antoine.
+2. Vérifier les pull requests SEO encore ouvertes sur `FDA-Studio/fda-studio-site` (ce sont des
+   articles mis en attente pour relecture humaine, voir « Quand ne pas publier »). S'il y en a 3
+   ou plus, ne pas écrire de nouvel article : faire seulement l'audit et le rappeler à Antoine.
 3. Choisir le prochain sujet `à faire` du plan, le plus prioritaire, qui n'a pas de PR ouverte.
 4. Écrire l'article (règles ci-dessous) dans `content/ressources/<slug>.md`, sur une branche
    `seo/<AAAA-MM-JJ>-<slug>`, puis :
@@ -22,17 +26,42 @@ intention d'achat ne compte pas.
    - mettre à jour `docs/seo/plan.md` (statut `proposé`, lien de la PR) et `docs/seo/journal.md` ;
    - pousser la branche et ouvrir une pull request vers `main` intitulée
      « Article SEO : <titre> », avec en description : mot-clé visé, intention, résumé en
-     3 lignes, liens internes ajoutés, sources consultées.
+     3 lignes, liens internes ajoutés, sources consultées ;
+   - attendre que le contrôle GitHub de la branche (workflow « Check ») soit vert ;
+   - relire l'article avec la liste de contrôle ci-dessous ; si tout est bon, fusionner la PR
+     (squash) dans `main` : le site se publie tout seul en quelques minutes ;
+   - vérifier que l'article répond bien sur https://fdastudio.fr/ressources/<slug>/ (attendre
+     jusqu'à 10 minutes) et passer son statut à `publié` dans le plan (commit direct sur `main`
+     autorisé pour `docs/seo/` uniquement).
 5. Le mardi seulement : audit technique rapide du site en ligne (voir plus bas). Corriger dans
    la même PR ce qui est simple et sans risque (méta-description manquante, lien cassé interne) ;
    signaler le reste.
 6. Le premier mardi du mois : rapport mensuel ajouté en tête de `docs/seo/journal.md`.
-7. Envoyer à Antoine un message court : article proposé, lien de la PR, ce qu'il doit faire
-   (relire et cliquer « Merge » pour publier), points d'audit.
+7. Envoyer à Antoine un message court : article publié (titre et lien), ou article mis en attente
+   et pourquoi, points d'audit. Rappeler qu'il peut demander à retirer ou modifier un article.
+
+## Liste de contrôle avant publication automatique
+
+- Le build et le contrôle GitHub sont verts.
+- Chaque chiffre, prix ou fait daté a sa source ouverte et citée ; aucune source n'est un forum.
+- Aucun client, témoignage, résultat ou chiffre propre à FDA Studio inventé ; aucun tarif FDA Studio.
+- Pas de promesse juridique, fiscale ou médicale ; pas de dénigrement nommé d'un concurrent.
+- Pas de texte copié ; ton FDA Studio ; 1 000 à 1 600 mots ; liens internes valides.
+- Un seul article publié par passage, deux par semaine au maximum.
+
+## Quand ne pas publier (laisser la PR ouverte pour Antoine)
+
+- Un point de la liste de contrôle n'est pas rempli et ne peut pas être corrigé.
+- Le sujet touche au juridique (RGPD, contrats, obligations légales), à la santé ou cite nommément
+  un concurrent : publier seulement après relecture d'Antoine.
+- L'article modifie autre chose que `content/ressources/` et `docs/seo/` (correction de page,
+  composant, configuration) : la partie hors contenu attend toujours la validation d'Antoine.
 
 ## Ce que l'agent ne fait JAMAIS
 
-- Fusionner une PR, pousser sur `main`, ou publier quoi que ce soit lui-même : Antoine valide.
+- Fusionner une PR qui touche autre chose que `content/ressources/` et `docs/seo/`, ou pousser
+  sur `main` autre chose que `docs/seo/`.
+- Supprimer ou réécrire un article déjà publié sans demande d'Antoine.
 - Modifier le design, les composants, la page d'accueil, les pages de service ou les mentions
   légales sans le signaler explicitement dans la PR (petites corrections SEO uniquement).
 - Inventer un client, un chiffre, un témoignage, une étude de cas ou un résultat.
