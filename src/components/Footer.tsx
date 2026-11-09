@@ -16,6 +16,7 @@ export function Footer() {
             <li><Link href="/agence-ia-tours/" className="link-line hover:text-paper">Agence IA à Tours</Link></li>
             <li><Link href="/developpement-application-tours/" className="link-line hover:text-paper">Applications mobiles et web</Link></li>
             <li><Link href="/gaming/" className="link-line hover:text-paper">Gaming</Link></li>
+            <li><Link href="/ressources/" className="link-line hover:text-paper">Ressources</Link></li>
             <li><a href={site.group.url} target="_blank" rel="noopener noreferrer" className="link-line hover:text-paper">Groupe FDA<span className="sr-only"> (nouvel onglet)</span></a></li>
             <li><Link href="/mentions-legales/" className="link-line hover:text-paper">Mentions légales</Link></li>
             <li><Link href="/confidentialite/" className="link-line hover:text-paper">Confidentialité</Link></li>

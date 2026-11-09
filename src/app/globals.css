@@ -570,3 +570,26 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
   .crm-tap { display: none; }
   .crm-check path, .crm-sign path { animation: none; stroke-dashoffset: 0; }
 }
+
+/* ── Articles (Ressources) ─────────────────────────────────────────────── */
+.article-prose { color: var(--color-soft); font-size: 1.0625rem; line-height: 1.75; max-width: 68ch; }
+.article-prose > * + * { margin-top: 1.25em; }
+.article-prose h2 { margin-top: 2.6em; color: var(--color-paper); font-family: var(--font-display); font-size: clamp(1.45rem, 2.4vw, 1.9rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 600; scroll-margin-top: 6rem; }
+.article-prose h3 { margin-top: 2em; color: var(--color-paper); font-size: 1.2rem; line-height: 1.3; font-weight: 600; scroll-margin-top: 6rem; }
+.article-prose h2 + *, .article-prose h3 + * { margin-top: 0.75em; }
+.article-prose strong { color: var(--color-paper); font-weight: 600; }
+.article-prose a { color: var(--color-paper); text-decoration: underline; text-decoration-color: var(--color-accent-bright); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+.article-prose a:hover { color: var(--color-accent-bright); }
+.article-prose ul, .article-prose ol { padding-left: 1.3em; }
+.article-prose ul { list-style: disc; }
+.article-prose ol { list-style: decimal; }
+.article-prose li + li { margin-top: 0.45em; }
+.article-prose li::marker { color: var(--color-accent-bright); }
+.article-prose blockquote { border-left: 2px solid var(--color-accent); padding-left: 1.2em; color: var(--color-paper); font-size: 1.15rem; }
+.article-prose code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.9em; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 0.35rem; padding: 0.1em 0.35em; }
+.article-prose hr { border: 0; border-top: 1px solid var(--color-line); margin-block: 2.5em; }
+.article-prose .table-scroll { overflow-x: auto; border: 1px solid var(--color-line); border-radius: 0.9rem; }
+.article-prose table { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.95rem; }
+.article-prose th { text-align: left; color: var(--color-paper); font-weight: 600; background: var(--color-surface); }
+.article-prose th, .article-prose td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-line); vertical-align: top; }
+.article-prose tr:last-child td { border-bottom: 0; }
