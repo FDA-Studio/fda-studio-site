@@ -11,13 +11,22 @@ import { useLoop } from "./useLoop";
  * Ordinateur : l'app web dans une fenêtre et l'app iPhone par-dessus. Téléphone : l'iPhone seul.
  */
 
-const LEAD = { name: "Maison Verlaine", need: "Site internet", budget: "5 à 15 k€", amount: "6 468 €" };
+const LEAD = { name: "Maison Verlaine", initials: "MV", contact: "Claire Verlaine", need: "Site internet", budget: "5 à 15 k€", timeline: "1 à 3 mois", amount: "6 468 €" };
 const BASE = 14_250;
 const SIGNED = BASE + 6_468;
 const BARS = [18, 32, 0, 41, 52, 30, 0, 61, 44, 57, 78];
+const QUOTE = [
+  ["Design et maquettes", "1 950 €"],
+  ["Développement", "2 840 €"],
+  ["SEO et mise en ligne", "600 €"],
+] as const;
 
 // 0 calme · 1 demande reçue · 2 fiche créée · 3 devis envoyé · 4 devis signé · 5 tenue
-const DURATIONS = [1300, 1700, 1500, 1600, 1900, 2400];
+const DURATIONS = [1500, 2100, 2300, 2400, 2300, 2600];
+// Écran affiché par l'iPhone à chaque étape : accueil, fiche client, devis
+const SCREEN = [0, 0, 1, 2, 2, 0];
+const STEPS = ["Demande", "Fiche client", "Devis", "Signé"] as const;
+const stepOf = (step: number) => (step >= 4 ? 3 : step >= 3 ? 2 : step >= 2 ? 1 : step >= 1 ? 0 : -1);
 
 function useCount(target: number, from: number) {
   const [v, setV] = useState(from);
@@ -46,92 +55,274 @@ function useCount(target: number, from: number) {
 
 const eur = (n: number) => `${n.toLocaleString("fr-FR")} €`;
 
-function Notification({ show, title, body }: { show: boolean; title: string; body: string }) {
+/** Toucher simulé : un cercle qui s'enfonce là où « l'utilisateur » appuie. */
+function Tap({ on, delay, className }: { on: boolean; delay: number; className: string }) {
+  if (!on) return null;
+  return <span aria-hidden className={`crm-tap pointer-events-none absolute h-7 w-7 rounded-full ${className}`} style={{ animationDelay: `${delay}ms` }} />;
+}
+
+/** Dynamic Island : se déploie en « activité en direct » à chaque événement. */
+function Island({ step }: { step: number }) {
+  const lead = step === 1;
+  const won = step === 4 || step === 5;
+  const open = lead || won;
   return (
     <div
-      className={`absolute inset-x-2 top-9 z-20 flex items-start gap-2 rounded-[14px] border border-white/10 bg-[#1f2025]/95 p-2 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.8)] backdrop-blur transition-[transform,opacity] duration-500 ease-[var(--ease-out-expo)] ${
-        show ? "translate-y-0 opacity-100" : "-translate-y-[140%] opacity-0"
+      className={`absolute left-1/2 top-[7px] z-40 flex -translate-x-1/2 items-center overflow-hidden rounded-full bg-black transition-[width,height] duration-500 ease-[var(--ease-out-expo)] ${
+        open ? "h-[30px] w-[88%]" : "h-[19px] w-[34%]"
       }`}
     >
-      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[7px] bg-ink">
-        <Logo variant="symbol" decorative className="h-3 w-auto text-paper" />
-      </span>
-      <span className="min-w-0 leading-tight">
-        <span className="block truncate text-[9.5px] font-semibold text-paper">{title}</span>
-        <span className="mt-0.5 line-clamp-2 block text-[9px] text-soft">{body}</span>
-      </span>
+      <div className={`flex w-full items-center gap-2 pl-[6px] pr-3 transition-opacity duration-300 ${open ? "opacity-100 delay-200" : "opacity-0"}`}>
+        <span className={`grid h-[20px] w-[20px] shrink-0 place-items-center rounded-full ${won ? "bg-ok" : "bg-accent"}`}>
+          {won ? (
+            <svg viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-ink" strokeWidth="3.2" aria-hidden><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+          ) : (
+            <Logo variant="symbol" decorative className="h-2.5 w-auto text-white" />
+          )}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-[9.5px] font-semibold text-paper">{won ? "Devis signé" : "Nouvelle demande"}</span>
+        {won && <span className="shrink-0 text-[9.5px] font-semibold tabular-nums text-ok">+{LEAD.amount}</span>}
+      </div>
     </div>
   );
 }
 
-function Phone({ step, className = "" }: { step: number; className?: string }) {
-  const signed = useCount(step >= 4 ? SIGNED : BASE, BASE);
-  const max = Math.max(...BARS, Math.round((signed / SIGNED) * 100));
+function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className={`relative rounded-[2.4rem] border border-[#3a3c42] bg-[#050506] p-[7px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.95),0_0_0_1px_rgba(255,255,255,0.04)_inset] ${className}`}>
-      <div className="relative h-full overflow-hidden rounded-[1.95rem] bg-ink">
-        {/* Barre d'état et Dynamic Island */}
-        <div className="flex items-center justify-between px-5 pt-2.5 text-[9px] font-semibold text-paper">
-          <span>18:24</span>
-          <span className="flex items-center gap-1" aria-hidden>
-            <span className="h-[7px] w-3 rounded-[2px] border border-paper/70" />
-          </span>
-        </div>
-        <div className="absolute left-1/2 top-2 h-[18px] w-[62px] -translate-x-1/2 rounded-full bg-black" aria-hidden />
+    <div className="flex items-center justify-between gap-2 border-b border-line px-2.5 py-[7px] last:border-0">
+      <span className="min-w-0 truncate text-[8.5px] text-muted">{k}</span>
+      <span className="shrink-0 text-[9px] font-medium tabular-nums text-paper">{v}</span>
+    </div>
+  );
+}
 
-        <Notification show={step === 1 || step === 2} title="Nouvelle demande" body={`${LEAD.name} — ${LEAD.budget}`} />
-        <Notification show={step === 4 || step === 5} title="Devis signé" body={`${LEAD.name}, ${LEAD.amount} TTC`} />
+/** Accueil de l'app : chiffre du mois, compteurs, tâches du jour. */
+function HomeScreen({ step }: { step: number }) {
+  const signed = useCount(step >= 4 ? SIGNED : BASE, BASE);
+  const last = Math.round((signed / SIGNED) * 100);
+  const max = Math.max(...BARS, last);
+  return (
+    <div className="px-3.5 pt-11">
+      <p className="text-[8.5px] text-muted">Lundi 9 novembre</p>
+      <p className="text-[15px] font-semibold tracking-[-0.02em] text-paper">Bonsoir Antoine</p>
 
-        <div className="px-3.5 pt-5">
-          <p className="text-[8.5px] text-muted">Lundi 9 novembre</p>
-          <p className="text-[15px] font-semibold tracking-[-0.02em] text-paper">Bonsoir Antoine</p>
-
-          <div className="mt-3 rounded-[14px] bg-surface p-3">
-            <p className="text-[8.5px] text-muted">Signé en novembre</p>
-            <p className="mt-0.5 text-[21px] font-semibold tabular-nums tracking-[-0.03em] text-paper">{eur(signed)}</p>
-            <div className="mt-2.5 flex h-12 items-end gap-[3px]">
-              {[...BARS, Math.round((signed / SIGNED) * 100)].map((h, i, a) => (
-                <span
-                  key={i}
-                  className={`flex-1 rounded-[2px] transition-[height] duration-700 ease-[var(--ease-out-expo)] ${i === a.length - 1 ? "bg-accent" : "bg-white/15"}`}
-                  style={{ height: `${h ? Math.max(6, (h / max) * 100) : 4}%` }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-2 grid grid-cols-2 overflow-hidden rounded-[14px] bg-surface">
-            <div className="border-r border-line p-2.5">
-              <p className="text-[8px] text-muted">En attente</p>
-              <p className="text-[13px] font-semibold tabular-nums text-paper">{step >= 3 && step < 4 ? 4 : 3}</p>
-            </div>
-            <div className="p-2.5">
-              <p className="text-[8px] text-muted">Prospects</p>
-              <p className="text-[13px] font-semibold tabular-nums text-paper">{step >= 2 && step < 3 ? 6 : 5}</p>
-            </div>
-          </div>
-
-          <p className="mb-1.5 mt-3 text-[9px] font-semibold text-paper">Aujourd’hui</p>
-          <div className="overflow-hidden rounded-[14px] bg-surface">
-            <div className={`flex items-center gap-2 border-b border-line px-2.5 transition-[max-height,opacity] duration-500 ${step >= 2 ? "max-h-10 py-2 opacity-100" : "max-h-0 py-0 opacity-0"}`}>
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full border border-accent-bright" />
-              <span className="truncate text-[9px] text-paper">Rappeler {LEAD.name}</span>
-            </div>
-            <div className="flex items-center gap-2 px-2.5 py-2">
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full border border-line-strong" />
-              <span className="truncate text-[9px] text-soft">Relancer Atelier Nord</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Barre d'onglets */}
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-around border-t border-line bg-ink/95 px-3 pb-3 pt-2" aria-hidden>
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span key={i} className={`h-[3px] w-4 rounded-full ${i === 0 ? "bg-accent" : "bg-white/20"}`} />
+      <div className="mt-3 rounded-[14px] bg-surface p-3">
+        <p className="text-[8.5px] text-muted">Signé en novembre</p>
+        <p className={`mt-0.5 text-[21px] font-semibold tabular-nums tracking-[-0.03em] transition-colors duration-500 ${step === 5 ? "text-ok" : "text-paper"}`}>{eur(signed)}</p>
+        <div className="mt-2.5 flex h-11 items-end gap-[3px]">
+          {[...BARS, last].map((h, i, a) => (
+            <span
+              key={i}
+              className={`flex-1 rounded-[2px] transition-[height] duration-700 ease-[var(--ease-out-expo)] ${i === a.length - 1 ? "bg-accent" : "bg-white/15"}`}
+              style={{ height: `${h ? Math.max(6, (h / max) * 100) : 4}%` }}
+            />
           ))}
         </div>
       </div>
+
+      <div className="mt-2 grid grid-cols-3 overflow-hidden rounded-[14px] bg-surface">
+        {[
+          ["Prospects", step >= 1 && step < 5 ? 6 : step === 5 ? 5 : 5],
+          ["Devis", step >= 3 && step < 4 ? 4 : 3],
+          ["Signés", step >= 4 ? 5 : 4],
+        ].map(([k, v], i) => (
+          <div key={k} className={`p-2 ${i < 2 ? "border-r border-line" : ""}`}>
+            <p className="text-[7.5px] text-muted">{k}</p>
+            <p className="text-[13px] font-semibold tabular-nums text-paper">{v}</p>
+          </div>
+        ))}
+      </div>
+
+      <p className="mb-1.5 mt-3 text-[9px] font-semibold text-paper">Aujourd’hui</p>
+      <div className="overflow-hidden rounded-[14px] bg-surface">
+        <div className={`flex items-center gap-2 border-b border-line px-2.5 transition-[max-height,opacity,padding] duration-500 ${step >= 1 ? "max-h-10 py-2 opacity-100" : "max-h-0 py-0 opacity-0"}`}>
+          <span className={`h-2.5 w-2.5 shrink-0 rounded-full border ${step === 5 ? "border-ok bg-ok" : "border-accent-bright"}`} />
+          <span className={`truncate text-[9px] ${step === 5 ? "text-muted line-through" : "text-paper"}`}>Rappeler {LEAD.name}</span>
+        </div>
+        <div className="flex items-center gap-2 px-2.5 py-2">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full border border-line-strong" />
+          <span className="truncate text-[9px] text-soft">Relancer Atelier Nord</span>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function NavBar({ back, title }: { back: string; title: string }) {
+  return (
+    <div className="flex items-center gap-1 px-3 pt-11">
+      <svg viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-accent-bright" strokeWidth="2.6" aria-hidden><path d="M15 5l-7 7 7 7" /></svg>
+      <span className="text-[9.5px] text-accent-bright">{back}</span>
+      <span className="ml-auto truncate text-[9.5px] font-semibold text-paper">{title}</span>
+    </div>
+  );
+}
+
+/** Fiche client créée automatiquement depuis le formulaire du site. */
+function ClientScreen({ step }: { step: number }) {
+  return (
+    <div>
+      <NavBar back="Accueil" title="Fiche client" />
+      <div className="px-3.5">
+        <div className="mt-3 flex items-center gap-2.5">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-violet text-[11px] font-semibold text-white">{LEAD.initials}</span>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-semibold tracking-[-0.01em] text-paper">{LEAD.name}</p>
+            <p className="truncate text-[8.5px] text-muted">{LEAD.contact}</p>
+          </div>
+        </div>
+        <div className="mt-2 flex flex-wrap gap-1">
+          <span className="rounded-full bg-accent/15 px-1.5 py-[2px] text-[7.5px] font-medium text-accent-bright">Prospect</span>
+          <span className="rounded-full bg-white/8 px-1.5 py-[2px] text-[7.5px] text-soft">Via fdastudio.fr</span>
+        </div>
+        <div className="mt-2.5 overflow-hidden rounded-[12px] bg-surface">
+          <Row k="Besoin" v={LEAD.need} />
+          <Row k="Budget" v={LEAD.budget} />
+          <Row k="Délai" v={LEAD.timeline} />
+        </div>
+        <p className="mb-1.5 mt-3 text-[8.5px] font-semibold text-paper">Activité</p>
+        <div className="space-y-2 border-l border-line-strong pl-2.5">
+          <p className="relative text-[8.5px] text-soft">
+            <span className="absolute -left-[13px] top-[3px] h-1.5 w-1.5 rounded-full bg-accent" />
+            Demande reçue <span className="text-muted">· à l’instant</span>
+          </p>
+          <p className="relative text-[8.5px] text-soft">
+            <span className="absolute -left-[13px] top-[3px] h-1.5 w-1.5 rounded-full bg-steel" />
+            Rappel planifié <span className="text-muted">· demain 10 h</span>
+          </p>
+        </div>
+        <div className="relative mt-3 rounded-[10px] bg-paper py-2 text-center text-[9.5px] font-semibold text-ink">
+          Créer le devis
+          <Tap on={step === 2} delay={1650} className="left-1/2 top-1/2 z-30 -translate-x-1/2 -translate-y-1/2" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Devis : lignes, total, envoi puis signature en ligne. */
+function QuoteScreen({ step }: { step: number }) {
+  const sent = step >= 3;
+  const signed = step >= 4;
+  return (
+    <div>
+      <NavBar back={LEAD.name} title="Devis" />
+      <div className="px-3.5">
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-[12px] font-semibold tracking-[-0.01em] text-paper">FDA-2026-008</p>
+          <span
+            className={`rounded-full px-1.5 py-[2px] text-[7.5px] font-semibold transition-colors duration-500 ${
+              signed ? "bg-ok/20 text-ok" : sent ? "bg-accent/20 text-accent-bright" : "bg-white/8 text-muted"
+            }`}
+          >
+            {signed ? "Signé en ligne" : "Envoyé"}
+          </span>
+        </div>
+        <div className="mt-2.5 overflow-hidden rounded-[12px] bg-surface">
+          {QUOTE.map(([k, v]) => (
+            <Row key={k} k={k} v={v} />
+          ))}
+        </div>
+        <div className="mt-2 space-y-1 px-1">
+          <p className="flex justify-between text-[8.5px] text-muted"><span>Total HT</span><span className="tabular-nums">5 390 €</span></p>
+          <p className="flex justify-between text-[8.5px] text-muted"><span>TVA 20 %</span><span className="tabular-nums">1 078 €</span></p>
+          <p className="flex justify-between text-[11px] font-semibold text-paper"><span>Total TTC</span><span className="tabular-nums">{LEAD.amount}</span></p>
+        </div>
+
+        {/* Signature du client, reçue en direct */}
+        <div className={`relative mt-3 overflow-hidden rounded-[12px] border transition-colors duration-500 ${signed ? "border-ok/50 bg-[#13201a]" : "border-line bg-surface"}`}>
+          <div className="flex items-center gap-2 p-2.5">
+            <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full transition-colors duration-500 ${signed ? "bg-ok" : "bg-white/10"}`}>
+              {signed ? (
+                <svg viewBox="0 0 24 24" className="crm-check h-3.5 w-3.5 fill-none stroke-ink" strokeWidth="3" aria-hidden><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              ) : (
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-bright" />
+              )}
+            </span>
+            <span className="min-w-0 leading-tight">
+              <span className="block truncate text-[9px] font-medium text-paper">{signed ? `Signé par ${LEAD.contact}` : "En attente de signature"}</span>
+              <span className="block truncate text-[8px] text-muted">{signed ? "Aujourd’hui, 18:26 · accompte demandé" : "Lien sécurisé envoyé par e-mail"}</span>
+            </span>
+          </div>
+          {signed && (
+            <svg viewBox="0 0 120 24" className="crm-sign mx-2.5 mb-2 h-5 w-24 fill-none stroke-ok" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
+              <path d="M2 17c6-10 10-12 12-6s-4 9 1 5 7-11 9-7-2 9 3 6 6-8 9-4 3 5 8 1 7-6 10-2 4 4 9 1 9-5 14-3" />
+            </svg>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** iPhone : cadre titane, Dynamic Island vivante et navigation entre trois écrans de l'app. */
+function Phone({ step, className = "" }: { step: number; className?: string }) {
+  const cur = SCREEN[step];
+  const screens = [HomeScreen, ClientScreen, QuoteScreen];
+  return (
+    <div className={`crm-phone relative rounded-[2.55rem] p-[3px] ${className}`}>
+      {/* Boutons latéraux */}
+      <span aria-hidden className="absolute -left-[2px] top-[18%] h-[7%] w-[3px] rounded-l bg-[#5a5d64]" />
+      <span aria-hidden className="absolute -left-[2px] top-[28%] h-[11%] w-[3px] rounded-l bg-[#5a5d64]" />
+      <span aria-hidden className="absolute -right-[2px] top-[24%] h-[14%] w-[3px] rounded-r bg-[#5a5d64]" />
+      <div className="relative h-full rounded-[2.4rem] bg-black p-[6px]">
+        <div className="relative h-full overflow-hidden rounded-[2rem] bg-ink">
+          <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between px-5 pt-[11px] text-[9px] font-semibold text-paper">
+            <span>18:24</span>
+            <span className="h-[7px] w-3 rounded-[2px] border border-paper/70" aria-hidden />
+          </div>
+          <Island step={step} />
+          <Tap on={step === 1} delay={1500} className="left-1/2 top-[8px] z-50 -translate-x-1/2" />
+
+          {screens.map((Screen, i) => (
+            <div
+              key={i}
+              className="absolute inset-0 bg-ink transition-[transform,opacity] duration-500 ease-[var(--ease-out-expo)]"
+              style={{
+                transform: i === cur ? "none" : i < cur ? "translateX(-28%)" : "translateX(100%)",
+                opacity: i < cur ? 0.4 : 1,
+                zIndex: i,
+              }}
+            >
+              <Screen step={step} />
+            </div>
+          ))}
+
+          {/* Barre d'onglets et indicateur d'accueil */}
+          <div className="absolute inset-x-0 bottom-0 z-20 border-t border-line bg-ink/95 px-4 pb-2 pt-2 backdrop-blur" aria-hidden>
+            <div className="flex items-center justify-around">
+              {[0, 1, 2, 3].map((i) => (
+                <span key={i} className={`h-[3px] w-4 rounded-full ${i === Math.min(cur, 1) ? "bg-accent" : "bg-white/20"}`} />
+              ))}
+            </div>
+            <span className="mx-auto mt-2 block h-[3px] w-1/3 rounded-full bg-white/50" />
+          </div>
+          {/* Reflet du verre */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 z-50 bg-[linear-gradient(115deg,rgba(255,255,255,0.07)_0%,rgba(255,255,255,0)_35%)]" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Étapes du parcours, synchronisées avec l'animation. */
+function Progress({ step }: { step: number }) {
+  const at = stepOf(step);
+  return (
+    <ol className="flex items-center gap-1.5" aria-hidden>
+      {STEPS.map((s, i) => (
+        <li key={s} className="flex items-center gap-1.5">
+          <span
+            className={`rounded-full px-2 py-1 text-[10px] font-medium transition-colors duration-500 ${
+              i === at ? (i === 3 ? "bg-ok text-ink" : "bg-paper text-ink") : i < at ? "text-soft" : "text-muted/60"
+            }`}
+          >
+            {s}
+          </span>
+          {i < STEPS.length - 1 && <span className={`h-px w-2.5 transition-colors duration-500 ${i < at ? "bg-soft" : "bg-line-strong"}`} />}
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -244,24 +435,23 @@ export function CrmShowcase() {
   const { ref, step } = useLoop<HTMLDivElement>(DURATIONS);
   return (
     <div ref={ref} className="relative h-full overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute -right-20 bottom-[-30%] h-[70%] w-[70%] rounded-full bg-accent/20 blur-[90px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-16 bottom-[-25%] h-[75%] w-[60%] rounded-full bg-accent/25 blur-[100px]" />
+      <div aria-hidden className={`pointer-events-none absolute right-[8%] top-[20%] h-[45%] w-[30%] rounded-full blur-[90px] transition-colors duration-1000 ${step >= 4 ? "bg-ok/15" : "bg-violet/10"}`} />
 
-      {/* Ordinateur : l'app web + l'iPhone par-dessus */}
-      <div className="absolute inset-y-[7%] left-[5%] hidden w-[74%] md:block">
+      {/* Ordinateur : l'app web et l'iPhone, synchronisés */}
+      <div className="absolute inset-y-[8%] left-[3%] hidden w-[63%] md:block">
         <Browser step={step} />
       </div>
-      <div className="absolute bottom-[-3.5rem] right-[5%] hidden h-[25rem] w-[12.2rem] md:block">
+      <div className="absolute right-[3%] top-1/2 hidden h-[28rem] w-[13.5rem] -translate-y-1/2 md:block">
         <Phone step={step} className="h-full w-full" />
       </div>
+      <p className="absolute bottom-3 left-[3%] hidden text-[11px] text-muted md:block">Notre CRM : app web et app iPhone synchronisées en temps réel.</p>
 
-      {/* Téléphone : l'iPhone seul, centré */}
-      <div className="flex h-full items-start justify-center pt-6 md:hidden">
-        <Phone step={step} className="h-[30rem] w-[14.6rem]" />
+      {/* Téléphone : l'iPhone en vedette et les étapes du parcours */}
+      <div className="flex h-full flex-col items-center justify-center gap-4 md:hidden">
+        <Phone step={step} className="h-[26.5rem] w-[13rem]" />
+        <Progress step={step} />
       </div>
-
-      <p className="absolute bottom-3 left-[5%] hidden text-[11px] text-muted md:block">
-        Notre CRM : app web et app iPhone synchronisées en temps réel.
-      </p>
     </div>
   );
 }

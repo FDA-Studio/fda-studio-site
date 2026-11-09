@@ -547,3 +547,26 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .emma-dialog[open] { animation: emma-in 260ms var(--ease-out); }
 @keyframes emma-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
 @media (prefers-reduced-motion: reduce) { .emma-dialog[open] { animation: none; } }
+
+/* Démo CRM : iPhone (cadre titane), toucher simulé, signature et validation */
+.crm-phone {
+  background: linear-gradient(145deg, #6b6e76 0%, #2a2b30 22%, #4a4c53 50%, #1c1d21 78%, #5c5f66 100%);
+  box-shadow:
+    0 50px 90px -35px rgba(0, 0, 0, 0.95),
+    0 30px 80px -40px rgba(47, 91, 255, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.crm-tap {
+  background: rgba(244, 244, 242, 0.35);
+  box-shadow: 0 0 0 1px rgba(244, 244, 242, 0.5);
+  opacity: 0;
+  animation: crm-tap 700ms var(--ease-out) forwards;
+}
+@keyframes crm-tap { 0% { opacity: 0; scale: 1.6; } 35% { opacity: 1; scale: 0.85; } 100% { opacity: 0; scale: 1.3; } }
+.crm-check path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: crm-draw 450ms 150ms var(--ease-out) forwards; }
+.crm-sign path { stroke-dasharray: 220; stroke-dashoffset: 220; animation: crm-draw 1100ms 250ms var(--ease-in-out) forwards; }
+@keyframes crm-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .crm-tap { display: none; }
+  .crm-check path, .crm-sign path { animation: none; stroke-dashoffset: 0; }
+}
