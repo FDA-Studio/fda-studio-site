@@ -1,8 +1,11 @@
 name: Build & deploy (GitHub Pages)
 
+# Publication : uniquement main. Les autres branches sont compilées par check.yml
+# (l'environnement github-pages n'accepte que main : un déclenchement sur une autre
+# branche échouait avant même la compilation).
 on:
   push:
-    branches: ["**"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
