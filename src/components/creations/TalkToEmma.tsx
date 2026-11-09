@@ -9,6 +9,27 @@ type Phase = "idle" | "requesting" | "connecting" | "live" | "ended" | "error";
 
 const BARS = 32;
 
+/** Explique pourquoi le micro est inaccessible, car le navigateur n'affiche pas toujours de fenêtre. */
+function micError(name: string): string {
+  const ios = typeof navigator !== "undefined" && /iPhone|iPad|iPod/.test(navigator.userAgent);
+  switch (name) {
+    case "NotAllowedError":
+    case "SecurityError":
+      return ios
+        ? "Le micro est bloqué pour ce site. Réglages › Safari › Micro (ou aA › Réglages du site web › Micro) : choisissez « Demander » ou « Autoriser », puis réessayez."
+        : "Le micro est bloqué pour ce site. Cliquez sur l’icône à gauche de l’adresse (cadenas ou réglages), autorisez le micro, puis réessayez. Sur Mac, vérifiez aussi Réglages Système › Confidentialité › Micro pour votre navigateur.";
+    case "NotFoundError":
+    case "OverconstrainedError":
+      return "Aucun micro détecté. Branchez ou activez un micro, puis réessayez.";
+    case "NotReadableError":
+      return "Le micro est déjà utilisé par une autre application (visio, appel…). Fermez-la, puis réessayez.";
+    case "NotSupportedError":
+      return "Ce navigateur ne donne pas accès au micro. Ouvrez fdastudio.fr dans Safari ou Chrome (pas depuis une application comme Instagram ou Mail).";
+    default:
+      return "Impossible d’accéder au micro. Autorisez-le pour ce site, puis réessayez.";
+  }
+}
+
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.max(0, s) % 60).padStart(2, "0")}`;
 
 /**
@@ -86,11 +107,12 @@ export function TalkToEmma() {
     setPhase("requesting");
     try {
       // Micro d'abord : le navigateur demande l'autorisation dans le geste de l'utilisateur
+      if (!navigator.mediaDevices?.getUserMedia) throw new DOMException("", "NotSupportedError");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       stream.getTracks().forEach((t) => t.stop());
-    } catch {
+    } catch (e) {
       setPhase("error");
-      setError("Autorisez l’accès au micro pour parler à Emma.");
+      setError(micError(e instanceof DOMException ? e.name : ""));
       return;
     }
     try {
