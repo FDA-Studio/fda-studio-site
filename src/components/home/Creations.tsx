@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { VoiceAgent } from "@/components/creations/VoiceAgent";
 import { ChatAssistant } from "@/components/creations/ChatAssistant";
-import { Automation } from "@/components/creations/Automation";
+import { CrmShowcase } from "@/components/creations/CrmShowcase";
 import { DocReader } from "@/components/creations/DocReader";
 import { Live, PauseButton } from "@/components/motion/Live";
 import { sfx } from "@/lib/sound";
@@ -11,7 +11,7 @@ import { sfx } from "@/lib/sound";
 const items = [
   { title: "Répondre au téléphone", line: "L’agent vocal décroche, comprend, déplace le rendez-vous et confirme par SMS. Jour et nuit.", Demo: VoiceAgent },
   { title: "Répondre aux clients par écrit", line: "L’assistant répond en deux secondes à partir de vos documents, puis déclenche l’action.", Demo: ChatAssistant },
-  { title: "Saisir les demandes dans le CRM", line: "Une demande arrive : elle est qualifiée, saisie et chiffrée. Vous n’avez plus qu’à valider.", Demo: Automation },
+  { title: "Notre CRM, de la demande au devis signé", line: "Une demande arrive sur le site : la fiche client et l’opportunité se créent, l’iPhone sonne. Le devis part, il est signé en ligne. Notre propre outil, conçu par le studio pour le web et l’iPhone.", Demo: CrmShowcase },
   { title: "Lire factures et contrats", line: "Les données sont lues, extraites et classées dans vos outils, sans ressaisie.", Demo: DocReader },
 ];
 
@@ -69,10 +69,10 @@ export function Creations() {
       <div className="wrap">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
           <h2 id="creations-title" className="section-title md:col-span-7">
-            L’IA au travail, en quatre démos.
+            L’IA et l’automatisation au travail, en quatre démos.
           </h2>
           <p className="text-lg text-soft md:col-span-5">
-            Des concepts conçus par le studio pour montrer ce que nous intégrons dans une entreprise. Les noms et les données sont fictifs.
+            Trois concepts et notre propre CRM, pour montrer ce que nous intégrons dans une entreprise. Les noms et les données affichés sont fictifs.
           </p>
         </div>
 
