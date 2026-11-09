@@ -8,7 +8,7 @@ export const needs = [
   { value: "web", label: "Site internet" },
   { value: "ia", label: "IA & automatisation" },
   { value: "applications", label: "Application" },
-  { value: "gaming", label: "Jeu ou interactif" },
+  { value: "gaming", label: "Interactif" },
   { value: "autre", label: "Autre" },
 ] as const;
 
