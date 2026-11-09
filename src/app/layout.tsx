@@ -40,7 +40,8 @@ const csp = [
   // blob: — le moteur du monde 3D charge chaque segment vidéo en mémoire pour un défilement image à image
   "media-src 'self' blob: https://doorknight.games",
   "font-src 'self'",
-  `connect-src 'self' https://*.supabase.co`,
+  // app.fdastudio.fr : réception des demandes de devis (formulaire de contact)
+  `connect-src 'self' https://app.fdastudio.fr`,
   "base-uri 'self'",
   "form-action 'self' mailto:",
   "object-src 'none'",

@@ -24,10 +24,14 @@ export const site = {
   description:
     "Agence web et IA près de Tours : création de sites internet, intégration de l'intelligence artificielle, applications mobiles et jeux vidéo, partout en France.",
   /**
-   * Point d'envoi du formulaire de contact (fonction serveur, voir /supabase/functions/contact).
-   * Tant qu'il n'est pas configuré, le formulaire prépare un e-mail complet dans le client de messagerie.
+   * Point d'envoi du formulaire de contact : les demandes arrivent dans l'outil interne FDA Studio
+   * (app.fdastudio.fr, dépôt fda-studio-internal), qui n'accepte que l'origine fdastudio.fr.
+   * Surchargeable par la variable de dépôt NEXT_PUBLIC_CONTACT_ENDPOINT. En développement, sans
+   * variable, le formulaire prépare un e-mail complet dans le client de messagerie.
    */
-  contactEndpoint: process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "",
+  contactEndpoint:
+    process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ||
+    (process.env.NODE_ENV === "production" ? "https://app.fdastudio.fr/api/public/leads" : ""),
 } as const;
 
 /** Préfixe d'URL des fichiers statiques (voir next.config.ts). */

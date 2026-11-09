@@ -6,8 +6,9 @@ import { pageMeta } from "@/lib/seo";
 export const metadata: Metadata = pageMeta({ title: "Politique de confidentialité", description: "Comment FDA Studio traite les données transmises via son site : finalité, durée de conservation et droits.", path: "/confidentialite/" });
 
 /*
- * Rédigée pour la configuration actuelle : formulaire en e-mail pré-rempli, sans serveur.
- * Si la fonction serveur (Supabase + Resend) est activée, ajouter ces sous-traitants ci-dessous.
+ * Formulaire relié à l'outil interne FDA Studio (app.fdastudio.fr) : Vercel, Supabase et Resend
+ * sont sous-traitants. Si NEXT_PUBLIC_CONTACT_ENDPOINT n'est pas défini, le formulaire repasse en
+ * e-mail pré-rempli : adapter alors la section « Formulaire de contact ».
  */
 export default function PrivacyPage() {
   const c = site.company;
@@ -15,7 +16,7 @@ export default function PrivacyPage() {
     <LegalPage title="Confidentialité" path="/confidentialite/">
       <div>
         <h2>En bref</h2>
-        <p>Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience ni aucun traceur publicitaire. Les seules données personnelles traitées sont celles que vous nous envoyez volontairement par e-mail, notamment via le formulaire de contact.</p>
+        <p>Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience ni aucun traceur publicitaire. Les seules données personnelles traitées sont celles que vous nous envoyez volontairement, via le formulaire de contact ou par e-mail.</p>
       </div>
       <div>
         <h2>Responsable du traitement</h2>
@@ -23,13 +24,16 @@ export default function PrivacyPage() {
       </div>
       <div>
         <h2>Formulaire de contact</h2>
-        <p>Le formulaire vérifie votre saisie dans votre navigateur, puis ouvre votre messagerie avec un e-mail pré-rempli adressé à {site.email}. Rien n’est enregistré par le site lui-même : la demande n’existe qu’une fois l’e-mail envoyé par vos soins.</p>
+        <p>Votre demande est transmise de façon chiffrée à l’outil de gestion commerciale de FDA Studio, où elle est enregistrée pour que nous puissions vous répondre. Vous recevez un accusé de réception par e-mail. Pour limiter les abus, une empreinte non réversible de votre adresse IP est conservée avec la demande ; l’adresse IP elle-même n’est pas enregistrée.</p>
         <p>Données concernées : nom, e-mail, entreprise et téléphone (facultatifs), type de besoin, budget, délai et description du projet. Finalité : répondre à votre demande et préparer une éventuelle proposition commerciale. Base légale : mesures précontractuelles prises à votre demande.</p>
       </div>
       <div>
         <h2>Destinataires et sous-traitants</h2>
         <ul>
           <li>Les données ne sont ni vendues ni cédées. Elles sont lues uniquement par l’équipe FDA Studio.</li>
+          <li>Base de données de l’outil de gestion : Supabase (hébergement à Paris, Union européenne).</li>
+          <li>Application de gestion : Vercel (fonctions exécutées à Paris ; société américaine, transferts encadrés par les clauses contractuelles types de la Commission européenne).</li>
+          <li>Envoi des e-mails de confirmation : Resend (serveurs d’envoi en Irlande, Union européenne ; société américaine, mêmes garanties).</li>
           <li>Messagerie : IONOS (hébergement des e-mails, Union européenne).</li>
           <li>Hébergement du site : GitHub Pages, qui traite des journaux techniques de connexion (adresse IP) pour assurer la sécurité du service.</li>
           <li>L’expérience sonore et les visuels Door Knight sont servis depuis nos propres sites (fdastudio.fr et doorknight.games).</li>
