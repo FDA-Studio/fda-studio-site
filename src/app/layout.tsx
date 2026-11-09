@@ -34,14 +34,15 @@ export const viewport: Viewport = {
  */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // blob: — modules audio (AudioWorklet) de la démo vocale « Parler à Emma »
+  "script-src 'self' 'unsafe-inline' blob:",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://doorknight.games",
   // blob: — le moteur du monde 3D charge chaque segment vidéo en mémoire pour un défilement image à image
   "media-src 'self' blob: https://doorknight.games",
   "font-src 'self'",
-  // app.fdastudio.fr : réception des demandes de devis (formulaire de contact)
-  `connect-src 'self' https://app.fdastudio.fr`,
+  // app.fdastudio.fr : demandes de devis et sessions de démo vocale ; ElevenLabs : conversation avec Emma
+  `connect-src 'self' https://app.fdastudio.fr https://api.elevenlabs.io wss://api.elevenlabs.io`,
   "base-uri 'self'",
   "form-action 'self' mailto:",
   "object-src 'none'",

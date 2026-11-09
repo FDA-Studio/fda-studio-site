@@ -5,6 +5,7 @@ import { VoiceAgent } from "@/components/creations/VoiceAgent";
 import { ChatAssistant } from "@/components/creations/ChatAssistant";
 import { CrmShowcase } from "@/components/creations/CrmShowcase";
 import { DocReader } from "@/components/creations/DocReader";
+import { TalkToEmma } from "@/components/creations/TalkToEmma";
 import { Live, PauseButton } from "@/components/motion/Live";
 import { sfx } from "@/lib/sound";
 
@@ -90,6 +91,7 @@ export function Creations() {
               >
                 <h3 className="chapter-title">{title}</h3>
                 <p className="mt-3 max-w-md text-soft">{line}</p>
+                {i === 0 && <TalkToEmma />}
 
                 {/* Téléphone et tablette : la démo sous son chapitre */}
                 <div className="frame mt-6 lg:hidden">

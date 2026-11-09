@@ -16,7 +16,7 @@ export default function PrivacyPage() {
     <LegalPage title="Confidentialité" path="/confidentialite/">
       <div>
         <h2>En bref</h2>
-        <p>Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience ni aucun traceur publicitaire. Les seules données personnelles traitées sont celles que vous nous envoyez volontairement, via le formulaire de contact ou par e-mail.</p>
+        <p>Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience ni aucun traceur publicitaire. Les seules données personnelles traitées sont celles que vous nous envoyez volontairement : via le formulaire de contact, par e-mail, ou en parlant à Emma, notre démo d’agent vocal.</p>
       </div>
       <div>
         <h2>Responsable du traitement</h2>
@@ -28,12 +28,18 @@ export default function PrivacyPage() {
         <p>Données concernées : nom, e-mail, entreprise et téléphone (facultatifs), type de besoin, budget, délai et description du projet. Finalité : répondre à votre demande et préparer une éventuelle proposition commerciale. Base légale : mesures précontractuelles prises à votre demande.</p>
       </div>
       <div>
+        <h2>Démo vocale « Parler à Emma »</h2>
+        <p>Emma est une intelligence artificielle. La démo ne démarre que lorsque vous cliquez sur « Démarrer l’appel » et autorisez votre micro ; elle s’arrête au bout de deux minutes. Votre voix est transmise en direct à ElevenLabs, qui la transcrit et génère les réponses d’Emma. L’audio n’est pas enregistré ; la transcription est conservée 30 jours pour vérifier la qualité de la démo, puis supprimée. Emma ne vous demande aucune coordonnée.</p>
+        <p>Pour limiter les abus (deux démos par jour et par visiteur), une empreinte non réversible de votre adresse IP est conservée par notre outil de gestion ; l’adresse IP elle-même n’est pas enregistrée. Base légale : votre demande d’utiliser la démo.</p>
+      </div>
+      <div>
         <h2>Destinataires et sous-traitants</h2>
         <ul>
           <li>Les données ne sont ni vendues ni cédées. Elles sont lues uniquement par l’équipe FDA Studio.</li>
           <li>Base de données de l’outil de gestion : Supabase (hébergement à Paris, Union européenne).</li>
           <li>Application de gestion : Vercel (fonctions exécutées à Paris ; société américaine, transferts encadrés par les clauses contractuelles types de la Commission européenne).</li>
           <li>Envoi des e-mails de confirmation : Resend (serveurs d’envoi en Irlande, Union européenne ; société américaine, mêmes garanties).</li>
+          <li>Démo vocale : ElevenLabs (société américaine, transferts encadrés par les clauses contractuelles types de la Commission européenne).</li>
           <li>Messagerie : IONOS (hébergement des e-mails, Union européenne).</li>
           <li>Hébergement du site : GitHub Pages, qui traite des journaux techniques de connexion (adresse IP) pour assurer la sécurité du service.</li>
           <li>L’expérience sonore et les visuels Door Knight sont servis depuis nos propres sites (fdastudio.fr et doorknight.games).</li>
@@ -41,7 +47,7 @@ export default function PrivacyPage() {
       </div>
       <div>
         <h2>Durée de conservation</h2>
-        <p>Trois ans à compter du dernier échange en l’absence de relation contractuelle, puis suppression.</p>
+        <p>Demandes de projet : trois ans à compter du dernier échange en l’absence de relation contractuelle, puis suppression. Démo vocale : transcription 30 jours, empreinte anti-abus jusqu’à la fin du mois suivant.</p>
       </div>
       <div>
         <h2>Vos droits</h2>

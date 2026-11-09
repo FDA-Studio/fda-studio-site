@@ -540,3 +540,10 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 @media (max-width: 860px) {
   .world .sw-copy { top: auto; }
 }
+
+/* Démo vocale « Parler à Emma » : fenêtre modale native */
+.emma-dialog { max-height: calc(100svh - 2rem); }
+.emma-dialog::backdrop { background: rgba(5, 5, 8, 0.72); backdrop-filter: blur(6px); }
+.emma-dialog[open] { animation: emma-in 260ms var(--ease-out); }
+@keyframes emma-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
+@media (prefers-reduced-motion: reduce) { .emma-dialog[open] { animation: none; } }
