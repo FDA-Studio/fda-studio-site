@@ -104,7 +104,7 @@ export const services: Service[] = [
       "FDA Studio intègre l’intelligence artificielle dans le quotidien des entreprises : un agent qui répond au téléphone, un assistant qui répond aux clients, des demandes saisies automatiquement dans le CRM. Branché sur vos outils, avec un humain qui garde la main.",
     serviceType: "Intégration de l'intelligence artificielle",
     offers: [
-      { title: "Agent vocal", text: "Il décroche, comprend la demande, prend ou déplace un rendez-vous et confirme par SMS, à toute heure." },
+      { title: "Agent vocal", text: "Il décroche, comprend la demande, prend ou déplace un rendez-vous dans votre agenda et note tout dans votre CRM, à toute heure." },
       { title: "Assistant client", text: "Un chatbot qui répond à partir de vos documents et de vos données, puis transmet à la bonne personne." },
       { title: "Automatisation des demandes", text: "Les e-mails et formulaires entrants sont qualifiés, saisis dans votre CRM et préparés pour votre équipe." },
       { title: "Lecture de documents", text: "Factures, bons de commande, contrats : les informations sont extraites et classées sans ressaisie." },

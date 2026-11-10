@@ -27,7 +27,7 @@ type Ev = { from: NodeId; title: string; detail: string; count: 0 | 1 | 2; ok?: 
 
 // count : quel compteur du CRM avance (0 appels, 1 demandes, 2 documents)
 const EVENTS: Ev[] = [
-  { from: "phone", title: "Rendez-vous déplacé", detail: "Vendredi 14 h, SMS de confirmation envoyé", count: 0 },
+  { from: "phone", title: "Rendez-vous déplacé", detail: "Vendredi 14 h, inscrit à l’agenda", count: 0 },
   { from: "web", title: "Nouvelle demande", detail: "Maison Verlaine, site internet, 5 à 15 k€", count: 1 },
   { from: "docs", title: "Facture classée", detail: "Atelier Martin, 5 136 € TTC, à payer le 4/12", count: 2 },
   { from: "chat", title: "Commande 20481", detail: "Suivi envoyé au client, ticket fermé", count: 0 },
