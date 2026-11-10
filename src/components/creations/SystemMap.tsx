@@ -8,9 +8,9 @@ import { sfx } from "@/lib/sound";
 
 /**
  * Vue d'ensemble des quatre démos : tout ce qui arrive dans l'entreprise (appel, demande
- * du site, message, document) part vers le CRM, qui prévient le dirigeant sur son iPhone.
+ * du site, message, document) part vers le CRM, qui prévient le dirigeant sur son mobile.
  * Un signal lumineux parcourt chaque liaison, le CRM compte, la notification tombe.
- * Ordinateur : canaux à gauche, CRM au centre, iPhone à droite. Téléphone : de haut en bas.
+ * Ordinateur : canaux à gauche, CRM au centre, mobile à droite. Téléphone : de haut en bas.
  * Données fictives. Avec « réduire les animations » : état final, sans signal en mouvement.
  */
 
@@ -142,7 +142,7 @@ export function SystemMap() {
     setCounts([START[0] + 2, START[1] + 2, START[2] + 2]);
   }, []);
 
-  // Boucle : un événement à la fois, du canal au CRM, puis du CRM à l'iPhone
+  // Boucle : un événement à la fois, du canal au CRM, puis du CRM au mobile
   useEffect(() => {
     if (!live || !paths || reducedMotion()) return;
     let raf = 0;
@@ -299,11 +299,11 @@ export function SystemMap() {
           </div>
         </div>
 
-        {/* L'iPhone du dirigeant : les notifications qui comptent */}
+        {/* Le mobile du dirigeant : les notifications qui comptent */}
         <div ref={youEl} className="mx-auto w-full max-w-[22rem] lg:mx-0">
           <p className="mb-3 flex items-center gap-2 text-xs text-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-accent-bright" />
-            Vous, sur votre iPhone
+            Vous, sur votre mobile
           </p>
           <ol className="relative h-[15.5rem] space-y-2 overflow-hidden" aria-live="off">
             {feed.map(({ ev, key }, i) => (
