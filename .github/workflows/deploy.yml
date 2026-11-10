@@ -36,6 +36,8 @@ jobs:
           NEXT_TELEMETRY_DISABLED: "1"
           # URL publique de la fonction contact (variable de dépôt, pas un secret)
           NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ vars.NEXT_PUBLIC_CONTACT_ENDPOINT }}
+          # Clé PUBLIQUE du captcha Cloudflare Turnstile (variable de dépôt, pas un secret)
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
           # Domaine définitif fdastudio.fr : site servi à la racine. Pour un aperçu sur
           # fda-studio.github.io/<dépôt>/, définir la variable de dépôt PAGES_BASE_PATH (ex. /fda-studio-site).
           NEXT_PUBLIC_BASE_PATH: ${{ vars.PAGES_BASE_PATH }}

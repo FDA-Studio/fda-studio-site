@@ -8,6 +8,36 @@ import { ArrowIcon, CheckIcon } from "./icons";
 import { sfx } from "@/lib/sound";
 
 type Errors = Partial<Record<string, string>>;
+
+/** API minimale du captcha Cloudflare Turnstile (script chargé à la demande). */
+type Turnstile = {
+  render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+  reset: (id: string) => void;
+  remove: (id: string) => void;
+};
+declare global {
+  interface Window {
+    turnstile?: Turnstile;
+  }
+}
+
+const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+
+/** Charge le script Turnstile une seule fois. */
+function loadTurnstile(): Promise<Turnstile> {
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+  return new Promise((resolve, reject) => {
+    let s = document.querySelector<HTMLScriptElement>(`script[src="${TURNSTILE_SRC}"]`);
+    if (!s) {
+      s = document.createElement("script");
+      s.src = TURNSTILE_SRC;
+      s.async = true;
+      document.head.appendChild(s);
+    }
+    s.addEventListener("load", () => (window.turnstile ? resolve(window.turnstile) : reject(new Error("turnstile"))));
+    s.addEventListener("error", () => reject(new Error("turnstile")));
+  });
+}
 type Status = "idle" | "sending" | "sent" | "mail" | "error";
 
 export function ContactForm() {
@@ -16,6 +46,11 @@ export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [serverError, setServerError] = useState("");
   const startedAt = useRef(0);
+  // Captcha anti-robot (actif seulement si une clé publique est configurée)
+  const captchaOn = Boolean(site.turnstileSiteKey && site.contactEndpoint);
+  const captchaEl = useRef<HTMLDivElement>(null);
+  const captchaId = useRef<string | null>(null);
+  const captchaToken = useRef("");
   const statusRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,6 +59,40 @@ export function ContactForm() {
     const besoin = new URLSearchParams(window.location.search).get("besoin");
     if (besoin && needs.some((n) => n.value === besoin)) setSelectedNeeds([besoin]);
   }, []);
+
+  // Captcha : rendu dans le formulaire, invisible tant que Cloudflare ne demande pas d'interaction
+  const formVisible = status !== "sent" && status !== "mail";
+  useEffect(() => {
+    if (!captchaOn || !formVisible) return;
+    let cancelled = false;
+    loadTurnstile()
+      .then((ts) => {
+        if (cancelled || !captchaEl.current || captchaId.current) return;
+        captchaId.current = ts.render(captchaEl.current, {
+          sitekey: site.turnstileSiteKey,
+          theme: "dark",
+          language: "fr",
+          appearance: "interaction-only",
+          action: "contact",
+          callback: (t: string) => {
+            captchaToken.current = t;
+          },
+          "expired-callback": () => {
+            captchaToken.current = "";
+          },
+          "error-callback": () => {
+            captchaToken.current = "";
+          },
+        });
+      })
+      .catch(() => null);
+    return () => {
+      cancelled = true;
+      if (captchaId.current) window.turnstile?.remove(captchaId.current);
+      captchaId.current = null;
+      captchaToken.current = "";
+    };
+  }, [captchaOn, formVisible]);
 
   // Petit carillon quand la demande part (ou est prête dans la messagerie)
   useEffect(() => {
@@ -70,6 +139,12 @@ export function ContactForm() {
     setErrors({});
 
     const data = parsed.data;
+    // Laisse au captcha jusqu'à 4 s pour délivrer son jeton ; sans jeton, la demande part quand même
+    // et le serveur décide (le formulaire ne reste jamais bloqué côté navigateur).
+    if (captchaOn && !captchaToken.current) {
+      setStatus("sending");
+      for (let i = 0; i < 20 && !captchaToken.current; i++) await new Promise((r) => window.setTimeout(r, 200));
+    }
     if (site.contactEndpoint) {
       setStatus("sending");
       try {
@@ -78,11 +153,16 @@ export function ContactForm() {
         const res = await fetch(site.contactEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(captchaOn && captchaToken.current ? { ...data, turnstile: captchaToken.current } : data),
           signal: ctrl.signal,
         });
         window.clearTimeout(timer);
-        if (!res.ok) throw new Error(String(res.status));
+        if (!res.ok) {
+          // Jeton à usage unique : un nouveau jeton est demandé avant un nouvel essai
+          captchaToken.current = "";
+          if (captchaId.current) window.turnstile?.reset(captchaId.current);
+          throw new Error(String(res.status));
+        }
         setStatus("sent");
       } catch {
         setServerError("L’envoi n’a pas abouti. Réessayez dans un instant, ou écrivez-nous directement à " + site.email + ".");
@@ -224,6 +304,8 @@ export function ContactForm() {
         </label>
         {err("consent")}
       </div>
+
+      {captchaOn && <div ref={captchaEl} className="min-h-0" />}
 
       {status === "error" && <p role="alert" className="rounded-xl border border-[#f0937f]/40 p-4 text-sm text-[#f0937f]">{serverError}</p>}
 

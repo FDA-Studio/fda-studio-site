@@ -36,7 +36,9 @@ export const viewport: Viewport = {
 const csp = [
   "default-src 'self'",
   // blob: — modules audio (AudioWorklet) de la démo vocale « Parler à Emma »
-  "script-src 'self' 'unsafe-inline' blob:",
+  // challenges.cloudflare.com — captcha Turnstile du formulaire de contact
+  "script-src 'self' 'unsafe-inline' blob: https://challenges.cloudflare.com",
+  "frame-src https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://doorknight.games",
   // blob: — le moteur du monde 3D charge chaque segment vidéo en mémoire pour un défilement image à image
