@@ -107,6 +107,13 @@ export function EmmaChat() {
 
   useEffect(() => () => void conv.current?.endSession().catch(() => {}), []);
 
+  /** Envoie les messages tapés pendant l'ouverture de la session. */
+  const flush = useCallback(() => {
+    if (!conv.current) return;
+    const pending = queue.current.splice(0);
+    pending.forEach((t) => conv.current?.sendUserMessage(t));
+  }, []);
+
   const connect = useCallback(async () => {
     if (!site.chatEndpoint) {
       setPhase("error");
@@ -130,11 +137,9 @@ export function EmmaChat() {
         signedUrl: data.signedUrl,
         connectionType: "websocket",
         textOnly: true,
-        onConnect: () => {
-          setPhase("live");
-          const pending = queue.current.splice(0);
-          pending.forEach((t) => conv.current?.sendUserMessage(t));
-        },
+        // onConnect arrive avant que startSession ne rende la session : la file est envoyée
+        // plus bas, une fois la session en main et l'accueil de l'agent reçu.
+        onConnect: () => setPhase("live"),
         onAgentChatResponsePart: (part) => {
           if (skipGreeting.current) return;
           if (part.type === "start") {
@@ -160,6 +165,7 @@ export function EmmaChat() {
           // Le message d'accueil est déjà affiché : on ne le répète pas
           if (skipGreeting.current) {
             skipGreeting.current = false;
+            flush();
             return;
           }
           setWaiting(false);
@@ -190,6 +196,13 @@ export function EmmaChat() {
           setWaiting(false);
         },
       });
+      // L'accueil est peut-être déjà arrivé pendant l'ouverture : on envoie tout de suite.
+      // Sinon, filet de sécurité : on n'attend pas plus de 3 s.
+      if (!skipGreeting.current) flush();
+      else window.setTimeout(() => {
+        skipGreeting.current = false;
+        flush();
+      }, 3000);
     } catch {
       conv.current = null;
       setPhase("error");
