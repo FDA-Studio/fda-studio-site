@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { VoiceConversation } from "@elevenlabs/client";
 import { site } from "@/lib/site";
+import { getSound } from "@/lib/sound";
 import { turnstileToken, warmTurnstile } from "@/lib/turnstile";
 
 type Phase = "idle" | "requesting" | "connecting" | "live" | "ended" | "error";
@@ -72,7 +73,13 @@ export function TalkToEmma() {
     return () => clearInterval(id);
   }, [phase]);
 
-  useEffect(() => () => void end(), [end]);
+  useEffect(
+    () => () => {
+      void end();
+      getSound().releaseMic();
+    },
+    [end],
+  );
 
   const meter = () => {
     const c = conv.current;
@@ -102,6 +109,7 @@ export function TalkToEmma() {
     await end();
     dialog.current?.close();
     setPhase("idle");
+    getSound().releaseMic();
   };
 
   const start = async () => {
@@ -116,6 +124,8 @@ export function TalkToEmma() {
     try {
       // Micro d'abord : le navigateur demande l'autorisation dans le geste de l'utilisateur
       if (!navigator.mediaDevices?.getUserMedia) throw new DOMException("", "NotSupportedError");
+      // Musique du site en pause : sur iPhone, elle empêche l'accès au micro
+      await getSound().holdForMic();
       let stream: MediaStream;
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
