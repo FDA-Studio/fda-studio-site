@@ -6,38 +6,9 @@ import { budgets, contactSchema, needs, timelines } from "@/lib/validations/cont
 import { site } from "@/lib/site";
 import { ArrowIcon, CheckIcon } from "./icons";
 import { sfx } from "@/lib/sound";
+import { loadTurnstile } from "@/lib/turnstile";
 
 type Errors = Partial<Record<string, string>>;
-
-/** API minimale du captcha Cloudflare Turnstile (script chargé à la demande). */
-type Turnstile = {
-  render: (el: HTMLElement, opts: Record<string, unknown>) => string;
-  reset: (id: string) => void;
-  remove: (id: string) => void;
-};
-declare global {
-  interface Window {
-    turnstile?: Turnstile;
-  }
-}
-
-const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-
-/** Charge le script Turnstile une seule fois. */
-function loadTurnstile(): Promise<Turnstile> {
-  if (window.turnstile) return Promise.resolve(window.turnstile);
-  return new Promise((resolve, reject) => {
-    let s = document.querySelector<HTMLScriptElement>(`script[src="${TURNSTILE_SRC}"]`);
-    if (!s) {
-      s = document.createElement("script");
-      s.src = TURNSTILE_SRC;
-      s.async = true;
-      document.head.appendChild(s);
-    }
-    s.addEventListener("load", () => (window.turnstile ? resolve(window.turnstile) : reject(new Error("turnstile"))));
-    s.addEventListener("error", () => reject(new Error("turnstile")));
-  });
-}
 type Status = "idle" | "sending" | "sent" | "mail" | "error";
 
 export function ContactForm() {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { VoiceConversation } from "@elevenlabs/client";
 import { site } from "@/lib/site";
+import { turnstileToken } from "@/lib/turnstile";
 
 type Phase = "idle" | "requesting" | "connecting" | "live" | "ended" | "error";
 
@@ -116,7 +117,8 @@ export function TalkToEmma() {
       return;
     }
     try {
-      const res = await fetch(site.voiceDemoEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const turnstile = await turnstileToken("demo");
+      const res = await fetch(site.voiceDemoEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ turnstile }) });
       const data = (await res.json().catch(() => ({}))) as { signedUrl?: string; maxSeconds?: number; error?: string };
       if (!res.ok || !data.signedUrl) {
         setPhase("error");
