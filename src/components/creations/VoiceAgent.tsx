@@ -6,14 +6,14 @@ const lines = [
   { who: "Client", text: "Bonjour, je voudrais déplacer mon rendez-vous de jeudi." },
   { who: "Agent IA", text: "Bien sûr. Je vous propose vendredi à 10 h ou à 14 h." },
   { who: "Client", text: "14 h, parfait." },
-  { who: "Agent IA", text: "C’est noté. Vous recevez la confirmation par SMS." },
+  { who: "Agent IA", text: "C’est noté : vendredi à 14 h. Je préviens l’équipe." },
 ];
 
 // Ce que l'agent fait pendant qu'il parle : les mêmes outils que notre agent vocal Emma
 const actions = [
   { at: 1, label: "Agenda consulté", detail: "2 créneaux libres vendredi" },
   { at: 3, label: "Rendez-vous déplacé", detail: "Jeu. 10:00 → ven. 14:00" },
-  { at: 4, label: "SMS envoyé", detail: "Confirmation au 06 •• •• 42 18" },
+  { at: 4, label: "Fiche client mise à jour", detail: "Résumé de l’appel dans le CRM" },
 ];
 
 function Line({ who, text, active, done }: { who: string; text: string; active: boolean; done: boolean }) {

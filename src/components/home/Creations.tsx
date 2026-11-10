@@ -11,7 +11,7 @@ import { Live, PauseButton } from "@/components/motion/Live";
 import { sfx } from "@/lib/sound";
 
 const items = [
-  { id: "demo-telephone", title: "Répondre au téléphone", line: "L’agent vocal décroche, comprend, déplace le rendez-vous et confirme par SMS. Jour et nuit.", Demo: VoiceAgent },
+  { id: "demo-telephone", title: "Répondre au téléphone", line: "L’agent vocal décroche, comprend, déplace le rendez-vous dans votre agenda et note tout dans le CRM. Jour et nuit.", Demo: VoiceAgent },
   { id: "demo-messages", title: "Répondre aux clients par écrit", line: "L’assistant répond en deux secondes à partir de vos documents, puis déclenche l’action.", Demo: ChatAssistant },
   { id: "demo-crm", title: "Notre CRM, de la demande au devis signé", line: "Une demande arrive sur le site : la fiche client et l’opportunité se créent, le mobile sonne. Le devis part, il est signé en ligne. Notre propre outil, conçu par le studio pour le web et l’iPhone.", Demo: CrmShowcase },
   { id: "demo-documents", title: "Lire factures et contrats", line: "Un agent lit chaque document reçu, en extrait les données, les vérifie et les classe dans vos outils. Il signale ce qui demande votre attention. Sans ressaisie.", Demo: DocReader },
