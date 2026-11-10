@@ -36,6 +36,16 @@ const SILENCE = asset("/sounds/silence.mp3");
 
 const AMBIENT_LEVEL = 0.42;
 
+/** Catégorie audio de Safari (17+) ; sans effet ailleurs. */
+function setAudioSession(type: "auto" | "playback") {
+  const nav = navigator as Navigator & { audioSession?: { type: string } };
+  try {
+    if (nav.audioSession) nav.audioSession.type = type;
+  } catch {
+    /* API absente ou refusée : la piste muette prend le relais */
+  }
+}
+
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -48,6 +58,8 @@ class SoundEngine {
   private keepAlive: HTMLAudioElement | null = null;
   private lfo: OscillatorNode | null = null;
   private noise: AudioBuffer | null = null;
+  /** Une démo vocale utilise le micro : le son du site est en pause jusqu'à releaseMic(). */
+  private held = false;
   enabled = false;
 
   subscribe(fn: Listener) {
@@ -78,7 +90,7 @@ class SoundEngine {
       if (document.hidden) {
         this.ctx.suspend();
         this.keepAlive?.pause();
-      } else if (this.enabled) {
+      } else if (this.enabled && !this.held) {
         this.ctx.resume();
         this.keepAlive?.play().catch(() => {});
       }
@@ -243,12 +255,9 @@ class SoundEngine {
    * anciennes on joue en boucle une piste muette dans un élément <audio>, ce qui a le même effet.
    */
   private unlockMobile() {
-    const nav = navigator as Navigator & { audioSession?: { type: string } };
-    try {
-      if (nav.audioSession) nav.audioSession.type = "playback";
-    } catch {
-      /* API absente ou refusée : la piste muette prend le relais */
-    }
+    // Pendant une démo vocale, le micro garde la main : la piste muette reprendra après
+    if (this.held) return;
+    setAudioSession("playback");
     if (!this.keepAlive) {
       const el = new Audio(SILENCE);
       el.loop = true;
@@ -260,6 +269,27 @@ class SoundEngine {
     this.keepAlive.play().catch(() => {
       /* sans conséquence : le Web Audio reste utilisable si le téléphone n'est pas en silencieux */
     });
+  }
+
+  /**
+   * À appeler avant de demander le micro. En mode « lecture », iOS refuse toute capture
+   * (InvalidStateError) : on rend la main à Safari et on met le son du site en pause.
+   */
+  async holdForMic() {
+    this.held = true;
+    setAudioSession("auto");
+    this.keepAlive?.pause();
+    if (this.ctx && this.ctx.state === "running") await this.ctx.suspend().catch(() => {});
+  }
+
+  /** Fin de la démo vocale : le son du site reprend s'il était activé. */
+  releaseMic() {
+    if (!this.held) return;
+    this.held = false;
+    if (!this.enabled) return;
+    setAudioSession("playback");
+    void this.ctx?.resume();
+    this.keepAlive?.play().catch(() => {});
   }
 
   /** Joue un échantillon vide immédiatement : déverrouille le contexte sur les anciens Safari. */
