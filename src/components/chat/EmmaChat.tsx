@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TextConversation } from "@elevenlabs/client";
 import { usePaused } from "@/components/motion/Live";
@@ -49,7 +50,7 @@ export function EmmaChat() {
   const [waiting, setWaiting] = useState(false);
   const [tool, setTool] = useState("");
   const [error, setError] = useState("");
-  const [seen, setSeen] = useState(true);
+  const [seen, setSeen] = useState(true); // true : la sphère attend encore son moment
   const paused = usePaused();
 
   const conv = useRef<TextConversation | null>(null);
@@ -63,16 +64,32 @@ export function EmmaChat() {
 
   const push = (role: Msg["role"], text: string, done = true) => setMsgs((m) => [...m, { id: ++ids.current, role, text, done }]);
 
-  // La sphère attend un peu avant d'apparaître : l'écran d'arrivée et le vol passent d'abord
+  // Ouverture depuis n'importe quel bouton du site (« Discuter avec Emma »)
   useEffect(() => {
-    const t = window.setTimeout(() => setSeen(false), 2500);
     const onOpen = () => setOpen(true);
     window.addEventListener("fda:open-chat", onOpen);
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("fda:open-chat", onOpen);
-    };
+    return () => window.removeEventListener("fda:open-chat", onOpen);
   }, []);
+
+  // Quand la sphère apparaît : sur l'accueil, à la fin du film (la section qui suit le vol
+  // monte dans l'écran) ; ailleurs, après un court instant. Une fois apparue, elle reste.
+  const pathname = usePathname();
+  useEffect(() => {
+    if (!seen) return;
+    const world = document.querySelector(".world");
+    const after = document.getElementById("creations");
+    if (!world || !after) {
+      const t = window.setTimeout(() => setSeen(false), 2500);
+      return () => window.clearTimeout(t);
+    }
+    // Le vol se met en place après le chargement (la page s'allonge alors) : on juge au défilement,
+    // jamais au montage, pour ne pas révéler la sphère avant que le film ait été parcouru.
+    const check = () => {
+      if (window.scrollY > window.innerHeight && after.getBoundingClientRect().top < window.innerHeight * 0.65) setSeen(false);
+    };
+    window.addEventListener("scroll", check, { passive: true });
+    return () => window.removeEventListener("scroll", check);
+  }, [pathname, seen]);
 
   // Dans la section Contact, la carte « Discuter avec Emma » prend le relais : la sphère s'efface
   const [atContact, setAtContact] = useState(false);
