@@ -36,12 +36,17 @@ export function loadTurnstile(): Promise<Turnstile> {
   });
 }
 
+type Entry = { token: string; at: number; pending: Promise<string> | null };
+const cache = new Map<string, Entry>();
+/** Un jeton Turnstile vaut 300 s ; on le renouvelle avant. */
+const FRESH_MS = 240_000;
+
 /**
- * Jeton à usage unique pour une action ponctuelle (ouvrir une démo). Le widget reste invisible
- * sauf si Cloudflare demande une interaction ; il s'affiche alors en bas de l'écran.
- * Sans réponse au bout de `timeoutMs`, renvoie "" : le serveur décide (jamais de blocage côté navigateur).
+ * Obtient un jeton auprès de Cloudflare. Le widget reste invisible sauf si Cloudflare demande une
+ * interaction : il s'affiche alors en bas de l'écran, DANS la fenêtre modale ouverte s'il y en a
+ * une (hors d'elle, il serait masqué et inactif).
  */
-export async function turnstileToken(action: string, timeoutMs = 15000): Promise<string> {
+async function fetchToken(action: string, timeoutMs: number): Promise<string> {
   if (!site.turnstileSiteKey) return "";
   let ts: Turnstile;
   try {
@@ -53,7 +58,7 @@ export async function turnstileToken(action: string, timeoutMs = 15000): Promise
   host.setAttribute("role", "region");
   host.setAttribute("aria-label", "Vérification anti-robot");
   host.style.cssText = "position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000";
-  document.body.appendChild(host);
+  (document.querySelector("dialog[open]") ?? document.body).appendChild(host);
   let id: string | null = null;
   try {
     return await new Promise<string>((resolve) => {
@@ -76,4 +81,39 @@ export async function turnstileToken(action: string, timeoutMs = 15000): Promise
     if (id) ts.remove(id);
     host.remove();
   }
+}
+
+/**
+ * Prépare un jeton en arrière-plan (à l'ouverture d'une démo), pour qu'il soit prêt au clic :
+ * Safari n'autorise le son et le micro que juste après un geste de l'utilisateur, sans attente.
+ */
+export function warmTurnstile(action: string, timeoutMs = 30000): void {
+  if (!site.turnstileSiteKey || typeof window === "undefined") return;
+  const e = cache.get(action);
+  if (e && (e.pending || (e.token && Date.now() - e.at < FRESH_MS))) return;
+  const entry: Entry = { token: "", at: 0, pending: null };
+  entry.pending = fetchToken(action, timeoutMs).then((token) => {
+    entry.token = token;
+    entry.at = Date.now();
+    entry.pending = null;
+    return token;
+  });
+  cache.set(action, entry);
+}
+
+/**
+ * Jeton à usage unique : le jeton préparé s'il est encore valide, sinon un nouveau.
+ * Sans réponse au bout de `timeoutMs`, renvoie "" : le serveur décide (jamais de blocage côté navigateur).
+ */
+export async function turnstileToken(action: string, timeoutMs = 15000): Promise<string> {
+  if (!site.turnstileSiteKey) return "";
+  const e = cache.get(action);
+  cache.delete(action);
+  if (e?.pending) {
+    const token = await Promise.race([e.pending, new Promise<string>((r) => window.setTimeout(() => r(""), timeoutMs))]);
+    if (token) return token;
+  } else if (e?.token && Date.now() - e.at < FRESH_MS) {
+    return e.token;
+  }
+  return fetchToken(action, timeoutMs);
 }

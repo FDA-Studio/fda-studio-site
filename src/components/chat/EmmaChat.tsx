@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { TextConversation } from "@elevenlabs/client";
 import { usePaused } from "@/components/motion/Live";
 import { site } from "@/lib/site";
-import { turnstileToken } from "@/lib/turnstile";
+import { turnstileToken, warmTurnstile } from "@/lib/turnstile";
 import { sfx } from "@/lib/sound";
 
 /**
@@ -64,6 +64,11 @@ export function EmmaChat() {
   const launcher = useRef<HTMLButtonElement>(null);
 
   const push = (role: Msg["role"], text: string, done = true) => setMsgs((m) => [...m, { id: ++ids.current, role, text, done }]);
+
+  // Jeton anti-robot préparé dès l'ouverture du panneau, pour que la session démarre sans attente
+  useEffect(() => {
+    if (open) warmTurnstile("demo");
+  }, [open]);
 
   // Ouverture depuis n'importe quel bouton du site (« Discuter avec Emma »)
   useEffect(() => {
