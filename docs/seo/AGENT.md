@@ -110,6 +110,6 @@ BreadcrumbList), temps de chargement raisonnable sur mobile. Noter les problème
 ## Où regarder
 
 - Site en ligne : https://fdastudio.fr
-- Dépôt : FDA-Studio/fda-studio-site (branche `main` = production, déployée sur GitHub Pages)
+- Dépôt : FDA-Studio/fda-studio-site (branche `main` = production, publiée automatiquement par Vercel)
 - Articles : `content/ressources/*.md` — rendu par `src/lib/articles.ts`
 - Services et mots-clés des pages : `src/lib/services.ts`

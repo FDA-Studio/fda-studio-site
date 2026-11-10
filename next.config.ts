@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// Export statique : le site est hébergé sur GitHub Pages (standard FDA Studio pour les sites du groupe).
-// Préfixe d'URL : vide sur le domaine définitif, "/fda-studio-site" sur l'adresse provisoire github.io
+// Export statique servi par Vercel (en-têtes de sécurité dans vercel.json).
+// Préfixe d'URL : vide en production ; NEXT_PUBLIC_BASE_PATH reste possible pour un aperçu en sous-dossier.
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {
