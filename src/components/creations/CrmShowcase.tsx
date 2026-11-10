@@ -445,7 +445,7 @@ export function CrmShowcase() {
       <div className="absolute right-[3%] top-1/2 hidden h-[28rem] w-[13.5rem] -translate-y-1/2 md:block">
         <Phone step={step} className="h-full w-full" />
       </div>
-      <p className="absolute bottom-3 left-[3%] hidden text-[11px] text-muted md:block">Notre CRM : app web et app iPhone synchronisées en temps réel.</p>
+      <p className="absolute bottom-3 left-[3%] hidden text-[11px] text-muted md:block">Notre CRM : app web et app mobile synchronisées en temps réel.</p>
 
       {/* Téléphone : l'iPhone en vedette et les étapes du parcours */}
       <div className="flex h-full flex-col items-center justify-center gap-4 md:hidden">
