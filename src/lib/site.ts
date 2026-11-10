@@ -33,10 +33,12 @@ export const site = {
     process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ||
     (process.env.NODE_ENV === "production" ? "https://app.fdastudio.fr/api/public/leads" : ""),
   /**
-   * Clé publique du captcha Cloudflare Turnstile (variable de dépôt NEXT_PUBLIC_TURNSTILE_SITE_KEY).
-   * Vide : pas de captcha. La vérification se fait côté serveur, dans l'outil interne.
+   * Clé publique du captcha Cloudflare Turnstile (widget « fdastudio.fr », domaines fdastudio.fr et
+   * www.fdastudio.fr), surchargeable par NEXT_PUBLIC_TURNSTILE_SITE_KEY. Vide : pas de captcha. La vérification se fait côté serveur, dans l'outil interne.
    */
-  turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "",
+  turnstileSiteKey:
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ||
+    (process.env.NODE_ENV === "production" ? "0x4AAAAAAF7gr2st8ri8mRN3" : ""),
   /** Démo vocale « Parler à Emma » : session signée délivrée par l'outil interne (quotas côté serveur). */
   voiceDemoEndpoint:
     process.env.NEXT_PUBLIC_VOICE_DEMO_ENDPOINT ||

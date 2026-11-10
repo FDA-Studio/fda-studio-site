@@ -50,7 +50,7 @@ export function ContactForm() {
   const captchaOn = Boolean(site.turnstileSiteKey && site.contactEndpoint);
   const captchaEl = useRef<HTMLDivElement>(null);
   const captchaId = useRef<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaToken = useRef("");
   const statusRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,9 +74,15 @@ export function ContactForm() {
           language: "fr",
           appearance: "interaction-only",
           action: "contact",
-          callback: (t: string) => setCaptchaToken(t),
-          "expired-callback": () => setCaptchaToken(""),
-          "error-callback": () => setCaptchaToken(""),
+          callback: (t: string) => {
+            captchaToken.current = t;
+          },
+          "expired-callback": () => {
+            captchaToken.current = "";
+          },
+          "error-callback": () => {
+            captchaToken.current = "";
+          },
         });
       })
       .catch(() => null);
@@ -84,7 +90,7 @@ export function ContactForm() {
       cancelled = true;
       if (captchaId.current) window.turnstile?.remove(captchaId.current);
       captchaId.current = null;
-      setCaptchaToken("");
+      captchaToken.current = "";
     };
   }, [captchaOn, formVisible]);
 
@@ -133,10 +139,11 @@ export function ContactForm() {
     setErrors({});
 
     const data = parsed.data;
-    if (captchaOn && !captchaToken) {
-      setServerError("Vérification anti-robot en cours. Patientez une seconde, puis renvoyez votre demande.");
-      setStatus("error");
-      return;
+    // Laisse au captcha jusqu'à 4 s pour délivrer son jeton ; sans jeton, la demande part quand même
+    // et le serveur décide (le formulaire ne reste jamais bloqué côté navigateur).
+    if (captchaOn && !captchaToken.current) {
+      setStatus("sending");
+      for (let i = 0; i < 20 && !captchaToken.current; i++) await new Promise((r) => window.setTimeout(r, 200));
     }
     if (site.contactEndpoint) {
       setStatus("sending");
@@ -146,14 +153,14 @@ export function ContactForm() {
         const res = await fetch(site.contactEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(captchaOn ? { ...data, turnstile: captchaToken } : data),
+          body: JSON.stringify(captchaOn && captchaToken.current ? { ...data, turnstile: captchaToken.current } : data),
           signal: ctrl.signal,
         });
         window.clearTimeout(timer);
         if (!res.ok) {
           // Jeton à usage unique : un nouveau jeton est demandé avant un nouvel essai
+          captchaToken.current = "";
           if (captchaId.current) window.turnstile?.reset(captchaId.current);
-          setCaptchaToken("");
           throw new Error(String(res.status));
         }
         setStatus("sent");
