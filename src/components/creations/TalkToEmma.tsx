@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { VoiceConversation } from "@elevenlabs/client";
 import { site } from "@/lib/site";
-import { turnstileToken } from "@/lib/turnstile";
+import { turnstileToken, warmTurnstile } from "@/lib/turnstile";
 
 type Phase = "idle" | "requesting" | "connecting" | "live" | "ended" | "error";
 
@@ -89,6 +89,8 @@ export function TalkToEmma() {
     setError("");
     setCaption("");
     dialog.current?.showModal();
+    // Jeton anti-robot préparé pendant la lecture : au clic, la session part sans attente (Safari)
+    warmTurnstile("demo");
   };
 
   const close = async () => {
