@@ -6,6 +6,7 @@ import { WORLD_SECTIONS, worldAsset } from "./config";
 import motion from "./motion.json";
 import motionM from "./motion-m.json";
 import { getSound, sfx } from "@/lib/sound";
+import { frTypo } from "@/lib/typo";
 
 /**
  * Le monde FDA Studio : un vol de caméra continu, pré-rendu, piloté par le scroll.
@@ -49,12 +50,28 @@ export function World() {
           remap: (motion as Record<string, number[]>)[String(i)],
           remapMobile: (motionM as Record<string, number[]>)[String(i)],
           eyebrow: s.eyebrow,
-          title: s.title,
-          body: s.body,
+          title: frTypo(s.title),
+          body: frTypo(s.body),
           tags: s.tags,
           cta: s.cta,
         })),
         connectors: [],
+      });
+      // Titres découpés en mots : chaque mot monte de sous sa ligne quand la scène apparaît
+      const copies = Array.from(el.querySelectorAll<HTMLElement>(".sw-copy"));
+      el.querySelectorAll<HTMLElement>(".sw-copy__title").forEach((t) => {
+        const words = (t.textContent ?? "").split(" ").filter(Boolean);
+        t.textContent = "";
+        words.forEach((w, i) => {
+          const mask = document.createElement("span");
+          mask.className = "sw-word";
+          const inner = document.createElement("span");
+          inner.style.setProperty("--i", String(i));
+          inner.textContent = w;
+          mask.appendChild(inner);
+          t.appendChild(mask);
+          if (i < words.length - 1) t.appendChild(document.createTextNode(" "));
+        });
       });
       // Une fois le vol terminé, le monde (couches fixes) s'efface derrière la suite de la page.
       // Et si le son est activé : un souffle à chaque nouvelle scène, la porte à l'arrivée sur l'arche.
@@ -74,6 +91,11 @@ export function World() {
         const out = Math.min(1, Math.max(0, (window.scrollY - (world.end() - vh)) / vh));
         el.style.setProperty("--out", out.toFixed(3));
         el.dataset.past = out >= 1 ? "true" : "false";
+        copies.forEach((c) => {
+          // Rien ne se révèle derrière l'écran d'arrivée : la première scène attend l'entrée
+          const shown = el.dataset.entered === "true" && parseFloat(c.style.opacity || "0") > 0.3 ? "true" : "false";
+          if (c.dataset.shown !== shown) c.dataset.shown = shown;
+        });
         WORLD_SECTIONS.forEach((s, i) => {
           if (i === 0) return;
           const t = world!.time(i);
@@ -111,7 +133,8 @@ export function World() {
 
   return (
     <>
-      {!entered && <Gate progress={progress} ready={ready} onEnter={() => setEntered(true)} />}
+      {/* L’écran reste monté pendant sa sortie (explosion des particules), puis se retire de lui-même */}
+      <Gate progress={progress} ready={ready} onEnter={() => setEntered(true)} />
       <div ref={host} className="world" data-entered={entered ? "true" : "false"} aria-hidden />
     </>
   );

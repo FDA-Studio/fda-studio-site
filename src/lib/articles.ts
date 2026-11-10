@@ -3,6 +3,9 @@ import { join } from "node:path";
 import { Marked, type Tokens } from "marked";
 import { z } from "zod";
 import { services } from "./services";
+import { frTypo } from "./typo";
+
+export { frTypo };
 
 /**
  * Articles de la rubrique « Ressources » : un fichier Markdown par article dans
@@ -63,8 +66,6 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
-/** Typographie française : espace fine insécable avant : ; ! ? » et après «, pour éviter les retours à la ligne orphelins. */
-export const frTypo = (s: string) => s.replace(/ ([:;!?»])/g, "\u202F$1").replace(/« /g, "«\u202F");
 
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
