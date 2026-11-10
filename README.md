@@ -45,7 +45,6 @@ src/
     services.ts           contenu et SEO des 4 expertises
     projects.ts           portfolio (ajouter un objet = nouvelle page projet)
     validations/contact.ts schéma Zod du formulaire
-supabase/                 fonction `contact` et migration de la table `contact_requests`
 brand/                    kit de marque officiel
 ```
 
@@ -55,14 +54,11 @@ Ajouter un objet dans `src/lib/projects.ts`. La page `/work/<slug>`, la liste, l
 
 ## Formulaire de contact
 
-- Sans configuration : le formulaire valide la saisie puis ouvre un e-mail pré-rempli vers `contact@fdastudio.fr` (fonctionnel, sans serveur).
-- Avec la fonction serveur (recommandé avant la mise en production) :
-  1. Créer un projet Supabase en région **eu-west-3 (Paris)** et appliquer `supabase/migrations/`.
-  2. `supabase secrets set RESEND_API_KEY=… CONTACT_TO=contact@fdastudio.fr CONTACT_FROM="FDA Studio <site@fdastudio.fr>" ALLOWED_ORIGIN=https://fdastudio.fr UPSTASH_REDIS_REST_URL=… UPSTASH_REDIS_REST_TOKEN=…`
-  3. `supabase functions deploy contact --no-verify-jwt`
-  4. Définir la variable de dépôt GitHub `NEXT_PUBLIC_CONTACT_ENDPOINT` (URL de la fonction).
+- En production, les demandes partent vers l'outil interne FDA Studio (`https://app.fdastudio.fr/api/public/leads`, dépôt `fda-studio-internal`), qui crée la fiche client, l'opportunité et le rappel, puis prévient l'équipe. Adresse surchargeable par la variable de dépôt `NEXT_PUBLIC_CONTACT_ENDPOINT`.
+- En développement, sans variable : le formulaire valide la saisie puis ouvre un e-mail pré-rempli vers `contact@fdastudio.fr`.
+- Captcha Cloudflare Turnstile (clé publique dans `src/lib/site.ts`, clé secrète uniquement sur Vercel, côté outil interne).
 
-Protections : validation Zod côté serveur, contrôle d'origine, taille maximale, champ piège et délai minimal anti-robots, rate-limit 5/h/IP, échappement HTML, table protégée par RLS sans politique publique.
+Protections, côté outil interne : validation Zod, contrôle d'origine, taille maximale, champ piège et délai minimal anti-robots, captcha vérifié côté serveur, limite de 5 demandes par heure et par visiteur, accusé de réception à texte fixe (une fois par adresse et par jour).
 
 ## Expérience sonore
 
