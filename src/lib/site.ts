@@ -36,6 +36,10 @@ export const site = {
   voiceDemoEndpoint:
     process.env.NEXT_PUBLIC_VOICE_DEMO_ENDPOINT ||
     (process.env.NODE_ENV === "production" ? "https://app.fdastudio.fr/api/public/voice-demo" : ""),
+  /** « Emma, par écrit » : session de chat signée délivrée par l'outil interne (quotas côté serveur). */
+  chatEndpoint:
+    process.env.NEXT_PUBLIC_CHAT_ENDPOINT ||
+    (process.env.NODE_ENV === "production" ? "https://app.fdastudio.fr/api/public/chat-demo" : ""),
 } as const;
 
 /** Préfixe d'URL des fichiers statiques (voir next.config.ts). */
