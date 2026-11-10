@@ -12,7 +12,7 @@ Site de la marque FDA Studio (studio technologique du groupe FDA) : sites intern
 | Animations | CSS natif + IntersectionObserver | Aucune dépendance d'animation : GSAP / Framer Motion non nécessaires ici |
 | Validation | Zod (schéma partagé navigateur / serveur) | Une seule source de vérité pour le formulaire |
 | Contact | Supabase Edge Function + Resend + Upstash (rate-limit) | Clés côté serveur uniquement, données en UE |
-| Hébergement | GitHub Pages (workflow `.github/workflows/deploy.yml`) | Standard FDA pour les sites du groupe |
+| Hébergement | Vercel, projet `fda-studio-site` (export statique, en-têtes dans `vercel.json`) | HSTS et protection anti-intégration, impossibles sur GitHub Pages |
 
 Dépendances de production : `next`, `react`, `react-dom`, `three`, `zod`. Polices auto-hébergées dans `public/fonts` (Inter, IBM Plex Mono — licence OFL).
 
@@ -70,7 +70,7 @@ Protections, côté outil interne : validation Zod, contrôle d'origine, taille 
 ## Sécurité et RGPD
 
 - Aucun cookie, aucun traceur, polices auto-hébergées (aucun appel à Google Fonts).
-- CSP en balise `<meta>` (GitHub Pages n'autorise pas d'en-têtes HTTP). `script-src 'unsafe-inline'` est requis par l'hydratation de l'export statique Next.js.
+- CSP en balise `<meta>`, complétée par les en-têtes Vercel (`vercel.json` : HSTS, `frame-ancestors 'none'`, `X-Frame-Options`, nosniff, politiques referrer et permissions). `script-src 'unsafe-inline'` est requis par l'hydratation de l'export statique Next.js.
 - Aucune clé secrète dans le frontend ; seule l'URL publique de la fonction est exposée.
 
 ## Performance et accessibilité
@@ -80,11 +80,11 @@ Protections, côté outil interne : validation Zod, contrôle d'origine, taille 
 - `prefers-reduced-motion` respecté (une image fixe, aucune transition).
 - Lighthouse mobile mesuré en local (serveur sans compression) sur l'accueil : performance 91, accessibilité 100, bonnes pratiques 100, SEO 100.
 
-## Mise en ligne (GitHub Pages)
+## Mise en ligne (Vercel)
 
-1. Dépôt `FDA-Studio/fda-studio-site` (ou nom validé), *Settings → Pages → Source : GitHub Actions*.
-2. Pousser sur `main` déclenche build + déploiement ; les autres branches ne font qu'une compilation de contrôle.
-3. Domaine : `fdastudio.fr` configuré dans *Settings → Pages* ; DNS chez IONOS (`@` → 4 A `185.199.108.153` à `185.199.111.153`, `www` → CNAME `fda-studio.github.io`, configuré le 7 nov. 2026, enregistrements e-mail inchangés). Aperçu en sous-dossier possible via la variable de dépôt `PAGES_BASE_PATH`.
+1. Projet Vercel `fda-studio-site` (équipe FDA Studio), relié à ce dépôt : chaque push sur `main` est publié en production ; les autres branches donnent un aperçu protégé.
+2. Domaines : `fdastudio.fr` (principal) et `www.fdastudio.fr` (redirigé vers le principal). DNS chez IONOS depuis le 10 nov. 2026 : `@` → A `216.150.1.1` et `216.150.16.1`, `www` → CNAME `c9c2812384eca3fb.vercel-dns-016.com`. Enregistrements e-mail (MX IONOS, Resend) et `app` inchangés.
+3. Secours : le workflow GitHub Pages (`deploy.yml`) se lance à la main ; il faudrait alors remettre les anciens enregistrements DNS.
 
 ## Contenus
 

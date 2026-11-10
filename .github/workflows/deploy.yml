@@ -1,11 +1,9 @@
-name: Build & deploy (GitHub Pages)
+name: Build & deploy (GitHub Pages, secours manuel)
 
-# Publication : uniquement main. Les autres branches sont compilées par check.yml
-# (l'environnement github-pages n'accepte que main : un déclenchement sur une autre
-# branche échouait avant même la compilation).
+# Depuis le 10 nov. 2026, le site est hébergé sur Vercel (projet fda-studio-site), qui publie
+# chaque push sur main. Ce workflow ne se lance plus qu'à la main, comme solution de secours
+# (il faudrait alors repointer le DNS chez IONOS vers GitHub Pages).
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
