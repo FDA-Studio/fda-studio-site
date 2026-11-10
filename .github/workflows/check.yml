@@ -29,3 +29,39 @@ jobs:
       - run: pnpm build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+
+  # Garde-fou de l'agent SEO (audit de sécurité V-12) : une PR seo/* ne peut modifier que les
+  # articles et le journal SEO. L'agent ne fusionne que si toutes les vérifications sont vertes.
+  seo-scope:
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'seo/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Périmètre des fichiers modifiés
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          outside=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -v -E '^(content/ressources/[a-z0-9-]+\.md|docs/seo/[^/]+\.md)$' || true)
+          if [ -n "$outside" ]; then
+            echo "::error::Une PR SEO ne peut modifier que content/ressources/*.md et docs/seo/*.md. Fichiers hors périmètre :"
+            echo "$outside"
+            exit 1
+          fi
+          echo "Périmètre respecté."
+      - name: Pas de HTML ni de lien non sécurisé dans les articles
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          files=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" -- 'content/ressources/*.md')
+          [ -z "$files" ] && exit 0
+          bad=$(grep -n -E '<(script|iframe|object|embed|form|img|a )|\]\((javascript|data|vbscript|http):' $files || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Contenu interdit dans un article (HTML brut, lien non HTTPS ou javascript:) :"
+            echo "$bad"
+            exit 1
+          fi
+          echo "Articles conformes."
