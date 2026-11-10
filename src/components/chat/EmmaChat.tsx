@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { TextConversation } from "@elevenlabs/client";
 import { usePaused } from "@/components/motion/Live";
 import { site } from "@/lib/site";
+import { turnstileToken } from "@/lib/turnstile";
 import { sfx } from "@/lib/sound";
 
 /**
@@ -172,7 +173,8 @@ export function EmmaChat() {
     setPhase("connecting");
     setError("");
     try {
-      const res = await fetch(site.chatEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const turnstile = await turnstileToken("demo");
+      const res = await fetch(site.chatEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ turnstile }) });
       const data = (await res.json().catch(() => ({}))) as { signedUrl?: string; error?: string };
       if (!res.ok || !data.signedUrl) {
         setPhase("error");

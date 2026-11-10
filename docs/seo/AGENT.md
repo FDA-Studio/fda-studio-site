@@ -27,7 +27,8 @@ intention d'achat ne compte pas.
    - pousser la branche et ouvrir une pull request vers `main` intitulée
      « Article SEO : <titre> », avec en description : mot-clé visé, intention, résumé en
      3 lignes, liens internes ajoutés, sources consultées ;
-   - attendre que le contrôle GitHub de la branche (workflow « Check ») soit vert ;
+   - attendre que toutes les vérifications GitHub de la PR soient vertes (workflow « Check » :
+     compilation et garde-fou de périmètre `seo-scope`) ; un échec de `seo-scope` interdit la fusion ;
    - relire l'article avec la liste de contrôle ci-dessous ; si tout est bon, fusionner la PR
      (squash) dans `main` : le site se publie tout seul en quelques minutes ;
    - vérifier que l'article répond bien sur https://fdastudio.fr/ressources/<slug>/ (attendre
