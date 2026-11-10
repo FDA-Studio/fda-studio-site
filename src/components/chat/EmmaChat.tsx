@@ -88,9 +88,41 @@ export function EmmaChat() {
   useEffect(() => {
     log.current?.scrollTo({ top: log.current.scrollHeight, behavior: "smooth" });
   }, [msgs, waiting, tool]);
+  // Focus immédiat seulement à la souris : sur téléphone, le clavier attend que l'on touche le champ
   useEffect(() => {
-    if (open) window.setTimeout(() => input.current?.focus(), 80);
+    if (open && window.matchMedia("(pointer: fine)").matches) window.setTimeout(() => input.current?.focus(), 80);
   }, [open]);
+
+  // Mobile : la feuille suit le clavier (visualViewport) et la page derrière ne défile plus
+  const panel = useRef<HTMLElement>(null);
+  const [kb, setKb] = useState(false);
+  useEffect(() => {
+    if (!open || window.matchMedia("(min-width: 768px)").matches) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    const vv = window.visualViewport;
+    const sync = () => {
+      const el = panel.current;
+      if (!el || !vv) return;
+      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      el.style.setProperty("--emma-kb", `${Math.round(offset)}px`);
+      el.style.setProperty("--emma-vh", `${Math.round(vv.height)}px`);
+      setKb(offset > 80);
+    };
+    sync();
+    vv?.addEventListener("resize", sync);
+    vv?.addEventListener("scroll", sync);
+    return () => {
+      html.style.overflow = prev;
+      vv?.removeEventListener("resize", sync);
+      vv?.removeEventListener("scroll", sync);
+      setKb(false);
+    };
+  }, [open]);
+
+  // Glisser la poignée vers le bas ferme la feuille
+  const dragY = useRef<number | null>(null);
 
   // Échap ferme le panneau et rend le focus au bouton
   useEffect(() => {
@@ -266,7 +298,28 @@ export function EmmaChat() {
       </button>
 
       {/* Panneau de discussion */}
-      <section id="emma-chat" role="dialog" aria-modal="false" aria-labelledby="emma-chat-title" className="emma-panel" data-open={open ? "true" : "false"} hidden={!open}>
+      <div className="emma-scrim" hidden={!open} onClick={() => setOpen(false)} aria-hidden />
+      <section
+        ref={panel}
+        id="emma-chat"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="emma-chat-title"
+        className="emma-panel"
+        data-open={open ? "true" : "false"}
+        data-grown={started ? "true" : "false"}
+        data-kb={kb ? "true" : "false"}
+        hidden={!open}
+        onTouchStart={(e) => {
+          const top = panel.current?.getBoundingClientRect().top ?? 0;
+          dragY.current = e.touches[0].clientY - top < 76 ? e.touches[0].clientY : null;
+        }}
+        onTouchEnd={(e) => {
+          if (dragY.current !== null && e.changedTouches[0].clientY - dragY.current > 60) setOpen(false);
+          dragY.current = null;
+        }}
+      >
+        <span className="emma-grip" aria-hidden />
         <header className="flex items-center gap-3 border-b border-line px-4 py-3">
           <Orb size="sm" busy={waiting} />
           <div className="min-w-0 flex-1">
@@ -287,7 +340,7 @@ export function EmmaChat() {
           <div className="emma-msg emma-msg--agent">{GREETING}</div>
 
           {!started && (
-            <div className="mt-1 flex flex-wrap gap-2" aria-label="Suggestions">
+            <div className="emma-chips" aria-label="Suggestions">
               {SUGGESTIONS.map((s, i) => (
                 <button key={s} type="button" onClick={() => send(s)} className="emma-chip" style={{ animationDelay: `${120 + i * 60}ms` }}>
                   {s}
