@@ -593,3 +593,11 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .article-prose th { text-align: left; color: var(--color-paper); font-weight: 600; background: var(--color-surface); }
 .article-prose th, .article-prose td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-line); vertical-align: top; }
 .article-prose tr:last-child td { border-bottom: 0; }
+
+/* Démo « Lire factures et contrats » : le document arrive dans la boîte de l'agent */
+@keyframes doc-in { from { opacity: 0; transform: translateY(14px) rotate(-1.5deg) scale(0.97); } to { opacity: 1; transform: none; } }
+.doc-in { animation: doc-in 0.7s cubic-bezier(.2,.8,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .doc-in { animation: none; } }
+@keyframes log-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.log-line:last-child { animation: log-in 0.35s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .log-line:last-child { animation: none; } }
