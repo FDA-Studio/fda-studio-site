@@ -418,6 +418,8 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
    Elles ne tournent que dans une zone <Live> visible et hors pause.
    -------------------------------------------------------------------------- */
 [data-live="off"] *,
+[data-live="off"] *::before,
+[data-live="off"] *::after { animation-play-state: paused !important; }
 
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes spin-slow { to { transform: rotate(360deg); } }
@@ -803,3 +805,28 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .emma-cta:active { transform: scale(0.99); }
 .emma-cta .emma-orb * { animation-play-state: paused; }
 .emma-cta:hover .emma-orb *, .emma-cta:focus-visible .emma-orb * { animation-play-state: running; }
+
+@property --crm-beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes crm-beam-spin { to { --crm-beam-angle: 360deg; } }
+@layer components {
+/* Démo CRM : faisceau électrique sur le contour (même signature que l'app « Nuit »). */
+
+.crm-beam { position: relative; isolation: isolate; }
+.crm-beam::before, .crm-beam::after {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; padding: 1.5px;
+  background: conic-gradient(from var(--crm-beam-angle), transparent 0deg 250deg, rgba(147, 168, 255, 0.25) 280deg, #c8d4ff 318deg, #2f5bff 340deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: crm-beam-spin 3.2s linear infinite;
+}
+.crm-beam::after { inset: -6px; padding: 6px; filter: blur(5px); opacity: 0.9; }
+.crm-led { position: relative; }
+.crm-led::after {
+  content: ''; position: absolute; left: 8%; right: 8%; top: -1px; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, #93a8ff 30%, #2f5bff 70%, transparent);
+  box-shadow: 0 0 12px 1px rgba(47, 91, 255, 0.6);
+}
+.crm-grad { background: linear-gradient(180deg, #f6f7f9 30%, rgba(246, 247, 249, 0.62)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) { .crm-beam::before, .crm-beam::after { animation: none; } }

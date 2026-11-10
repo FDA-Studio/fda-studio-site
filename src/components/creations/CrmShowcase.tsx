@@ -103,24 +103,24 @@ function HomeScreen({ step }: { step: number }) {
   const max = Math.max(...BARS, last);
   return (
     <div className="px-3.5 pt-11">
-      <p className="text-[8.5px] text-muted">Lundi 9 novembre</p>
-      <p className="text-[15px] font-semibold tracking-[-0.02em] text-paper">Bonsoir Antoine</p>
+      <p className="text-[8.5px] font-medium text-accent-bright">Lundi 9 novembre</p>
+      <p className="crm-grad text-[16px] font-semibold tracking-[-0.04em]">Bonsoir Antoine</p>
 
-      <div className="mt-3 rounded-[14px] bg-surface p-3">
-        <p className="text-[8.5px] text-muted">Signé en novembre</p>
-        <p className={`mt-0.5 text-[21px] font-semibold tabular-nums tracking-[-0.03em] transition-colors duration-500 ${step === 5 ? "text-ok" : "text-paper"}`}>{eur(signed)}</p>
+      <div className="crm-led mt-3 rounded-[14px] border border-white/[0.07] bg-[radial-gradient(160px_80px_at_0%_0%,rgba(47,91,255,0.2),transparent_70%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.012))] p-3">
+        <p className="font-mono text-[6.5px] tracking-[0.16em] text-muted">01 / SIGNÉ EN NOVEMBRE</p>
+        <p className={`mt-1 text-[22px] font-semibold tabular-nums tracking-[-0.05em] ${step === 5 ? "text-ok" : "crm-grad"}`}>{eur(signed)}</p>
         <div className="mt-2.5 flex h-11 items-end gap-[3px]">
           {[...BARS, last].map((h, i, a) => (
             <span
               key={i}
-              className={`flex-1 rounded-[2px] transition-[height] duration-700 ease-[var(--ease-out-expo)] ${i === a.length - 1 ? "bg-accent" : "bg-white/15"}`}
+              className={`flex-1 rounded-t-[3px] rounded-b-[1px] transition-[height] duration-700 ease-[var(--ease-out-expo)] ${i === a.length - 1 ? "bg-[linear-gradient(180deg,#93a8ff,#2f5bff_55%,#1c3bc4)] shadow-[0_0_12px_-1px_rgba(47,91,255,0.85)]" : "bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05))]"}`}
               style={{ height: `${h ? Math.max(6, (h / max) * 100) : 4}%` }}
             />
           ))}
         </div>
       </div>
 
-      <div className="mt-2 grid grid-cols-3 overflow-hidden rounded-[14px] bg-surface">
+      <div className="mt-2 grid grid-cols-3 overflow-hidden rounded-[14px] border border-white/[0.07] bg-white/[0.025]">
         {[
           ["Prospects", step >= 1 && step < 5 ? 6 : step === 5 ? 5 : 5],
           ["Devis", step >= 3 && step < 4 ? 4 : 3],
@@ -128,13 +128,14 @@ function HomeScreen({ step }: { step: number }) {
         ].map(([k, v], i) => (
           <div key={k} className={`p-2 ${i < 2 ? "border-r border-line" : ""}`}>
             <p className="text-[7.5px] text-muted">{k}</p>
-            <p className="text-[13px] font-semibold tabular-nums text-paper">{v}</p>
+            <p className="text-[14px] font-semibold tabular-nums tracking-[-0.03em] text-paper">{v}</p>
           </div>
         ))}
       </div>
 
-      <p className="mb-1.5 mt-3 text-[9px] font-semibold text-paper">Aujourd’hui</p>
-      <div className="overflow-hidden rounded-[14px] bg-surface">
+      <p className="mb-0.5 mt-3 font-mono text-[6.5px] tracking-[0.16em] text-muted">02 / À FAIRE</p>
+      <p className="mb-1.5 text-[9px] font-semibold text-paper">Aujourd’hui</p>
+      <div className="overflow-hidden rounded-[14px] border border-white/[0.07] bg-white/[0.025]">
         <div className={`flex items-center gap-2 border-b border-line px-2.5 transition-[max-height,opacity,padding] duration-500 ${step >= 1 ? "max-h-10 py-2 opacity-100" : "max-h-0 py-0 opacity-0"}`}>
           <span className={`h-2.5 w-2.5 shrink-0 rounded-full border ${step === 5 ? "border-ok bg-ok" : "border-accent-bright"}`} />
           <span className={`truncate text-[9px] ${step === 5 ? "text-muted line-through" : "text-paper"}`}>Rappeler {LEAD.name}</span>
@@ -165,17 +166,17 @@ function ClientScreen({ step }: { step: number }) {
       <NavBar back="Accueil" title="Fiche client" />
       <div className="px-3.5">
         <div className="mt-3 flex items-center gap-2.5">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-violet text-[11px] font-semibold text-white">{LEAD.initials}</span>
+          <span className="crm-beam grid h-10 w-10 shrink-0 place-items-center rounded-[13px] bg-[linear-gradient(140deg,#4b72ff,#14204f_70%)] text-[11px] font-semibold text-white shadow-[0_0_0_1px_rgba(111,139,255,0.35),0_8px_22px_-8px_rgba(47,91,255,0.85)]">{LEAD.initials}</span>
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-semibold tracking-[-0.01em] text-paper">{LEAD.name}</p>
+            <p className="crm-grad truncate text-[14px] font-semibold tracking-[-0.04em]">{LEAD.name}</p>
             <p className="truncate text-[8.5px] text-muted">{LEAD.contact}</p>
           </div>
         </div>
         <div className="mt-2 flex flex-wrap gap-1">
-          <span className="rounded-full bg-accent/15 px-1.5 py-[2px] text-[7.5px] font-medium text-accent-bright">Prospect</span>
+          <span className="rounded-full border border-accent/30 bg-accent/15 px-1.5 py-[2px] text-[7.5px] font-medium text-accent-bright">Prospect</span>
           <span className="rounded-full bg-white/8 px-1.5 py-[2px] text-[7.5px] text-soft">Via fdastudio.fr</span>
         </div>
-        <div className="mt-2.5 overflow-hidden rounded-[12px] bg-surface">
+        <div className="mt-2.5 overflow-hidden rounded-[12px] border border-white/[0.07] bg-white/[0.025]">
           <Row k="Besoin" v={LEAD.need} />
           <Row k="Budget" v={LEAD.budget} />
           <Row k="Délai" v={LEAD.timeline} />
@@ -183,7 +184,7 @@ function ClientScreen({ step }: { step: number }) {
         <p className="mb-1.5 mt-3 text-[8.5px] font-semibold text-paper">Activité</p>
         <div className="space-y-2 border-l border-line-strong pl-2.5">
           <p className="relative text-[8.5px] text-soft">
-            <span className="absolute -left-[13px] top-[3px] h-1.5 w-1.5 rounded-full bg-accent" />
+            <span className="absolute -left-[13px] top-[3px] h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_rgba(47,91,255,0.95)]" />
             Demande reçue <span className="text-muted">· à l’instant</span>
           </p>
           <p className="relative text-[8.5px] text-soft">
@@ -191,7 +192,7 @@ function ClientScreen({ step }: { step: number }) {
             Rappel planifié <span className="text-muted">· demain 10 h</span>
           </p>
         </div>
-        <div className="relative mt-3 rounded-[10px] bg-paper py-2 text-center text-[9.5px] font-semibold text-ink">
+        <div className="crm-beam relative mt-3 rounded-full bg-accent py-2 text-center text-[9.5px] font-semibold text-white shadow-[0_0_0_1px_rgba(111,139,255,0.35),0_8px_22px_-8px_rgba(47,91,255,0.85)]">
           Créer le devis
           <Tap on={step === 2} delay={1650} className="left-1/2 top-1/2 z-30 -translate-x-1/2 -translate-y-1/2" />
         </div>
@@ -292,7 +293,7 @@ function Phone({ step, className = "" }: { step: number; className?: string }) {
           <div className="absolute inset-x-0 bottom-0 z-20 border-t border-line bg-ink/95 px-4 pb-2 pt-2 backdrop-blur" aria-hidden>
             <div className="flex items-center justify-around">
               {[0, 1, 2, 3].map((i) => (
-                <span key={i} className={`h-[3px] w-4 rounded-full ${i === Math.min(cur, 1) ? "bg-accent" : "bg-white/20"}`} />
+                <span key={i} className={`h-[3px] w-4 rounded-full ${i === Math.min(cur, 1) ? "bg-accent shadow-[0_0_8px_1px_rgba(47,91,255,0.9)]" : "bg-white/20"}`} />
               ))}
             </div>
             <span className="mx-auto mt-2 block h-[3px] w-1/3 rounded-full bg-white/50" />
@@ -344,7 +345,7 @@ function Browser({ step }: { step: number }) {
   const col = step >= 4 ? 2 : step >= 3 ? 1 : 0;
   const cardOn = step >= 2;
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-[1.1rem] border border-line-strong bg-ink shadow-[0_30px_70px_-30px_rgba(0,0,0,0.9)]">
+    <div className="crm-led flex h-full flex-col overflow-hidden rounded-[1.1rem] border border-line-strong bg-[radial-gradient(520px_260px_at_85%_-10%,rgba(47,91,255,0.16),transparent_62%),#06070a] shadow-[0_30px_70px_-30px_rgba(0,0,0,0.9)]">
       {/* Barre du navigateur */}
       <div className="flex items-center gap-3 border-b border-line bg-surface px-3 py-2" aria-hidden>
         <span className="flex gap-1.5">
@@ -358,28 +359,31 @@ function Browser({ step }: { step: number }) {
 
       <div className="flex min-h-0 flex-1">
         {/* Barre latérale */}
-        <div className="flex w-11 shrink-0 flex-col items-center gap-3 border-r border-line bg-[#0d0e10] py-3" aria-hidden>
+        <div className="flex w-11 shrink-0 flex-col items-center gap-3 border-r border-line bg-[rgba(8,9,13,0.86)] py-3" aria-hidden>
           <Logo variant="symbol" decorative className="mb-2 h-4 w-auto text-paper" />
           {[0, 1, 2, 3, 4].map((i) => (
-            <span key={i} className={`h-[5px] w-[18px] rounded-full ${i === 1 ? "bg-accent" : "bg-white/15"}`} />
+            <span key={i} className="relative flex w-full justify-center">
+              {i === 1 && <span className="absolute -left-px top-1/2 h-3 w-[2px] -translate-y-1/2 rounded-r-full bg-accent shadow-[0_0_8px_2px_rgba(47,91,255,0.8)]" />}
+              <span className={`h-[5px] w-[18px] rounded-full ${i === 1 ? "bg-accent-bright" : "bg-white/15"}`} />
+            </span>
           ))}
         </div>
 
         <div className="relative min-w-0 flex-1 p-4">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-[10px] text-muted">Suivi commercial</p>
-              <p className="text-lg font-semibold tracking-[-0.02em] text-paper">Pipeline</p>
+              <p className="text-[10px] font-medium text-accent-bright">Suivi commercial</p>
+              <p className="crm-grad text-xl font-semibold tracking-[-0.045em]">Pipeline</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-muted">Signé en novembre</p>
-              <p className={`text-lg font-semibold tabular-nums tracking-[-0.02em] transition-colors duration-500 ${step >= 4 ? "text-ok" : "text-paper"}`}>{eur(signed)}</p>
+              <p className="font-mono text-[8px] tracking-[0.16em] text-muted">SIGNÉ EN NOVEMBRE</p>
+              <p className={`text-xl font-semibold tabular-nums tracking-[-0.045em] ${step >= 4 ? "text-ok" : "crm-grad"}`}>{eur(signed)}</p>
             </div>
           </div>
 
           {/* Toast : la demande arrive du site */}
           <div
-            className={`absolute right-4 top-14 z-10 w-56 rounded-xl border border-accent/50 bg-raised p-2.5 shadow-[0_16px_40px_-12px_rgba(47,91,255,0.55)] transition-[transform,opacity] duration-500 ease-[var(--ease-out-expo)] ${
+            className={`crm-beam absolute right-4 top-14 z-10 w-56 rounded-xl border border-accent/50 bg-raised p-2.5 shadow-[0_16px_40px_-12px_rgba(47,91,255,0.55)] transition-[transform,opacity] duration-500 ease-[var(--ease-out-expo)] ${
               step === 1 ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"
             }`}
           >
@@ -392,7 +396,7 @@ function Browser({ step }: { step: number }) {
 
           <div className="relative mt-4 grid grid-cols-3 gap-2.5">
             {COLS.map((c, i) => (
-              <div key={c} className="min-w-0 rounded-xl border border-line bg-surface/60 p-2">
+              <div key={c} className="min-w-0 rounded-[14px] border border-white/[0.07] bg-[linear-gradient(180deg,rgba(255,255,255,0.034),rgba(255,255,255,0.012))] p-2">
                 <p className="flex items-center justify-between px-1 pb-2 text-[10px] font-medium text-soft">
                   <span className="flex items-center gap-1.5">
                     <span className={`h-1.5 w-1.5 rounded-full ${i === 2 ? "bg-ok" : i === 1 ? "bg-accent-bright" : "bg-muted"}`} />
@@ -404,7 +408,7 @@ function Browser({ step }: { step: number }) {
                 <div className="h-[4.15rem]" />
                 <div className="mt-1.5 space-y-1.5">
                   {STATIC[c].map((s) => (
-                    <div key={s.n} className="rounded-lg border border-line bg-ink p-2">
+                    <div key={s.n} className="rounded-[10px] border border-white/[0.07] bg-[#0b0d12] p-2">
                       <p className="truncate text-[10.5px] text-paper">{s.n}</p>
                       <p className="text-[10px] tabular-nums text-muted">{s.v}</p>
                     </div>
@@ -415,7 +419,7 @@ function Browser({ step }: { step: number }) {
 
             {/* La carte de la nouvelle demande traverse le pipeline */}
             <div
-              className={`absolute top-[1.9rem] rounded-lg border p-2 transition-[left,opacity,transform,border-color,background-color,box-shadow] duration-700 ease-[var(--ease-out-expo)] ${
+              className={`crm-beam absolute top-[1.9rem] rounded-[10px] border p-2 transition-[left,opacity,transform,border-color,background-color,box-shadow] duration-700 ease-[var(--ease-out-expo)] ${
                 cardOn ? "scale-100 opacity-100" : "scale-95 opacity-0"
               } ${step >= 4 ? "border-ok/60 bg-[#13201a] shadow-[0_0_24px_-6px_rgba(127,191,142,0.5)]" : "border-accent bg-[#141a33] shadow-[0_0_28px_-6px_rgba(47,91,255,0.7)]"}`}
               style={{ left: `calc(${col} * (100% + 0.625rem) / 3 + 0.5rem)`, width: "calc((100% - 1.25rem) / 3 - 1rem)" }}
