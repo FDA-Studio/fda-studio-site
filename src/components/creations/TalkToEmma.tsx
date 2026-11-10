@@ -10,6 +10,11 @@ type Phase = "idle" | "requesting" | "connecting" | "live" | "ended" | "error";
 
 const BARS = 32;
 
+/** Nom de l'erreur, quel que soit son type (Safari ne renvoie pas toujours une DOMException). */
+function errName(e: unknown): string {
+  return e && typeof e === "object" && "name" in e ? String((e as { name: unknown }).name) : "";
+}
+
 /** Explique pourquoi le micro est inaccessible, car le navigateur n'affiche pas toujours de fenêtre. */
 function micError(name: string): string {
   const ios = typeof navigator !== "undefined" && /iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -27,7 +32,7 @@ function micError(name: string): string {
     case "NotSupportedError":
       return "Ce navigateur ne donne pas accès au micro. Ouvrez fdastudio.fr dans Safari ou Chrome (pas depuis une application comme Instagram ou Mail).";
     default:
-      return "Impossible d’accéder au micro. Autorisez-le pour ce site, puis réessayez.";
+      return `Impossible d’accéder au micro. Fermez les autres applications qui l’utilisent, puis réessayez.${name ? ` (code : ${name})` : ""}`;
   }
 }
 
@@ -111,11 +116,20 @@ export function TalkToEmma() {
     try {
       // Micro d'abord : le navigateur demande l'autorisation dans le geste de l'utilisateur
       if (!navigator.mediaDevices?.getUserMedia) throw new DOMException("", "NotSupportedError");
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (e) {
+        // iPhone : le micro peut être momentanément occupé (session audio en cours) ; un second essai suffit souvent
+        const name = errName(e);
+        if (name !== "AbortError" && name !== "InvalidStateError" && name !== "NotReadableError") throw e;
+        await new Promise((r) => setTimeout(r, 400));
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
       stream.getTracks().forEach((t) => t.stop());
     } catch (e) {
       setPhase("error");
-      setError(micError(e instanceof DOMException ? e.name : ""));
+      setError(micError(errName(e)));
       return;
     }
     try {
