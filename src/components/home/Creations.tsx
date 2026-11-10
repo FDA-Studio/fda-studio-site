@@ -6,14 +6,15 @@ import { ChatAssistant } from "@/components/creations/ChatAssistant";
 import { CrmShowcase } from "@/components/creations/CrmShowcase";
 import { DocReader } from "@/components/creations/DocReader";
 import { TalkToEmma } from "@/components/creations/TalkToEmma";
+import { SystemMap } from "@/components/creations/SystemMap";
 import { Live, PauseButton } from "@/components/motion/Live";
 import { sfx } from "@/lib/sound";
 
 const items = [
-  { title: "Répondre au téléphone", line: "L’agent vocal décroche, comprend, déplace le rendez-vous et confirme par SMS. Jour et nuit.", Demo: VoiceAgent },
-  { title: "Répondre aux clients par écrit", line: "L’assistant répond en deux secondes à partir de vos documents, puis déclenche l’action.", Demo: ChatAssistant },
-  { title: "Notre CRM, de la demande au devis signé", line: "Une demande arrive sur le site : la fiche client et l’opportunité se créent, l’iPhone sonne. Le devis part, il est signé en ligne. Notre propre outil, conçu par le studio pour le web et l’iPhone.", Demo: CrmShowcase },
-  { title: "Lire factures et contrats", line: "Un agent lit chaque document reçu, en extrait les données, les vérifie et les classe dans vos outils. Il signale ce qui demande votre attention. Sans ressaisie.", Demo: DocReader },
+  { id: "demo-telephone", title: "Répondre au téléphone", line: "L’agent vocal décroche, comprend, déplace le rendez-vous et confirme par SMS. Jour et nuit.", Demo: VoiceAgent },
+  { id: "demo-messages", title: "Répondre aux clients par écrit", line: "L’assistant répond en deux secondes à partir de vos documents, puis déclenche l’action.", Demo: ChatAssistant },
+  { id: "demo-crm", title: "Notre CRM, de la demande au devis signé", line: "Une demande arrive sur le site : la fiche client et l’opportunité se créent, l’iPhone sonne. Le devis part, il est signé en ligne. Notre propre outil, conçu par le studio pour le web et l’iPhone.", Demo: CrmShowcase },
+  { id: "demo-documents", title: "Lire factures et contrats", line: "Un agent lit chaque document reçu, en extrait les données, les vérifie et les classe dans vos outils. Il signale ce qui demande votre attention. Sans ressaisie.", Demo: DocReader },
 ];
 
 /** Barre de fenêtre commune aux démos : nom du concept, mention « démo », pause. */
@@ -70,33 +71,52 @@ export function Creations() {
       <div className="wrap">
         <div className="grid gap-6 md:grid-cols-12 md:items-end">
           <h2 id="creations-title" className="section-title md:col-span-7">
-            L’IA et l’automatisation au travail, en quatre démos.
+            Quatre agents.
+            <br />
+            Un seul système.
           </h2>
           <p className="text-lg text-soft md:col-span-5">
-            Trois concepts et notre propre CRM, pour montrer ce que nous intégrons dans une entreprise. Les noms et les données affichés sont fictifs.
+            Le téléphone, le site, les messages et les documents arrivent au même endroit, et vous êtes prévenu de ce qui compte. Trois concepts et notre propre CRM, rejoués avec des données fictives.
           </p>
+        </div>
+
+        {/* Vue d'ensemble : les signaux de l'entreprise convergent vers le CRM */}
+        <div className="frame mt-12 md:mt-16">
+          <FrameBar title="Vue d’ensemble" />
+          <Live className="relative px-4 pb-8 pt-7 md:px-10 md:pb-12 md:pt-10" threshold={0.25}>
+            <SystemMap />
+          </Live>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-10 md:mt-20 lg:grid-cols-12 lg:gap-12">
           <ol className="min-w-0 lg:col-span-5">
-            {items.map(({ title, line, Demo }, i) => (
+            {items.map(({ id, title, line, Demo }, i) => (
               <li
                 key={title}
+                id={id}
                 ref={(el) => {
                   steps.current[i] = el;
                 }}
                 data-index={i}
                 data-active={active === i}
-                className="chapter border-t border-line py-8 lg:flex lg:min-h-[62svh] lg:flex-col lg:justify-center lg:py-0"
+                className="chapter scroll-mt-28 border-t border-line py-8 lg:flex lg:min-h-[62svh] lg:flex-col lg:justify-center lg:py-0"
               >
                 <h3 className="chapter-title">{title}</h3>
                 <p className="mt-3 max-w-md text-soft">{line}</p>
-                {i === 0 && <TalkToEmma />}
+                {i === 0 && (
+                  <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <TalkToEmma />
+                    <p className="flex items-center gap-2 text-sm text-muted">
+                      <span className="h-2 w-2 rounded-full bg-ok" aria-hidden />
+                      Pas une vidéo : elle vous répond en direct.
+                    </p>
+                  </div>
+                )}
 
                 {/* Téléphone et tablette : la démo sous son chapitre */}
                 <div className="frame mt-6 lg:hidden">
                   <FrameBar />
-                  <Live className="relative h-[31rem] overflow-hidden" threshold={0.3}>
+                  <Live className="relative h-[33rem] overflow-hidden" threshold={0.3}>
                     <div aria-hidden="true" className="h-full">
                       <Demo />
                     </div>

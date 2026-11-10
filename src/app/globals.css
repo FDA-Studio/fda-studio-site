@@ -601,3 +601,16 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 @keyframes log-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .log-line:last-child { animation: log-in 0.35s ease-out both; }
 @media (prefers-reduced-motion: reduce) { .log-line:last-child { animation: none; } }
+
+/* Scène « système » des démos : liaisons, onde du CRM, compteurs et notifications */
+.sys-wire { animation: dash-flow 1.2s linear infinite; }
+.sys-ring { border: 1px solid var(--color-accent-bright); animation: sys-ring 900ms var(--ease-out) forwards; }
+@keyframes sys-ring { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(1.08); } }
+.sys-count { animation: sys-count 500ms var(--ease-out) both; }
+@keyframes sys-count { from { opacity: 0.2; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.sys-notif { transition: opacity 400ms var(--ease-out); }
+.sys-notif:first-child { animation: sys-notif 600ms var(--ease-out-expo) both; }
+@keyframes sys-notif { from { opacity: 0; transform: translateY(-14px) scale(0.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .sys-wire, .sys-ring, .sys-count, .sys-notif:first-child { animation: none; }
+}
