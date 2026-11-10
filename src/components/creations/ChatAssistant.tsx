@@ -29,7 +29,12 @@ export function ChatAssistant() {
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col justify-end gap-3 overflow-hidden py-4">
+      {/* La conversation reste collée en bas : l'historique remonte et s'efface sous l'en-tête */}
+      <div className="flex min-h-0 flex-1 flex-col justify-end gap-3 overflow-hidden py-4 [mask-image:linear-gradient(to_bottom,transparent,black_2.5rem)]">
+        <p className="text-center text-[10px] text-muted">Hier</p>
+        <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-paper/80 px-4 py-2.5 text-sm text-ink">Vous livrez le samedi ?</div>
+        <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-raised px-4 py-2.5 text-sm leading-relaxed text-soft">Oui, le samedi de 9 h à 13 h, sans supplément.</div>
+        <p className="text-center text-[10px] text-muted">Aujourd’hui</p>
         <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-raised px-4 py-2.5 text-sm leading-relaxed text-soft">
           Bonjour ! Je peux suivre une commande, modifier une livraison ou répondre à vos questions.
         </div>

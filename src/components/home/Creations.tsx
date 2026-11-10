@@ -89,7 +89,7 @@ export function Creations() {
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-10 md:mt-20 lg:grid-cols-12 lg:gap-12">
-          <ol className="min-w-0 lg:col-span-5">
+          <ol className="min-w-0 lg:col-span-5 lg:pb-[16svh]">
             {items.map(({ id, title, line, Demo }, i) => (
               <li
                 key={title}
