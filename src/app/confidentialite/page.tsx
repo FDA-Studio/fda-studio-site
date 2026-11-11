@@ -17,11 +17,16 @@ export default function PrivacyPage() {
     <LegalPage title="Confidentialité" path="/confidentialite/">
       <div>
         <h2>En bref</h2>
-        <p>Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience ni aucun traceur publicitaire. Nous traitons uniquement les données que vous nous transmettez (formulaire, e-mail, chat ou démo d’Emma), celles de nos clients pour gérer nos projets, et, pour la prospection, des informations professionnelles publiques sur les entreprises. Nous ne vendons ni ne cédons aucune donnée.</p>
+        <p>Ce site ne dépose aucun cookie de mesure d’audience ni de publicité, et n’utilise aucun traceur publicitaire. Nous traitons uniquement les données que vous nous transmettez (formulaire, e-mail, chat ou démo d’Emma), celles de nos clients pour gérer nos projets, et, pour la prospection, des informations professionnelles publiques sur les entreprises. Nous ne vendons ni ne cédons aucune donnée.</p>
       </div>
       <div>
         <h2>Responsable du traitement</h2>
         <p>Société {c.name} (nom commercial FDA Studio), {c.address}, {c.rcs}. Contact : {mail}.</p>
+      </div>
+      <div>
+        <h2>Ce qui est enregistré dans votre navigateur</h2>
+        <p>Le site garde uniquement vos réglages d’affichage : son activé ou coupé, animations en pause. Ils restent dans votre navigateur, ne contiennent aucun identifiant et ne nous sont pas transmis. Ces réglages, nécessaires au service que vous demandez, ne requièrent pas de consentement.</p>
+        <p>Pour bloquer les robots, le formulaire de contact, le chat et la démo d’Emma utilisent Cloudflare Turnstile, chargé seulement quand vous les ouvrez. Cloudflare vérifie alors que vous êtes humain à partir de signaux techniques du navigateur, sans publicité ni suivi entre sites. Base légale : intérêt légitime (sécurité du service).</p>
       </div>
       <div>
         <h2>Formulaire de contact</h2>
@@ -55,6 +60,7 @@ export default function PrivacyPage() {
           <li>E-mails transactionnels et réponses des clients : Resend (serveurs d’envoi en Irlande, Union européenne ; société américaine, mêmes garanties).</li>
           <li>Chat, démo vocale et agent téléphonique Emma : ElevenLabs (société américaine, transferts encadrés par les clauses contractuelles types de la Commission européenne).</li>
           <li>Messagerie et boîte d’envoi de la prospection : IONOS (Union européenne).</li>
+          <li>Protection anti-robots du formulaire, du chat et de la démo : Cloudflare (société américaine, transferts encadrés par les clauses contractuelles types et le cadre de protection des données UE–États-Unis).</li>
           <li>Banque professionnelle et facturation : établissement bancaire français, qui conserve les factures et les opérations.</li>
           <li>L’expérience sonore et les visuels Door Knight sont servis depuis nos propres sites (fdastudio.fr et doorknight.games).</li>
         </ul>
