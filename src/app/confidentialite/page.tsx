@@ -63,10 +63,10 @@ export default function PrivacyPage() {
         <h2>Durées de conservation</h2>
         <ul>
           <li>Demandes de projet sans suite : trois ans à compter du dernier échange, puis suppression.</li>
-          <li>Clients : pendant la relation, puis trois ans après le dernier échange pour les données commerciales. Devis signés et factures : dix ans, comme l’exige le Code de commerce.</li>
+          <li>Clients : pendant la relation, puis trois ans après le dernier échange pour les données commerciales (échanges, notes, projets, devis non signés), effacées automatiquement. Devis signés : cinq ans après le dernier échange, durée de prescription des contrats entre commerçants. Factures : dix ans après la clôture de l’exercice, comme l’exige le Code de commerce.</li>
           <li>Prospection : douze mois après le dernier échange, puis suppression automatique. En cas d’opposition, seule l’adresse (ou le domaine) est conservée, pour ne plus vous écrire.</li>
           <li>Chat, démo vocale et appels d’Emma : 30 jours. L’audio n’est jamais enregistré.</li>
-          <li>Empreinte anti-abus des démos : jusqu’à la fin du mois suivant.</li>
+          <li>Empreinte anti-abus des démos : jusqu’à la fin du mois suivant. Empreinte anti-abus du formulaire de contact : 30 jours.</li>
         </ul>
       </div>
       <div>
