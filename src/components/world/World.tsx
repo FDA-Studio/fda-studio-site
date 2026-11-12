@@ -117,7 +117,8 @@ export function World() {
         requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
-      // Tous les films et tous les sons en mémoire avant d'ouvrir les portes :
+      // Le premier film et tous les sons en mémoire avant d’ouvrir les portes (les films suivants
+      // continuent de charger pendant le vol, voir preloadFrames) :
       // la musique démarre à l'instant du clic « Entrer avec le son ».
       Promise.all([
         world.preload((p) => {

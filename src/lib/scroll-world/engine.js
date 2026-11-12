@@ -281,19 +281,41 @@ export function mountScrollWorld(container, config) {
   const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 2 : 2);
   function frameSpec(s) { return (isMobile() && s.framesM) ? s.framesM : s.frames; }
   function frameUrl(spec, i) { return spec.base + String(i + 1).padStart(3, '0') + '.' + (spec.ext || 'webp'); }
+  // (FDA) Chargement progressif : la promesse se résout dès que le PREMIER film est en mémoire
+  // (la progression affichée suit ce premier film) ; les suivants continuent en arrière-plan,
+  // dans l'ordre du vol, et chacun passe en lecture image par image dès qu'il est complet.
+  // Tant qu'un film n'est pas arrivé, sa scène montre son affiche fixe (fondu enchaîné).
   function preloadFrames(onProgress) {
     const list = SEGMENTS.filter(s => frameSpec(s) && !s.loading);
-    list.forEach(s => { s.loading = true; s.blobs = new Array(frameSpec(s).count).fill(null); s.cache = new Map(); s.decoding = new Map(); s.lastDrawn = -1; });
+    list.forEach(s => { s.loading = true; s.blobs = new Array(frameSpec(s).count).fill(null); s.left = frameSpec(s).count; s.cache = new Map(); s.decoding = new Map(); s.lastDrawn = -1; });
     const jobs = []; list.forEach(s => { const spec = frameSpec(s); for (let i = 0; i < spec.count; i++) jobs.push([s, i]); });
-    const total = jobs.length; let done = 0, next = 0;
-    const report = () => onProgress && onProgress(done / total);
+    const lead = list[0];
+    let next = 0, resolveLead;
+    const leadReady = new Promise(res => { resolveLead = res; });
+    if (!lead) resolveLead();
+    const finish = (s) => {
+      if (!alive) return;
+      const c = document.createElement('canvas'); c.className = 'sw-scene__video';
+      s.el.appendChild(c); s.canvas = c; s.ctx2d = c.getContext('2d', { alpha: false });
+      s.ctx2d.imageSmoothingEnabled = true; s.ctx2d.imageSmoothingQuality = 'high';
+      s.hasClip = true; s.ready = true; sizeCanvas(s);
+      // la première image est prête tout de suite : plus d'affiche à attendre
+      decodeFrame(s, 0).then(() => { drawFrame(s, 0); s.el.classList.add('has-clip'); });
+      decodeFrame(s, 1); decodeFrame(s, 2);
+      if (s === lead) { onProgress && onProgress(1); resolveLead(); }
+    };
     const worker = () => {
+      if (!alive) return Promise.resolve();
       const k = next++; if (k >= jobs.length) return Promise.resolve();
       const [s, i] = jobs[k];
       return fetch(frameUrl(frameSpec(s), i)).then(r => r.ok ? r.blob() : null).catch(() => null)
-        .then(b => { s.blobs[i] = b; done++; report(); }).then(worker);
+        .then(b => {
+          s.blobs[i] = b; s.left--;
+          if (s === lead && s.left > 0 && onProgress) onProgress(1 - s.left / frameSpec(s).count);
+          if (s.left === 0) finish(s);
+        }).then(worker);
     };
-    // (FDA) Les films ne démarrent qu'une fois la première affiche réellement peinte à l'écran
+    // Les films ne démarrent qu'une fois la première affiche réellement peinte à l'écran
     // (chargée, puis une image d'affichage, plus une courte marge ; au plus 3 s) : sinon les
     // ~1 200 photogrammes lui disputent la bande passante et l'image principale arrive en dernier.
     const first = SEGMENTS[0] && SEGMENTS[0].img;
@@ -304,18 +326,8 @@ export function mountScrollWorld(container, config) {
     const painted = loaded.then(() => new Promise(res => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(res, 400)))));
     const firstShown = Promise.race([painted, new Promise(res => setTimeout(res, 3000))]);
     // 10 téléchargements en parallèle : le temps de chargement suit le débit, pas la latence
-    return firstShown.then(() => Promise.all(Array.from({ length: 10 }, worker))).then(() => {
-      list.forEach(s => {
-        const c = document.createElement('canvas'); c.className = 'sw-scene__video';
-        s.el.appendChild(c); s.canvas = c; s.ctx2d = c.getContext('2d', { alpha: false });
-        s.ctx2d.imageSmoothingEnabled = true; s.ctx2d.imageSmoothingQuality = 'high';
-        s.hasClip = true; s.ready = true; sizeCanvas(s);
-        // la première image est prête tout de suite : plus d'affiche à attendre
-        decodeFrame(s, 0).then(() => { drawFrame(s, 0); s.el.classList.add('has-clip'); });
-        decodeFrame(s, 1); decodeFrame(s, 2);
-      });
-      onProgress && onProgress(1);
-    });
+    firstShown.then(() => Promise.all(Array.from({ length: 10 }, worker)));
+    return leadReady;
   }
   function sizeCanvas(s) {
     if (!s.canvas) return;
