@@ -6,7 +6,10 @@ Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport m
   #15 vitesse de l'accueil (Lighthouse mobile 41-48 -> 62-68, LCP 13,7 s -> ~2,5 s) ;
   #18 pages de service enrichies (~650 -> 920-1 140 mots) et bloc « Pour aller plus loin » vers
   les articles du même service ; #19 image de partage propre à chaque article (/ressources/<slug>/og.png).
-  Reste à décider : entrée dans le vol dès le premier film chargé (~34 Mo de photogrammes sur mobile).
+  Fusionnées et en ligne le 12/11 à la demande d'Antoine, avec #20 (entrée dans le vol dès le premier
+  film chargé). Production après coup : Lighthouse mobile accueil 75-81 (avant 41), LCP ~2 s ;
+  attente de la porte ~7 s mobile / ~9 s ordinateur (avant 25 s / 38 s, mesuré depuis le même serveur).
+  Reste côté Antoine : fiche Google Business Profile reliée au site, sitemap déclaré dans Search Console.
 - 2026-11-10 (mardi, passage agent) — Article « Agent vocal IA ou secrétariat téléphonique :
   que choisir pour votre PME ? » (mot-clé : secrétariat téléphonique IA ; sources : guides tarifaires
   Companeo, comparatif CloudTalk de septembre 2026). Premier article passé en `publié` dans le plan.
