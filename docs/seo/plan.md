@@ -2,7 +2,8 @@
 
 Priorité : P1 = intention d'achat forte (prix, choix d'un prestataire), P2 = comparatif / méthode,
 P3 = notoriété. L'agent prend le premier sujet `à faire` de la plus haute priorité.
-Statuts : `à faire` → `proposé` (PR ouverte, lien) → `publié` (PR fusionnée, date).
+Statuts : `à faire` → `proposé` (PR ouverte, lien) → `publié` (PR fusionnée, date), ou `doublon (voir <slug>)`
+quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 
 ## Agents vocaux et IA — service : agence-ia-tours
 

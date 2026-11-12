@@ -23,7 +23,8 @@ const FrontMatter = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   service: z.enum(serviceSlugs),
-  keywords: z.array(z.string()).max(12).default([]),
+  /** Le premier mot-clé est le mot-clé principal : il doit être unique sur tout le site (anti-doublon). */
+  keywords: z.array(z.string().min(2)).min(1).max(12),
   draft: z.boolean().default(false),
 });
 
@@ -131,8 +132,40 @@ export function getArticles(): Article[] {
     const fm = { ...parsed.data, title: frTypo(parsed.data.title), description: frTypo(parsed.data.description) };
     return { ...fm, slug, html, toc, readingMinutes: Math.max(1, Math.round(words / 220)) };
   });
+  assertNoDuplicates(all);
   cache = all.filter((a) => !a.draft).sort((a, b) => b.date.localeCompare(a.date));
   return cache;
+}
+
+/** Texte comparable : minuscules, sans accents ni ponctuation, espaces simples. */
+const norm = (t: string) =>
+  t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+const STOP = new Set(["le", "la", "les", "un", "une", "des", "de", "du", "d", "l", "et", "ou", "en", "a", "au", "aux", "pour", "par", "sur", "dans", "avec", "votre", "vos", "son", "sa", "ses", "ce", "que", "qui", "quoi", "est", "il", "elle", "on", "ne", "pas", "plus", "faut", "comment", "quel", "quelle", "quels", "quelles"]);
+const words = (t: string) => new Set(norm(t).split(" ").filter((w) => w.length > 1 && !STOP.has(w) && !/^\d+$/.test(w)));
+
+/**
+ * Anti-doublon, vérifié à chaque build (donc avant toute publication automatique) :
+ * deux articles ne peuvent pas viser le même mot-clé principal, ni porter le même titre
+ * ou un titre presque identique (au moins 75 % de mots significatifs en commun).
+ * Le build échoue avec un message clair : l'agent SEO ne peut alors pas fusionner.
+ */
+function assertNoDuplicates(list: { slug: string; title: string; keywords: string[] }[]) {
+  for (let i = 0; i < list.length; i++) {
+    for (let j = i + 1; j < list.length; j++) {
+      const a = list[i], b = list[j];
+      const why =
+        norm(a.keywords[0]) === norm(b.keywords[0]) ? `même mot-clé principal « ${a.keywords[0]} »`
+        : norm(a.title) === norm(b.title) ? "même titre"
+        : (() => {
+            const wa = words(a.title), wb = words(b.title);
+            const inter = [...wa].filter((w) => wb.has(w)).length;
+            const union = new Set([...wa, ...wb]).size || 1;
+            return inter / union >= 0.75 ? `titres presque identiques (${Math.round((100 * inter) / union)} % de mots communs)` : "";
+          })();
+      if (why) throw new Error(`Article en doublon : ${a.slug}.md et ${b.slug}.md (${why}). Choisir un autre sujet ou un autre angle.`);
+    }
+  }
 }
 
 export const articleBySlug = (slug: string) => getArticles().find((a) => a.slug === slug);

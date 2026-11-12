@@ -3,7 +3,9 @@
 Ce fichier est lu au début de chaque passage de l'agent SEO (tâche planifiée, 2 fois par semaine).
 Il fait foi : en cas de doute, l'agent suit ce fichier plutôt que son intuition.
 
-**Mode de publication : automatique** (choix d'Antoine, 10/11/2026). L'agent publie lui-même
+**Mode de publication : automatique** (choix d'Antoine, 10/11/2026). L'agent tourne dans le cloud
+(tâche planifiée, mardi et vendredi) : il n'a besoin ni de l'ordinateur d'Antoine ni de son
+navigateur. Tout passe par le dépôt GitHub ; Vercel publie `main` automatiquement. L'agent publie lui-même
 l'article une fois tous les contrôles passés. Il garde une trace complète (PR fusionnée, journal)
 et prévient Antoine après publication.
 
@@ -19,7 +21,19 @@ intention d'achat ne compte pas.
 2. Vérifier les pull requests SEO encore ouvertes sur `FDA-Studio/fda-studio-site` (ce sont des
    articles mis en attente pour relecture humaine, voir « Quand ne pas publier »). S'il y en a 3
    ou plus, ne pas écrire de nouvel article : faire seulement l'audit et le rappeler à Antoine.
-3. Choisir le prochain sujet `à faire` du plan, le plus prioritaire, qui n'a pas de PR ouverte.
+3. Choisir le prochain sujet `à faire` du plan, le plus prioritaire, qui n'a pas de PR ouverte,
+   puis **vérifier qu'il n'est pas déjà traité** (anti-doublon) :
+   - lire le titre et le mot-clé principal (premier de `keywords`) de chaque fichier de
+     `content/ressources/` et de chaque PR « Article SEO » ouverte ;
+   - écarter le sujet si un article existant vise le même mot-clé principal, une variante proche
+     (singulier/pluriel, synonyme évident : « prix » / « coût » / « tarif ») ou répond à la même
+     question. Dans ce cas, passer le sujet en `doublon (voir <slug>)` dans le plan et prendre le
+     suivant ;
+   - un sujet voisin reste possible s'il répond à une autre question (ex. « prix » puis
+     « comparatif ») : le dire dans la description de la PR.
+   Le build refuse de toute façon deux articles au même mot-clé principal ou au titre presque
+   identique (`src/lib/articles.ts`) : un build rouge pour doublon = changer de sujet, jamais
+   modifier ou supprimer l'article déjà publié.
 4. Écrire l'article (règles ci-dessous) dans `content/ressources/<slug>.md`, sur une branche
    `seo/<AAAA-MM-JJ>-<slug>`, puis :
    - lancer `pnpm install --frozen-lockfile`, `pnpm typecheck` et `pnpm build` : tout doit passer ;
@@ -49,6 +63,8 @@ intention d'achat ne compte pas.
 - Pas de promesse juridique, fiscale ou médicale ; pas de dénigrement nommé d'un concurrent.
 - Pas de texte copié ; ton FDA Studio ; 1 000 à 1 600 mots ; liens internes valides.
 - Un seul article publié par passage, deux par semaine au maximum.
+- Pas de doublon : mot-clé principal unique sur le site, sujet différent des articles publiés et
+  des PR ouvertes (étape 3).
 
 ## Quand ne pas publier (laisser la PR ouverte pour Antoine)
 
