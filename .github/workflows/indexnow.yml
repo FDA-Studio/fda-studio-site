@@ -1,0 +1,47 @@
+name: IndexNow (Bing, Yandex, Seznam…)
+
+# À chaque mise en ligne d'un article ou d'une page, prévient les moteurs compatibles
+# IndexNow (Bing en tête) que les adresses du sitemap ont changé, pour une indexation
+# en quelques heures au lieu de plusieurs jours. La clé est publique par conception :
+# elle est servie par le site (public/<clé>.txt) et prouve que le domaine nous appartient.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/ressources/**"
+      - "src/app/**"
+      - "src/lib/services.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    env:
+      SITE: https://fdastudio.fr
+      KEY: d32e6bc8ec7acc3cc323e677e12defbb
+    steps:
+      - name: Attendre la mise en ligne par Vercel
+        run: |
+          # Vercel publie main en 1 à 3 minutes : on attend que la clé et le sitemap répondent.
+          for i in $(seq 1 30); do
+            if curl -fsS "$SITE/$KEY.txt" | grep -q "$KEY" && curl -fsS "$SITE/sitemap.xml" >/dev/null; then exit 0; fi
+            sleep 20
+          done
+          echo "::error::Le site ne répond pas avec la clé IndexNow"; exit 1
+      - name: Envoyer les adresses du sitemap
+        run: |
+          sleep 90  # laisser le déploiement se terminer pour toutes les pages
+          urls=$(curl -fsS "$SITE/sitemap.xml" | grep -o '<loc>[^<]*' | sed 's/<loc>//' | jq -R . | jq -s .)
+          body=$(jq -n --arg host fdastudio.fr --arg key "$KEY" --arg loc "$SITE/$KEY.txt" --argjson urls "$urls"             '{host: $host, key: $key, keyLocation: $loc, urlList: $urls}')
+          echo "$body" | jq '.urlList'
+          code=$(curl -sS -o /tmp/r.txt -w '%{http_code}' -X POST https://api.indexnow.org/indexnow             -H 'Content-Type: application/json; charset=utf-8' -d "$body")
+          echo "Réponse IndexNow : $code"; cat /tmp/r.txt || true
+          # 200 = reçu, 202 = reçu (clé en cours de vérification)
+          [ "$code" = 200 ] || [ "$code" = 202 ]

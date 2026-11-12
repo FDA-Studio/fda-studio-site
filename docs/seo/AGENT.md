@@ -121,7 +121,9 @@ Nom de fichier = slug : minuscules, chiffres et tirets, sans date (ex. `prix-sit
 Sur https://fdastudio.fr : pages qui répondent (accueil, services, ressources, articles), `sitemap.xml`
 et `robots.txt` cohérents, une balise title et une meta description par page, un seul H1,
 liens internes non cassés, données structurées présentes (Organization, Service, BlogPosting,
-BreadcrumbList), temps de chargement raisonnable sur mobile. Noter les problèmes dans le journal.
+BreadcrumbList), temps de chargement raisonnable sur mobile. Vérifier aussi que le dernier
+passage du workflow « IndexNow » (GitHub Actions) est vert : il prévient Bing et les autres
+moteurs IndexNow à chaque mise en ligne. Noter les problèmes dans le journal.
 
 ## Où regarder
 
