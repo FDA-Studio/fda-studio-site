@@ -5,3 +5,9 @@ out
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
+
+# Secrets: never commit environment files or Vercel/CLI links
+.env
+.env.*
+!.env.example
+.vercel
