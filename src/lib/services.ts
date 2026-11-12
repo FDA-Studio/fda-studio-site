@@ -18,6 +18,10 @@ export type Service = {
   serviceType: string;
   offers: { title: string; text: string }[];
   steps: { title: string; text: string }[];
+  /** Pour qui : situations typiques de prospects (aucun client nommé) */
+  forWhom: { title: string; text: string }[];
+  /** Ce que comprend chaque projet */
+  included: string[];
   local: string;
   faq: { q: string; a: string }[];
   /** Lien vers une démonstration sur l'accueil */
@@ -59,6 +63,21 @@ export const services: Service[] = [
       { title: "Mise en ligne", text: "Nom de domaine, hébergement, Google Search Console : tout est branché et vérifié." },
       { title: "Suivi", text: "Évolutions, nouvelles pages et améliorations du référencement au fil du temps." },
     ],
+    forWhom: [
+      { title: "Artisans et entreprises du bâtiment", text: "Être trouvé quand un particulier cherche un professionnel près de chez lui, montrer ses chantiers et recevoir des demandes de devis complètes plutôt que des appels manqués." },
+      { title: "Commerces et restaurants", text: "Horaires, carte, réservation ou vente en ligne : les informations que vos clients cherchent sur leur téléphone, à jour et rapides à afficher." },
+      { title: "Professions libérales et cabinets", text: "Présenter vos domaines d’intervention avec clarté, rassurer avant le premier rendez-vous et permettre la prise de contact en quelques secondes." },
+      { title: "PME et entreprises de services", text: "Un site qui explique ce que vous faites, pour qui, et qui alimente votre équipe commerciale avec des demandes qualifiées." },
+    ],
+    included: [
+      "Un design sur mesure, sans thème acheté ni modèle recyclé",
+      "Un affichage pensé d’abord pour le téléphone, testé sur mobile, tablette et ordinateur",
+      "Des pages rapides : images optimisées, code léger, chargement vérifié avant la mise en ligne",
+      "Les bases du référencement : balises, données structurées, plan du site, adresses lisibles",
+      "Un formulaire de contact protégé contre le spam, qui arrive directement dans votre boîte",
+      "Des mentions légales et une politique de confidentialité à compléter avec vos informations",
+      "Le branchement de Google Search Console pour suivre votre présence sur Google",
+    ],
     local:
       "Le studio est installé à Fondettes, aux portes de Tours. Nous rencontrons volontiers les entreprises de Tours, Joué-lès-Tours, Saint-Cyr-sur-Loire, Chambray-lès-Tours, Amboise et du reste de l’Indre-et-Loire, et nous travaillons à distance avec des clients partout en France.",
     faq: [
@@ -81,6 +100,18 @@ export const services: Service[] = [
       {
         q: "Pouvez-vous reprendre un site existant ?",
         a: "Oui, nous réalisons des refontes complètes ou partielles, en préservant les adresses des pages et le référencement déjà acquis.",
+      },
+      {
+        q: "Combien de temps faut-il pour créer un site ?",
+        a: "Cela dépend du nombre de pages, des contenus à produire et des fonctions attendues. Un site vitrine se compte généralement en semaines, une boutique en ligne demande davantage. Le planning est fixé dans le devis, et les contenus fournis à temps sont souvent ce qui fait gagner le plus de temps.",
+      },
+      {
+        q: "Serai-je propriétaire de mon site et de mon nom de domaine ?",
+        a: "Oui. Le nom de domaine est enregistré à votre nom et vous recevez les accès à votre site. Vous restez libre de changer de prestataire.",
+      },
+      {
+        q: "Pourrai-je modifier les contenus moi-même ?",
+        a: "Si vous le souhaitez, oui : nous pouvons prévoir un espace d’édition simple pour vos textes, vos photos ou vos actualités. Pour les sites qui évoluent peu, nous pouvons aussi nous charger des mises à jour.",
       },
     ],
   },
@@ -118,6 +149,21 @@ export const services: Service[] = [
       { title: "Contrôle", text: "Un humain valide les décisions importantes ; les erreurs sont suivies et corrigées." },
       { title: "Suivi", text: "Coûts, qualité des réponses et nouveaux besoins sont revus régulièrement." },
     ],
+    forWhom: [
+      { title: "Entreprises qui ratent des appels", text: "Artisans sur les chantiers, cabinets en rendez-vous, commerces débordés aux heures de pointe : un agent vocal décroche, répond aux questions courantes et prend les rendez-vous." },
+      { title: "Équipes noyées sous les e-mails", text: "Les demandes entrantes sont lues, triées, résumées et saisies dans le CRM ; votre équipe n’a plus qu’à valider et répondre." },
+      { title: "Services administratifs qui ressaisissent", text: "Factures, bons de commande, formulaires : les informations sont extraites des documents et rangées au bon endroit, avec une vérification humaine." },
+      { title: "Dirigeants qui veulent avancer sans se tromper", text: "Un audit pour savoir où l’IA fait vraiment gagner du temps dans votre entreprise, ce que cela coûte à l’usage et ce qu’il vaut mieux ne pas automatiser." },
+    ],
+    included: [
+      "Un audit de vos processus avant toute recommandation",
+      "Le choix du modèle d’IA et des fournisseurs, expliqué : coût à l’usage, hébergement des données, limites",
+      "Un prototype testé sur vos vrais cas avant le déploiement",
+      "Le branchement sur vos outils : téléphonie, agenda, e-mails, CRM, ERP, site",
+      "Des garde-fous : réponses limitées à vos informations, transfert vers un humain, journal des actions",
+      "Des clés et accès conservés côté serveur, jamais exposés dans le navigateur",
+      "Un suivi régulier de la qualité des réponses et des coûts",
+    ],
     local:
       "Basé à Fondettes, près de Tours, le studio accompagne les PME, artisans, commerces et professions libérales de Touraine, ainsi que des entreprises partout en France à distance. Les données sont traitées dans le respect du RGPD et les choix de fournisseurs d’IA vous sont expliqués.",
     faq: [
@@ -140,6 +186,18 @@ export const services: Service[] = [
       {
         q: "Puis-je voir des exemples ?",
         a: "Oui : la page d’accueil présente quatre démonstrations animées (agent vocal, assistant client, automatisation, lecture de documents). Ce sont des concepts avec des données fictives.",
+      },
+      {
+        q: "Combien coûte une IA à l’usage ?",
+        a: "Une partie du coût dépend de l’utilisation : minutes d’appel pour un agent vocal, volume de messages ou de documents traités. Nous estimons ce coût avant le projet et le suivons ensuite. Nos articles détaillent les ordres de grandeur du marché, par exemple pour un agent vocal.",
+      },
+      {
+        q: "Faut-il changer de logiciels pour utiliser l’IA ?",
+        a: "Non, dans la plupart des cas. L’intérêt est justement de brancher l’IA sur les outils que vous utilisez déjà, sans imposer une nouvelle façon de travailler à votre équipe.",
+      },
+      {
+        q: "Combien de temps pour mettre en place un premier usage ?",
+        a: "Un premier cas bien délimité, comme un agent qui répond au téléphone ou le tri des e-mails, peut être testé rapidement sous forme de prototype. Le délai complet dépend des outils à connecter et du niveau de contrôle souhaité.",
       },
     ],
     demo: { href: "/#creations", label: "Voir les démos IA" },
@@ -177,6 +235,21 @@ export const services: Service[] = [
       { title: "Publication", text: "Mise en ligne, publication sur les stores, comptes et sécurité vérifiés." },
       { title: "Évolutions", text: "Nouvelles fonctions, corrections et mises à jour des systèmes au fil du temps." },
     ],
+    forWhom: [
+      { title: "Porteurs de projet et startups", text: "Transformer une idée en première version utilisable, la mettre entre les mains de vrais utilisateurs et la faire évoluer selon leurs retours, sans tout construire d’un coup." },
+      { title: "PME aux outils dispersés", text: "Remplacer les tableurs, les e-mails et les ressaisies par un outil unique, pensé pour la façon dont votre équipe travaille réellement." },
+      { title: "Entreprises de terrain", text: "Techniciens, livreurs, commerciaux : une application mobile pour les interventions, les photos, les signatures et la remontée d’informations, même avec une connexion faible." },
+      { title: "Entreprises qui veulent un service en ligne", text: "Un espace client, une plateforme de réservation ou un logiciel par abonnement, avec comptes, paiements et administration." },
+    ],
+    included: [
+      "Un cadrage écrit de la première version : utilisateurs, écrans, fonctions prioritaires",
+      "Des maquettes cliquables validées avant le développement",
+      "Des versions de test à essayer tout au long du projet",
+      "Une sécurité vérifiée : comptes, permissions, règles d’accès aux données, sauvegardes",
+      "La publication sur l’App Store et Google Play, ou la mise en ligne de l’application web",
+      "La documentation technique et la remise des accès : le code vous appartient",
+      "Un accompagnement pour les évolutions et les mises à jour des systèmes",
+    ],
     local:
       "Le studio est installé à Fondettes, près de Tours. Nous travaillons avec des entreprises et des porteurs de projet de Touraine en rendez-vous, et partout en France à distance.",
     faq: [
@@ -199,6 +272,18 @@ export const services: Service[] = [
       {
         q: "Travaillez-vous en dehors de Tours ?",
         a: "Oui, avec des clients partout en France, en visioconférence et avec des versions de test partagées tout au long du projet.",
+      },
+      {
+        q: "Qui est propriétaire du code de l’application ?",
+        a: "Vous. Le code, les comptes des stores et les accès aux services sont à votre nom, et la documentation vous est remise.",
+      },
+      {
+        q: "Qu’est-ce qu’une première version utile ?",
+        a: "C’est la version la plus simple qui rend déjà service à vos utilisateurs. Elle permet de vérifier l’intérêt du projet et de décider des fonctions suivantes à partir de l’usage réel, plutôt que sur des suppositions.",
+      },
+      {
+        q: "L’application peut-elle se connecter à mes logiciels actuels ?",
+        a: "Oui, dès que ces logiciels proposent une API ou un export : CRM, ERP, facturation, agenda, paiement. Nous vérifions ce point dès le cadrage.",
       },
     ],
   },

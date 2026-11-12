@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { ArrowIcon } from "@/components/icons";
 import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
+import { formatDate, getArticles } from "@/lib/articles";
 import { serviceBySlug, services } from "@/lib/services";
 import { site } from "@/lib/site";
 
@@ -30,6 +31,8 @@ export default async function ServicePage({ params }: Props) {
   if (!s) notFound();
   const url = `${site.url}/${s.slug}/`;
   const others = services.filter((o) => o.slug !== s.slug);
+  // Maillage interne : les articles du même service, les plus récents d'abord
+  const related = getArticles().filter((a) => a.service === s.slug).slice(0, 4);
 
   const serviceLd = {
     "@context": "https://schema.org",
@@ -104,6 +107,21 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
 
+      {/* Pour qui */}
+      <section aria-labelledby="for-title" className="section border-t border-line">
+        <div className="wrap">
+          <h2 id="for-title" className="section-title max-w-[18ch]">Pour qui.</h2>
+          <ul className="mt-14 grid gap-10 md:mt-20 md:grid-cols-2 md:gap-x-16">
+            {s.forWhom.map((f) => (
+              <li key={f.title} className="border-t border-line pt-6">
+                <h3 className="text-xl font-semibold tracking-[-0.02em]">{f.title}</h3>
+                <p className="mt-3 text-soft">{f.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* Méthode : une vraie séquence, d'où la numérotation */}
       <section aria-labelledby="steps-title" className="section bg-graphite">
         <div className="wrap grid gap-12 lg:grid-cols-12">
@@ -119,6 +137,21 @@ export default async function ServicePage({ params }: Props) {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* Ce que comprend chaque projet */}
+      <section aria-labelledby="included-title" className="section">
+        <div className="wrap grid gap-12 lg:grid-cols-12">
+          <h2 id="included-title" className="section-title lg:col-span-4">Ce que comprend chaque projet.</h2>
+          <ul className="lg:col-span-7 lg:col-start-6">
+            {s.included.map((it) => (
+              <li key={it} className="flex gap-4 border-t border-line py-4 text-lg text-soft">
+                <span aria-hidden className="mt-[0.7em] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                {it}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -144,6 +177,29 @@ export default async function ServicePage({ params }: Props) {
           </dl>
         </div>
       </section>
+
+      {/* Articles du même service : réponses détaillées aux questions des prospects */}
+      {related.length > 0 && (
+        <section aria-labelledby="related-title" className="section border-t border-line">
+          <div className="wrap">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <h2 id="related-title" className="section-title max-w-[18ch]">Pour aller plus loin.</h2>
+              <Link href="/ressources/" className="link-line text-soft hover:text-paper">Toutes les ressources</Link>
+            </div>
+            <ul className="mt-12 grid gap-px overflow-hidden rounded-[1.5rem] border border-line bg-line md:grid-cols-2">
+              {related.map((a) => (
+                <li key={a.slug} className="bg-ink">
+                  <Link href={`/ressources/${a.slug}/`} className="group flex h-full flex-col gap-3 p-6 md:p-8">
+                    <span className="text-sm text-muted">{formatDate(a.date)} · {a.readingMinutes} min de lecture</span>
+                    <span className="text-xl font-semibold tracking-[-0.02em] text-paper transition-colors duration-150 group-hover:text-accent-bright">{a.title}</span>
+                    <span className="text-soft">{a.description}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* Clôture et maillage interne */}
       <section aria-labelledby="cta-title" className="section bg-graphite">
