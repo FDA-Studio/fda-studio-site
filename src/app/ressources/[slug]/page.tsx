@@ -23,7 +23,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     ...meta,
     title: { absolute: `${a.title} | ${site.name}` },
-    openGraph: { ...meta.openGraph, type: "article", publishedTime: a.date, modifiedTime: a.updated ?? a.date },
+    openGraph: {
+      ...meta.openGraph,
+      type: "article",
+      publishedTime: a.date,
+      modifiedTime: a.updated ?? a.date,
+      images: [{ url: `/ressources/${a.slug}/og.png`, width: 1200, height: 630, alt: a.title }],
+    },
+    twitter: { ...meta.twitter, images: [`/ressources/${a.slug}/og.png`] },
   };
 }
 
