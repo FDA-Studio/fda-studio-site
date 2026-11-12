@@ -149,9 +149,12 @@ export function mountScrollWorld(container, config) {
   [sky, scrollbar, config.topbar === false ? null : topbar, stage, copylayer, route, hint, track].forEach(n => n && container.appendChild(n));
 
   // segment scenes
-  SEGMENTS.forEach(s => {
+  SEGMENTS.forEach((s, si) => {
     const scene = el('div', 'sw-scene'); scene.style.setProperty('--sw-accent', s.accent || '');
-    const img = el('img', 'sw-scene__still'); img.alt = ''; img.decoding = 'async'; img.loading = 'lazy';
+    const img = el('img', 'sw-scene__still'); img.alt = ''; img.decoding = 'async';
+    // (FDA) La première affiche est l'image principale de la page (LCP) : chargée tout de suite,
+    // en priorité. Les suivantes restent différées.
+    if (si === 0) { img.loading = 'eager'; img.fetchPriority = 'high'; } else img.loading = 'lazy';
     const poster = (isMobile() && s.stillM) ? s.stillM : s.still;
     if (poster) img.src = poster;
     scene.appendChild(img); stage.appendChild(scene);
@@ -290,8 +293,18 @@ export function mountScrollWorld(container, config) {
       return fetch(frameUrl(frameSpec(s), i)).then(r => r.ok ? r.blob() : null).catch(() => null)
         .then(b => { s.blobs[i] = b; done++; report(); }).then(worker);
     };
+    // (FDA) Les films ne démarrent qu'une fois la première affiche réellement peinte à l'écran
+    // (chargée, puis une image d'affichage, plus une courte marge ; au plus 3 s) : sinon les
+    // ~1 200 photogrammes lui disputent la bande passante et l'image principale arrive en dernier.
+    const first = SEGMENTS[0] && SEGMENTS[0].img;
+    const loaded = (!first || first.complete) ? Promise.resolve() : new Promise(res => {
+      first.addEventListener('load', res, { once: true });
+      first.addEventListener('error', res, { once: true });
+    });
+    const painted = loaded.then(() => new Promise(res => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(res, 400)))));
+    const firstShown = Promise.race([painted, new Promise(res => setTimeout(res, 3000))]);
     // 10 téléchargements en parallèle : le temps de chargement suit le débit, pas la latence
-    return Promise.all(Array.from({ length: 10 }, worker)).then(() => {
+    return firstShown.then(() => Promise.all(Array.from({ length: 10 }, worker))).then(() => {
       list.forEach(s => {
         const c = document.createElement('canvas'); c.className = 'sw-scene__video';
         s.el.appendChild(c); s.canvas = c; s.ctx2d = c.getContext('2d', { alpha: false });

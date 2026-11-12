@@ -28,6 +28,7 @@ export function World() {
     let world: { end: () => number; progress: (i: number) => number; time: (i: number) => number; preload: (cb?: (p: number) => void) => Promise<void>; destroy: () => void } | null = null;
     let disposed = false;
     let onScroll = () => {};
+    let lastPct = -1;
 
     (async () => {
       const { mountScrollWorld } = await import("@/lib/scroll-world/engine.js");
@@ -119,7 +120,11 @@ export function World() {
       // Tous les films et tous les sons en mémoire avant d'ouvrir les portes :
       // la musique démarre à l'instant du clic « Entrer avec le son ».
       Promise.all([
-        world.preload((p) => { if (!disposed) setProgress(p); }),
+        world.preload((p) => {
+          // ~1 200 fichiers : on ne redessine l'écran d'arrivée qu'à chaque pour cent gagné
+          const pct = Math.floor(p * 100) / 100;
+          if (!disposed && pct !== lastPct) { lastPct = pct; setProgress(pct); }
+        }),
         getSound().prefetch(),
       ]).then(() => { if (!disposed) { setProgress(1); setReady(true); } });
     })();

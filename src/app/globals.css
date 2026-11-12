@@ -510,6 +510,10 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .world .sw-route__label { color: var(--color-paper); background: rgba(10,10,11,0.8); border-color: var(--color-line-strong); }
 .world .sw-hint { color: var(--color-muted); }
 .world .sw-copy { top: 54%; }
+/* Avant l'entrée, l'écran d'arrivée (opaque) recouvre tout : le film n'est pas peint en dessous.
+   L'image principale de la page est alors celle que voit réellement le visiteur (l'écran d'arrivée),
+   et le navigateur ne dessine pas pour rien un film invisible. Le film apparaît dès le clic. */
+.world[data-entered="false"] .sw-stage, .world[data-entered="false"] .sw-copylayer { visibility: hidden; }
 /* Avant l'entrée, l'indice « défilez » reste caché */
 .world[data-entered="false"] .sw-hint { opacity: 0 !important; }
 
