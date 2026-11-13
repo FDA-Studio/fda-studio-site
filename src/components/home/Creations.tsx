@@ -7,6 +7,7 @@ import { CrmShowcase } from "@/components/creations/CrmShowcase";
 import { DocReader } from "@/components/creations/DocReader";
 import { TalkToEmma } from "@/components/creations/TalkToEmma";
 import { SystemMap } from "@/components/creations/SystemMap";
+import { AgentOffice } from "@/components/creations/AgentOffice";
 import { Live, PauseButton } from "@/components/motion/Live";
 import { sfx } from "@/lib/sound";
 
@@ -147,6 +148,28 @@ export function Creations() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Le bureau : la page de notre CRM où l'on voit les agents travailler */}
+        <div id="demo-bureau" className="mt-16 scroll-mt-28 border-t border-line pt-12 md:mt-24 md:pt-16">
+          <div className="grid gap-6 md:grid-cols-12 md:items-end">
+            <h3 className="section-title md:col-span-7">
+              Un bureau pour
+              <br />
+              les voir travailler.
+            </h3>
+            <p className="text-lg text-soft md:col-span-5">
+              Chaque agent a son poste. Le faisceau tourne autour de celui qui travaille, et son travail part vers le CRM. C’est une page de notre propre outil, sur le web et sur mobile, rejouée ici avec une journée fictive.
+            </p>
+          </div>
+          <div className="frame mt-10 md:mt-14">
+            <FrameBar title="Le bureau des agents" />
+            <Live className="relative" threshold={0.2}>
+              <div aria-hidden="true">
+                <AgentOffice />
+              </div>
+            </Live>
           </div>
         </div>
       </div>
