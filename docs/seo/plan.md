@@ -11,7 +11,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 | --- | --- | --- | --- |
 | P1 | Combien coûte un agent vocal IA pour une PME en 2026 ? | prix agent vocal IA | publié (2026-11-10) |
 | P1 | Agent vocal IA ou secrétariat téléphonique : que choisir ? | secrétariat téléphonique IA | publié (2026-11-10, PR #1) |
-| P1 | Combien coûte un chatbot IA pour un site d'entreprise ? | prix chatbot IA | proposé (2026-11-13, PR à venir) |
+| P1 | Combien coûte un chatbot IA pour un site d'entreprise ? | prix chatbot IA | publié (2026-11-13, PR #25) |
 | P1 | Agence IA à Tours : ce qu'elle doit vous apporter et comment la choisir | agence IA Tours | à faire |
 | P2 | Appels manqués : combien perd réellement une PME, et comment les éviter | appels manqués PME | à faire |
 | P2 | Agent vocal IA : est-ce légal ? RGPD, enregistrement et transparence | agent vocal IA RGPD | à faire |
