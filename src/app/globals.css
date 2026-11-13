@@ -514,6 +514,12 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
    L'image principale de la page est alors celle que voit réellement le visiteur (l'écran d'arrivée),
    et le navigateur ne dessine pas pour rien un film invisible. Le film apparaît dès le clic. */
 .world[data-entered="false"] .sw-stage, .world[data-entered="false"] .sw-copylayer { visibility: hidden; }
+/* Avant que le moteur du film soit monté, la zone est vide : on réserve déjà sa hauteur
+   (6 scènes × 1,9 écran + 1 écran, comme le calcule le moteur). Sans cela, la suite de la page
+   se trouve un instant en haut, derrière l'écran d'arrivée, puis saute de douze écrans :
+   un décalage de mise en page invisible mais compté, et un mauvais « plus grand élément visible ».
+   svh : jamais plus haut que la piste réelle, donc aucun vide une fois le film monté. */
+.world:empty { min-height: 1240svh; }
 /* Avant l'entrée, l'indice « défilez » reste caché */
 .world[data-entered="false"] .sw-hint { opacity: 0 !important; }
 
