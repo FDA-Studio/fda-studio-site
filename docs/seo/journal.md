@@ -2,6 +2,12 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-13 (vendredi, passage agent) — Article « Combien coûte un chatbot IA pour le site d’une
+  entreprise en 2026 ? » (slug prix-chatbot-ia-site-entreprise ; mot-clé : prix chatbot IA ; 1 338 mots).
+  Anti-doublon : 2 articles existants (agent vocal), aucune PR ouverte, sujet distinct (chatbot écrit
+  vs agent vocal ; lien interne vers l’article prix agent vocal). Sources : grille officielle Intercom,
+  guide tarifaire eesel (juillet 2026), formules Crisp (DragApp, août 2026), Kolonell (septembre 2026).
+  Pas d’audit (vendredi).
 - 2026-11-12 — Chantiers SEO demandés par Antoine, en PR à relire (hors périmètre de l'agent) :
   #15 vitesse de l'accueil (Lighthouse mobile 41-48 -> 62-68, LCP 13,7 s -> ~2,5 s) ;
   #18 pages de service enrichies (~650 -> 920-1 140 mots) et bloc « Pour aller plus loin » vers
