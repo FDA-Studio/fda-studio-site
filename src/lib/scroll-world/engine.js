@@ -293,6 +293,37 @@ export function mountScrollWorld(container, config) {
     let next = 0, resolveLead;
     const leadReady = new Promise(res => { resolveLead = res; });
     if (!lead) resolveLead();
+    // (FDA) Tampon d'entrée, comme un lecteur vidéo : les portes ne s'ouvrent que si, au débit
+    // mesuré, chaque film sera arrivé avant que le visiteur n'atteigne sa scène. Connexion rapide :
+    // entrée dès le premier film. Connexion lente : on attend plus, mais aucune scène ne reste
+    // figée sur son affiche (puis ne saute quand son film arrive enfin).
+    const PACE = config.bufferPace || 4.5;      // secondes passées par scène par un visiteur pressé
+    // Unité de mesure : les octets quand le poids de chaque film est connu (les scènes n'ont pas
+    // le même poids, du simple au triple), sinon le nombre d'images.
+    const byBytes = list.length > 0 && list.every(s => frameSpec(s).bytes > 0);
+    const weight = (s) => byBytes ? frameSpec(s).bytes : frameSpec(s).count;
+    const total = list.reduce((t, s) => t + weight(s), 0);
+    let got = 0, t0 = 0, opened = false, shown = 0, leadDone = !lead;
+    const needAt = [];                           // quantité à avoir pour que le film k soit complet
+    { let acc = 0; list.forEach((s, k) => { acc += weight(s); needAt[k] = acc; }); }
+    // Quantité qu'il faut avoir en mémoire pour ouvrir maintenant, au débit courant.
+    const required = () => {
+      const first = needAt[0] || 0;
+      const dt = (performance.now() - t0) / 1000;
+      if (!t0 || dt < 0.8 || got <= 0) return total;            // débit pas encore mesurable
+      const rate = 0.7 * got / dt;                               // par seconde, avec 30 % de marge
+      let req = first;
+      for (let k = 1; k < needAt.length; k++) req = Math.max(req, needAt[k] - k * PACE * rate);
+      return Math.min(total, Math.ceil(req));
+    };
+    const checkBuffer = () => {
+      if (opened) return;
+      const req = required();
+      // La barre ne recule jamais, même si le débit mesuré baisse en cours de route.
+      shown = Math.max(shown, Math.min(1, got / Math.max(1, req)));
+      if (leadDone && got >= req - 1) { opened = true; onProgress && onProgress(1); resolveLead(); }
+      else if (onProgress) onProgress(Math.min(0.99, shown));
+    };
     const finish = (s) => {
       if (!alive) return;
       const c = document.createElement('canvas'); c.className = 'sw-scene__video';
@@ -302,7 +333,7 @@ export function mountScrollWorld(container, config) {
       // la première image est prête tout de suite : plus d'affiche à attendre
       decodeFrame(s, 0).then(() => { drawFrame(s, 0); s.el.classList.add('has-clip'); });
       decodeFrame(s, 1); decodeFrame(s, 2);
-      if (s === lead) { onProgress && onProgress(1); resolveLead(); }
+      if (s === lead) { leadDone = true; checkBuffer(); }
     };
     const worker = () => {
       if (!alive) return Promise.resolve();
@@ -311,8 +342,10 @@ export function mountScrollWorld(container, config) {
       return fetch(frameUrl(frameSpec(s), i)).then(r => r.ok ? r.blob() : null).catch(() => null)
         .then(b => {
           s.blobs[i] = b; s.left--;
-          if (s === lead && s.left > 0 && onProgress) onProgress(1 - s.left / frameSpec(s).count);
+          // une image en échec compte pour son poids moyen : l'écran d'arrivée ne reste jamais bloqué
+          got += byBytes ? (b ? b.size : frameSpec(s).bytes / frameSpec(s).count) : 1;
           if (s.left === 0) finish(s);
+          checkBuffer();
         }).then(worker);
     };
     // Les films ne démarrent qu'une fois la première affiche réellement peinte à l'écran
@@ -326,7 +359,7 @@ export function mountScrollWorld(container, config) {
     const painted = loaded.then(() => new Promise(res => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(res, 400)))));
     const firstShown = Promise.race([painted, new Promise(res => setTimeout(res, 3000))]);
     // 10 téléchargements en parallèle : le temps de chargement suit le débit, pas la latence
-    firstShown.then(() => Promise.all(Array.from({ length: 10 }, worker)));
+    firstShown.then(() => { t0 = performance.now(); return Promise.all(Array.from({ length: 10 }, worker)); });
     return leadReady;
   }
   function sizeCanvas(s) {

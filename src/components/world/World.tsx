@@ -5,6 +5,7 @@ import { Gate } from "./Gate";
 import { WORLD_SECTIONS, worldAsset } from "./config";
 import motion from "./motion.json";
 import motionM from "./motion-m.json";
+import frameBytes from "./frame-bytes.json";
 import { getSound, sfx } from "@/lib/sound";
 import { frTypo } from "@/lib/typo";
 
@@ -44,8 +45,8 @@ export function World() {
           label: s.label,
           still: worldAsset(`still_${i}.webp`),
           stillMobile: worldAsset(`still_${i}-m.webp`),
-          frames: { base: worldAsset(`frames/d${i}/`), count: 193 },
-          framesMobile: { base: worldAsset(`frames/m${i}/`), count: 193 },
+          frames: { base: worldAsset(`frames/d${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`d${i}`] },
+          framesMobile: { base: worldAsset(`frames/m${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`m${i}`] },
           accent: s.accent,
           copyAt: s.copyAt,
           remap: (motion as Record<string, number[]>)[String(i)],
@@ -117,8 +118,9 @@ export function World() {
         requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
-      // Le premier film et tous les sons en mémoire avant d’ouvrir les portes (les films suivants
-      // continuent de charger pendant le vol, voir preloadFrames) :
+      // Avant d’ouvrir les portes : tous les sons, le premier film, et assez des suivants pour que,
+      // au débit mesuré, chaque film soit arrivé avant sa scène (tampon, voir preloadFrames). Le
+      // reste continue de charger pendant le vol :
       // la musique démarre à l'instant du clic « Entrer avec le son ».
       Promise.all([
         world.preload((p) => {
