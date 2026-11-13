@@ -12,7 +12,7 @@ const WORDS = ["Sites internet.", "Applications.", "Agents IA.", "Jeux vidéo."]
  * Écran d'arrivée : pendant le chargement du monde, des particules de lumière se rassemblent
  * dans le symbole FD et les métiers du studio défilent. Puis le choix d'entrer avec ou sans le
  * son : le clic est le geste qui autorise l'audio sur tous les navigateurs, et le vol ne
- * commence qu'une fois tous les films en mémoire.
+ * commence qu'une fois assez de films en mémoire pour ne jamais rattraper le chargement.
  */
 export function Gate({ progress, ready, onEnter }: { progress: number; ready: boolean; onEnter: () => void }) {
   const [leaving, setLeaving] = useState(false);
