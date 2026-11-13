@@ -156,8 +156,8 @@ interface Desk {
   haloMat: THREE.MeshBasicMaterial;
   screenMat: THREE.ShaderMaterial;
   padMat: THREE.ShaderMaterial;
-  light: THREE.PointLight;
-  bodyMat: THREE.MeshStandardMaterial;
+  glowMat: THREE.MeshBasicMaterial;
+  bodyMat: THREE.MeshLambertMaterial;
   hit: THREE.Mesh;
   trace: THREE.Line;
   pulses: THREE.Sprite[];
@@ -170,8 +170,25 @@ interface Desk {
   seed: number;
 }
 
+/** Vrai si le navigateur dessine le WebGL sans carte graphique (rendu logiciel, très lent). */
+function softwareRendering(): boolean {
+  try {
+    const probe = document.createElement('canvas');
+    const gl = probe.getContext('webgl');
+    if (!gl) return false;
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    const name = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return /swiftshader|llvmpipe|software|basic render/i.test(name);
+  } catch {
+    return false;
+  }
+}
+
 export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOptions): OfficeScene {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  // Sans carte graphique : pas de lissage, et on part directement de la qualité la plus légère.
+  const software = softwareRendering();
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !software && (window.devicePixelRatio || 1) < 2, alpha: true, powerPreference: 'high-performance' });
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
@@ -204,9 +221,9 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
   scene.add(floor);
 
   // ── Géométries et matières partagées ───────────────────────────────────
-  const matDesk = track(new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 0.5, metalness: 0.3 }));
-  const matLeg = track(new THREE.MeshStandardMaterial({ color: 0x1a1e2a, roughness: 0.55, metalness: 0.35 }));
-  const matBezel = track(new THREE.MeshStandardMaterial({ color: 0x12151d, roughness: 0.4, metalness: 0.5 }));
+  const matDesk = track(new THREE.MeshLambertMaterial({ color: 0x2a3040 }));
+  const matLeg = track(new THREE.MeshLambertMaterial({ color: 0x1a1e2a }));
+  const matBezel = track(new THREE.MeshLambertMaterial({ color: 0x12151d }));
   const geoTop = track(new THREE.BoxGeometry(1.9, 0.07, 0.95));
   const geoLeg = track(new THREE.BoxGeometry(0.07, 0.72, 0.8));
   const geoBezel = track(new THREE.BoxGeometry(1.3, 0.8, 0.05));
@@ -244,7 +261,7 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
     screen.position.set(0, 1.38, -0.572);
 
     const figure = new THREE.Group();
-    const bodyMat = track(new THREE.MeshStandardMaterial({ color: 0x7d8494, roughness: 0.42, metalness: 0.2, transparent: true }));
+    const bodyMat = track(new THREE.MeshLambertMaterial({ color: 0x7d8494, emissive: 0x2f5bff, emissiveIntensity: 0, transparent: true }));
     const body = new THREE.Mesh(geoBody, bodyMat);
     body.position.y = 0.86;
     const head = new THREE.Mesh(geoHead, bodyMat);
@@ -283,14 +300,20 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
     pad.position.set(0, 0.012, 0.1);
     pad.renderOrder = 1;
 
-    const light = new THREE.PointLight(0x5f82ff, 0, 4.2, 1.6);
-    light.position.set(0, 1.35, 0.1);
+    // Lueur de l'écran sur le poste : un disque lumineux posé au sol (pas une vraie lumière,
+    // qui coûterait un calcul par pixel sur toutes les surfaces de la scène).
+    const glowMat = track(new THREE.MeshBasicMaterial({ map: glow, color: 0x3f66ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const deskGlow = new THREE.Mesh(geoPad, glowMat);
+    deskGlow.rotation.x = -Math.PI / 2;
+    deskGlow.scale.set(4.4, 4.4, 1);
+    deskGlow.position.set(0, 0.006, 0.2);
+    deskGlow.renderOrder = 0;
 
     const hit = new THREE.Mesh(geoHit, matHit);
     hit.position.set(0, 1.05, 0.1);
     hit.userData.id = d.id;
 
-    group.add(top, legL, legR, stand, bezel, screen, stool, figure, pad, light, hit);
+    group.add(top, legL, legR, stand, bezel, screen, stool, figure, pad, deskGlow, hit);
     scene.add(group);
 
     const traceMat = track(new THREE.LineBasicMaterial({ color: 0x5b6b9c, transparent: true, opacity: 0.28 }));
@@ -306,12 +329,12 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
       return s;
     });
 
-    return { id: d.id, col: d.col, row: d.row, group, figure, head, halo, haloMat, screenMat, padMat, light, bodyMat, hit, trace, pulses, path: [], pathLength: 1, target: 'never', active: 0, error: 0, presence: 0, seed: i * 0.77 };
+    return { id: d.id, col: d.col, row: d.row, group, figure, head, halo, haloMat, screenMat, padMat, glowMat, bodyMat, hit, trace, pulses, path: [], pathLength: 1, target: 'never', active: 0, error: 0, presence: 0, seed: i * 0.77 };
   });
 
   // ── Le CRM, au bout de l'allée ─────────────────────────────────────────
   const core = new THREE.Group();
-  const coreMat = track(new THREE.MeshStandardMaterial({ color: 0x0b0f1f, roughness: 0.3, metalness: 0.6, emissive: 0x14267a, emissiveIntensity: 0.2 }));
+  const coreMat = track(new THREE.MeshLambertMaterial({ color: 0x0b0f1f, emissive: 0x14267a, emissiveIntensity: 0.2 }));
   const coreBody = new THREE.Mesh(track(new THREE.BoxGeometry(0.95, 2.3, 0.95)), coreMat);
   coreBody.position.y = 1.15;
   const coreEdges = new THREE.LineSegments(track(new THREE.EdgesGeometry(coreBody.geometry)), track(new THREE.LineBasicMaterial({ color: 0x93a8ff, transparent: true, opacity: 0.75 })));
@@ -330,8 +353,6 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
   coreGlow.scale.set(8.5, 8.5, 1);
   coreGlow.position.y = 0.005;
   coreGlow.renderOrder = 0;
-  const coreLight = new THREE.PointLight(0x4b72ff, 1.2, 6, 1.6);
-  coreLight.position.y = 1.6;
   const corePadMat = track(
     new THREE.ShaderMaterial({
       vertexShader: SCREEN_VERT,
@@ -356,7 +377,7 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
   corePad.scale.set(2.9, 2.9, 1);
   corePad.position.y = 0.012;
   corePad.renderOrder = 1;
-  core.add(coreBody, coreEdges, coreRing, coreRing2, coreGlow, coreLight, corePad);
+  core.add(coreBody, coreEdges, coreRing, coreRing2, coreGlow, corePad);
   scene.add(core);
   let coreEnergy = 0;
 
@@ -451,7 +472,7 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
     width = Math.max(1, rect.width);
     height = Math.max(1, rect.height);
     const nextPortrait = width / height < 0.95;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, QUALITY[quality]!));
     renderer.setSize(width, height, false);
     if (nextPortrait !== portrait || !desks[0]!.path.length) {
       portrait = nextPortrait;
@@ -505,6 +526,42 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
   canvas.addEventListener('pointerdown', onDown);
   canvas.addEventListener('pointerup', onUp);
 
+  // ── Qualité adaptative ─────────────────────────────────────────────────
+  // La scène mesure le temps réel entre deux images. Si l'appareil ne suit pas, elle baisse
+  // d'abord la finesse du rendu, puis espace ses images pour rendre la main à la page :
+  // le défilement reste fluide même sans carte graphique. Elle ne remonte jamais en qualité
+  // (pas d'oscillation).
+  const QUALITY = [1.5, 1, 0.75, 0.55];
+  let quality = software ? QUALITY.length - 1 : 0;
+  let minInterval = 0; // 0 = une image à chaque rafraîchissement
+  let lastRender = 0;
+  let afterRender = false;
+  let gap = 16; // moyenne glissante du temps d'une image rendue, en ms
+  let samples = 0;
+  function govern(now: number) {
+    if (afterRender) {
+      const g = Math.min(400, now - lastRender);
+      gap += (g - gap) * 0.25;
+      samples++;
+    }
+    if (samples < 10) return; // on laisse passer la mise en route (compilation des shaders)
+    if (gap > 24) {
+      if (quality < QUALITY.length - 1) {
+        // Très en retard : on descend directement au plus léger, sans passer par les paliers.
+        quality = gap > 55 ? QUALITY.length - 1 : quality + 1;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, QUALITY[quality]!));
+        renderer.setSize(width, height, false);
+      } else {
+        // Qualité minimale atteinte : on dessine moins souvent (au plus un tiers du temps).
+        minInterval = Math.min(280, Math.max(minInterval, Math.round(gap * 3)));
+      }
+      samples = 4;
+      gap = 16;
+      // Visible dans l'inspecteur : niveau de qualité retenu et intervalle entre deux images.
+      canvas.dataset.quality = `${quality}/${minInterval}`;
+    }
+  }
+
   // ── Animation ──────────────────────────────────────────────────────────
   const reduced = Boolean(opts.reducedMotion);
   let lastFrame = performance.now();
@@ -547,8 +604,9 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
       d.padMat.uniforms.uError!.value = d.error;
       d.padMat.uniforms.uSelected!.value += ((selected === d.id ? 1 : 0) - d.padMat.uniforms.uSelected!.value) * (reduced ? 1 : Math.min(1, dt * 10));
       d.padMat.uniforms.uHover!.value = hovered === d.id ? 1 : 0;
-      d.light.intensity = d.active * (2.4 + (reduced ? 0 : 0.25 * Math.sin(time * 5 + d.seed * 9))) + d.error * 0.7;
-      d.light.color.copy(color);
+      d.glowMat.opacity = d.active * (0.5 + (reduced ? 0 : 0.05 * Math.sin(time * 5 + d.seed * 9))) + d.error * 0.25;
+      d.glowMat.color.copy(color);
+      d.bodyMat.emissiveIntensity = 0.22 * d.active;
 
       // Silhouette : estompée tant que l'agent n'est jamais passé ; penchée vers l'écran au travail.
       d.bodyMat.opacity = 0.28 + 0.72 * d.presence;
@@ -577,7 +635,6 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
     coreEnergy += (Math.min(1, energy / 2) - coreEnergy) * k;
     coreMat.emissiveIntensity = 0.16 + 0.34 * coreEnergy + (reduced ? 0 : 0.06 * Math.sin(time * 1.4));
     coreGlowMat.opacity = 0.4 + 0.45 * coreEnergy;
-    coreLight.intensity = 0.9 + 1.2 * coreEnergy;
     if (!reduced) {
       coreRing.rotation.z = time * 0.35;
       coreRing2.rotation.z = -time * 0.5;
@@ -588,11 +645,20 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
     corePadMat.uniforms.uActive!.value = 0.35 + 0.65 * coreEnergy;
   }
 
-  function frame() {
+  function frame(now: number) {
     raf = 0;
     if (disposed) return;
-    update(Math.min(delta(), 0.05));
+    govern(now);
+    afterRender = false;
+    if (minInterval && now - lastRender < minInterval) {
+      // Image sautée : la page reste réactive entre deux rendus de la scène.
+      if (visible && pageVisible && !paused && (!reduced || !settled)) raf = requestAnimationFrame(frame);
+      return;
+    }
+    update(Math.min(delta(), minInterval ? 0.3 : 0.05));
     renderer.render(scene, camera);
+    lastRender = now;
+    afterRender = true;
     opts.onFrame?.();
     // Animations réduites : on redessine seulement jusqu'à ce que l'état soit stable.
     if (visible && pageVisible && !paused && (!reduced || !settled)) raf = requestAnimationFrame(frame);
@@ -601,12 +667,13 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
     if (!raf && !disposed) raf = requestAnimationFrame(frame);
   }
 
-  const io = typeof IntersectionObserver !== 'undefined' ? new IntersectionObserver(([e]) => { visible = Boolean(e?.isIntersecting); if (visible) { delta(); requestRender(); } }, { rootMargin: '80px' }) : null;
+  const io = typeof IntersectionObserver !== 'undefined' ? new IntersectionObserver(([e]) => { visible = Boolean(e?.isIntersecting); if (visible) { delta(); afterRender = false; requestRender(); } }, { rootMargin: '80px' }) : null;
   io?.observe(canvas);
   const onVisibility = () => {
     pageVisible = !document.hidden;
     if (pageVisible) {
       delta();
+      afterRender = false;
       requestRender();
     }
   };
@@ -638,6 +705,7 @@ export function createOfficeScene(canvas: HTMLCanvasElement, opts: OfficeSceneOp
       paused = value;
       if (!paused) {
         delta();
+        afterRender = false;
         requestRender();
       }
     },
