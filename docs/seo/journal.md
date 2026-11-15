@@ -2,6 +2,10 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-15 (suite) — Visibilité IA : tous les robots d'IA ont accès au site ; nom « FDA Studio » ambigu
+  (FDA américaine, autres studios). PR #32 fusionnée à la demande d'Antoine : page /a-propos/ (identité,
+  fondateur, groupe, produits, fiche d'identité ; AboutPage + Person), /llms.txt généré au build, hébergeur
+  des mentions légales corrigé (Vercel et non GitHub Pages). Vérifié en ligne.
 - 2026-11-15 — Audit SEO complet demandé par Antoine (domaine enregistré le 07/11 : visibilité quasi nulle
   attendue, 21 impressions sur 28 jours, requête de marque uniquement). Priorités côté Antoine : fiche Google
   Business Profile, sitemap dans Search Console, fiches annuaires (Sortlist, La Fabrique du Net en cours).
