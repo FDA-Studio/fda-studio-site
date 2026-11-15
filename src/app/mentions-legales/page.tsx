@@ -22,7 +22,7 @@ export default function MentionsPage() {
       </div>
       <div>
         <h2>Hébergement</h2>
-        <p>GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. Téléphone : +1 877 448 4820. github.com</p>
+        <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis. vercel.com</p>
         <p>Le nom de domaine fdastudio.fr est enregistré auprès d’IONOS SARL, 7 place de la Gare, 57200 Sarreguemines, France.</p>
       </div>
       <div>

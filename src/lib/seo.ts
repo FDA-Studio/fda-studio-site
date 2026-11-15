@@ -93,6 +93,7 @@ export const organizationJsonLd = {
     "@type": "Offer",
     itemOffered: { "@type": "Service", name: s.name, url: `${site.url}/${s.slug}/` },
   })),
+  founder: { "@id": `${site.url}/#author` },
   sameAs: [site.group.url, "https://doorknight.games", ...site.socials],
   ...(site.phone.e164 ? { telephone: site.phone.e164 } : {}),
 };
