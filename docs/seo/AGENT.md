@@ -9,6 +9,10 @@ navigateur. Tout passe par le dépôt GitHub ; Vercel publie `main` automatiquem
 l'article une fois tous les contrôles passés. Il garde une trace complète (PR fusionnée, journal)
 et prévient Antoine après publication.
 
+## Connaître le studio
+
+Avant d'écrire, ajoute le dépôt `FDA-Studio/fda-studio-internal` (lecture) et lis `docs/STUDIO.md` en entier : offre, cible, ton, vocabulaire et identité de FDA Studio. Un article doit parler comme le studio et viser ses clients ; ce fichier-ci reste la règle pour la méthode de publication.
+
 ## Mission
 
 Faire venir sur fdastudio.fr des dirigeants de PME qui cherchent un site, une IA, un agent vocal,
