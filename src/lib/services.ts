@@ -13,6 +13,8 @@ export type Service = {
   keywords: string[];
   /** Titre H1, en deux lignes */
   h1: [string, string];
+  /** Intertitres H2 propres au service (lus par Google : ils disent de quoi parle chaque section) */
+  headings: { offers: string; forWhom: string; steps: string; included: string; local: string; faq: string };
   intro: string;
   /** Type de service pour les données structurées schema.org */
   serviceType: string;
@@ -45,6 +47,14 @@ export const services: Service[] = [
       "référencement local Tours",
     ],
     h1: ["Création de site internet", "à Tours et partout en France"],
+    headings: {
+      offers: "Les sites internet que nous créons.",
+      forWhom: "À qui s’adressent nos sites.",
+      steps: "Comment nous créons votre site.",
+      included: "Ce que comprend chaque site.",
+      local: "Création de site internet à Tours, en Touraine et partout en France.",
+      faq: "Questions fréquentes sur la création de site.",
+    },
     intro:
       "FDA Studio conçoit et développe des sites internet sur mesure pour les entreprises de Tours, de Touraine et de toute la France : rapides, faciles à trouver sur Google et pensés pour transformer les visites en demandes de contact.",
     serviceType: "Création de site internet",
@@ -131,6 +141,14 @@ export const services: Service[] = [
       "IA PME Indre-et-Loire",
     ],
     h1: ["Intégration de l’IA", "pour les entreprises de Tours"],
+    headings: {
+      offers: "Les solutions d’IA que nous intégrons.",
+      forWhom: "À qui s’adresse l’IA que nous intégrons.",
+      steps: "Comment se déroule un projet d’IA.",
+      included: "Ce que comprend chaque projet d’IA.",
+      local: "Votre agence IA à Tours, en Touraine et partout en France.",
+      faq: "Questions fréquentes sur l’IA en entreprise.",
+    },
     intro:
       "FDA Studio intègre l’intelligence artificielle dans le quotidien des entreprises : un agent qui répond au téléphone, un assistant qui répond aux clients, des demandes saisies automatiquement dans le CRM. Branché sur vos outils, avec un humain qui garde la main.",
     serviceType: "Intégration de l'intelligence artificielle",
@@ -217,6 +235,14 @@ export const services: Service[] = [
       "logiciel sur mesure Indre-et-Loire",
     ],
     h1: ["Développement d’applications", "mobiles et web à Tours"],
+    headings: {
+      offers: "Les applications que nous développons.",
+      forWhom: "À qui s’adressent nos applications.",
+      steps: "Comment nous développons votre application.",
+      included: "Ce que comprend chaque application.",
+      local: "Développement d’applications à Tours, en Touraine et partout en France.",
+      faq: "Questions fréquentes sur le développement d’applications.",
+    },
     intro:
       "FDA Studio crée des applications sur mesure : applications mobiles iOS et Android, applications web, SaaS, tableaux de bord et outils métiers. Le même studio s’occupe du design, du développement et de la publication.",
     serviceType: "Développement d'applications",
