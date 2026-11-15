@@ -2,6 +2,14 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-15 — Audit SEO complet demandé par Antoine (domaine enregistré le 07/11 : visibilité quasi nulle
+  attendue, 21 impressions sur 28 jours, requête de marque uniquement). Priorités côté Antoine : fiche Google
+  Business Profile, sitemap dans Search Console, fiches annuaires (Sortlist, La Fabrique du Net en cours).
+  PR #31 fusionnée à la demande d'Antoine : H1 de l'accueil « Agence web et IA à Tours : … », H2 propres à
+  chaque page de service, auteur Person (Antoine Donabella) et image og.png dans le BlogPosting, signature
+  visible des articles, téléphone 06 67 16 53 29 (pied de page + telephone), LinkedIn et Instagram en sameAs.
+  Vérifié en ligne. Le numéro sera remplacé plus tard par celui de l'agent vocal : le changer aussi sur la fiche
+  Google et les annuaires le même jour.
 - 2026-11-13 (vendredi, passage agent) — Article « Combien coûte un chatbot IA pour le site d’une
   entreprise en 2026 ? » (slug prix-chatbot-ia-site-entreprise ; mot-clé : prix chatbot IA ; 1 338 mots).
   Anti-doublon : 2 articles existants (agent vocal), aucune PR ouverte, sujet distinct (chatbot écrit
