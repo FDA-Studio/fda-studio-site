@@ -32,7 +32,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 
 | Prio | Sujet | Mot-clé principal | Statut |
 | --- | --- | --- | --- |
-| P1 | Prix d'un site vitrine en 2026 : ce qui fait varier le devis | prix site vitrine | à faire |
+| P1 | Prix d'un site vitrine en 2026 : ce qui fait varier le devis | prix site vitrine | publié (2026-11-15, PR #33) |
 | P1 | Création de site internet à Tours : comment choisir son agence | création site internet Tours | à faire |
 | P1 | Combien coûte un site e-commerce en 2026 ? | prix site e-commerce | à faire |
 | P2 | Shopify ou site e-commerce sur mesure : que choisir ? | Shopify ou sur mesure | à faire |
@@ -41,12 +41,13 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 | P2 | Référencement local à Tours : les bases pour être trouvé sur Google | référencement local Tours | à faire |
 | P3 | Maintenance de site internet : ce que doit couvrir un contrat | maintenance site internet | à faire |
 | P3 | Les mentions légales obligatoires d'un site d'entreprise | mentions légales site | à faire |
+| P2 | Étude de cas : comment nous avons conçu le site fdastudio.fr | étude de cas site internet | publié (2026-11-15, PR #35) |
 
 ## Applications — service : developpement-application-tours
 
 | Prio | Sujet | Mot-clé principal | Statut |
 | --- | --- | --- | --- |
-| P1 | Combien coûte une application mobile en 2026 ? | prix application mobile | à faire |
+| P1 | Combien coûte une application mobile en 2026 ? | prix application mobile | publié (2026-11-15, PR #34) |
 | P1 | Développer une application à Tours : étapes, délais et budget | développement application Tours | à faire |
 | P2 | MVP : lancer un SaaS sans brûler son budget | développer un MVP SaaS | à faire |
 | P2 | Application web ou application mobile : que choisir ? | application web ou mobile | à faire |

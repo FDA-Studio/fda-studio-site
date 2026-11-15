@@ -2,6 +2,13 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-15 (suite, demande d'Antoine en autonomie) — 3 articles publiés : « Prix d'un site vitrine en 2026 »
+  (PR #33 ; La Fabrique du Net, Agence Scroll, Kolonell), « Combien coûte une application mobile en 2026 ? »
+  (PR #34 ; La Fabrique du Net, Lucas Fonseque), « Étude de cas : comment nous avons conçu le site fdastudio.fr »
+  (PR #35 ; mesures internes du journal et des PR #15, #20, #29). Plafond de 2 articles par semaine dépassé à la
+  demande d'Antoine : le prochain passage de l'agent (mardi 17/11) peut reprendre le rythme normal.
+  Bug corrigé (PR #36) : sur mobile, le texte des articles était coupé à droite (colonne élargie par les tableaux,
+  ~546 px sur un écran de 390 px) ; touchait aussi les articles déjà publiés. Vérifié en ligne.
 - 2026-11-15 (suite) — Visibilité IA : tous les robots d'IA ont accès au site ; nom « FDA Studio » ambigu
   (FDA américaine, autres studios). PR #32 fusionnée à la demande d'Antoine : page /a-propos/ (identité,
   fondateur, groupe, produits, fiche d'identité ; AboutPage + Person), /llms.txt généré au build, hébergeur
