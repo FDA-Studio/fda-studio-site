@@ -18,6 +18,15 @@ export const site = {
   url: "https://fdastudio.fr",
   locale: "fr_FR",
   email: "contact@fdastudio.fr",
+  /**
+   * Téléphone affiché (format lisible) et lien tel: (format international). Vide : rien n'est affiché
+   * et rien n'est déclaré aux moteurs de recherche. À renseigner avec le numéro de la fiche Google.
+   */
+  phone: { display: "06 67 16 53 29", e164: "+33667165329" },
+  /** Profils officiels, déclarés aux moteurs de recherche (sameAs). LinkedIn et Instagram. */
+  socials: ["https://www.linkedin.com/company/fda-studio-fr/", "https://www.instagram.com/fda_studio_fr/"] as string[],
+  /** Auteur des articles de la rubrique Ressources (affiché et déclaré en données structurées). */
+  author: { name: "Antoine Donabella", jobTitle: "Gérant de FDA Studio" },
   region: "Touraine, France",
   group: { name: "Groupe FDA", url: "https://fdaholding.fr" },
   tagline: "We build what's next.",

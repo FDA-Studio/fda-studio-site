@@ -95,7 +95,7 @@ export default async function ServicePage({ params }: Props) {
       {/* Offre */}
       <section aria-labelledby="offers-title" className="section border-t border-line">
         <div className="wrap">
-          <h2 id="offers-title" className="section-title max-w-[16ch]">Ce que nous réalisons.</h2>
+          <h2 id="offers-title" className="section-title max-w-[16ch]">{s.headings.offers}</h2>
           <ul className="mt-14 grid gap-px overflow-hidden rounded-[1.5rem] border border-line bg-line md:mt-20 md:grid-cols-2 lg:grid-cols-3">
             {s.offers.map((o) => (
               <li key={o.title} className="bg-ink p-6 md:p-8">
@@ -110,7 +110,7 @@ export default async function ServicePage({ params }: Props) {
       {/* Pour qui */}
       <section aria-labelledby="for-title" className="section border-t border-line">
         <div className="wrap">
-          <h2 id="for-title" className="section-title max-w-[18ch]">Pour qui.</h2>
+          <h2 id="for-title" className="section-title max-w-[18ch]">{s.headings.forWhom}</h2>
           <ul className="mt-14 grid gap-10 md:mt-20 md:grid-cols-2 md:gap-x-16">
             {s.forWhom.map((f) => (
               <li key={f.title} className="border-t border-line pt-6">
@@ -125,7 +125,7 @@ export default async function ServicePage({ params }: Props) {
       {/* Méthode : une vraie séquence, d'où la numérotation */}
       <section aria-labelledby="steps-title" className="section bg-graphite">
         <div className="wrap grid gap-12 lg:grid-cols-12">
-          <h2 id="steps-title" className="section-title lg:col-span-4">Comment se déroule un projet.</h2>
+          <h2 id="steps-title" className="section-title lg:col-span-4">{s.headings.steps}</h2>
           <ol className="lg:col-span-7 lg:col-start-6">
             {s.steps.map((st, i) => (
               <li key={st.title} className="grid grid-cols-[3rem_1fr] gap-4 border-t border-line py-6 md:py-8">
@@ -143,7 +143,7 @@ export default async function ServicePage({ params }: Props) {
       {/* Ce que comprend chaque projet */}
       <section aria-labelledby="included-title" className="section">
         <div className="wrap grid gap-12 lg:grid-cols-12">
-          <h2 id="included-title" className="section-title lg:col-span-4">Ce que comprend chaque projet.</h2>
+          <h2 id="included-title" className="section-title lg:col-span-4">{s.headings.included}</h2>
           <ul className="lg:col-span-7 lg:col-start-6">
             {s.included.map((it) => (
               <li key={it} className="flex gap-4 border-t border-line py-4 text-lg text-soft">
@@ -158,7 +158,7 @@ export default async function ServicePage({ params }: Props) {
       {/* Zone d'intervention */}
       <section aria-labelledby="local-title" className="section">
         <div className="wrap grid gap-8 md:grid-cols-12 md:items-start">
-          <h2 id="local-title" className="section-title md:col-span-6">À Tours, en Touraine et partout en France.</h2>
+          <h2 id="local-title" className="section-title md:col-span-6">{s.headings.local}</h2>
           <p className="text-lg leading-relaxed text-soft md:col-span-6">{s.local}</p>
         </div>
       </section>
@@ -166,7 +166,7 @@ export default async function ServicePage({ params }: Props) {
       {/* Questions fréquentes : toutes ouvertes, rien ne se replie */}
       <section aria-labelledby="faq-title" className="section border-t border-line">
         <div className="wrap grid gap-12 lg:grid-cols-12">
-          <h2 id="faq-title" className="section-title lg:col-span-4">Questions fréquentes.</h2>
+          <h2 id="faq-title" className="section-title lg:col-span-4">{s.headings.faq}</h2>
           <dl className="lg:col-span-7 lg:col-start-6">
             {s.faq.map((f) => (
               <div key={f.q} className="border-t border-line py-6 md:py-8">

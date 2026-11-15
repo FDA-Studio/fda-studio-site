@@ -10,6 +10,9 @@ export function Footer() {
           <div>
             <Logo variant="horizontal" className="h-9 w-auto text-white" studioColor="var(--color-muted)" />
             <a href={`mailto:${site.email}`} className="link-line mt-6 inline-block text-xl text-paper">{site.email}</a>
+            {site.phone.display && (
+              <a href={`tel:${site.phone.e164}`} className="link-line mt-3 block w-fit text-xl text-paper">{site.phone.display}</a>
+            )}
           </div>
           <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted">
             <li><Link href="/creation-site-internet-tours/" className="link-line hover:text-paper">Création de site internet à Tours</Link></li>

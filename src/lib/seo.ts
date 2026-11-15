@@ -93,7 +93,17 @@ export const organizationJsonLd = {
     "@type": "Offer",
     itemOffered: { "@type": "Service", name: s.name, url: `${site.url}/${s.slug}/` },
   })),
-  sameAs: [site.group.url, "https://doorknight.games"],
+  sameAs: [site.group.url, "https://doorknight.games", ...site.socials],
+  ...(site.phone.e164 ? { telephone: site.phone.e164 } : {}),
+};
+
+/** L'auteur des articles : une personne identifiée, rattachée au studio. */
+export const authorJsonLd = {
+  "@type": "Person",
+  "@id": `${site.url}/#author`,
+  name: site.author.name,
+  jobTitle: site.author.jobTitle,
+  worksFor: { "@id": `${site.url}/#organization` },
 };
 
 export function breadcrumbJsonLd(items: { name: string; path: string }[]) {

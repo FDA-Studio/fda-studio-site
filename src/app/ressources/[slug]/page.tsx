@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { ArrowIcon } from "@/components/icons";
 import { articleBySlug, formatDate, getArticles } from "@/lib/articles";
-import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
+import { authorJsonLd, breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 import { serviceBySlug } from "@/lib/services";
 import { site } from "@/lib/site";
 
@@ -52,9 +52,10 @@ export default async function ArticlePage({ params }: Props) {
     inLanguage: "fr-FR",
     mainEntityOfPage: url,
     url,
-    image: `${site.url}/og-image.png`,
+    // Image de partage propre à l'article (route /ressources/<slug>/og.png)
+    image: { "@type": "ImageObject", url: `${url}og.png`, width: 1200, height: 630 },
     keywords: a.keywords.join(", "),
-    author: { "@id": `${site.url}/#organization` },
+    author: authorJsonLd,
     publisher: { "@id": `${site.url}/#organization` },
     about: { "@type": "Service", name: service.name, url: `${site.url}/${service.slug}/` },
   };
@@ -79,6 +80,7 @@ export default async function ArticlePage({ params }: Props) {
               Publié le <time dateTime={a.date}>{formatDate(a.date)}</time>
               {a.updated && a.updated !== a.date ? <> · mis à jour le <time dateTime={a.updated}>{formatDate(a.updated)}</time></> : null}
             </span>
+            <span>Par {site.author.name}, {site.author.jobTitle.charAt(0).toLowerCase() + site.author.jobTitle.slice(1)}</span>
             <span>{a.readingMinutes} min de lecture</span>
           </p>
         </div>

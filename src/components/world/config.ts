@@ -23,7 +23,7 @@ export const WORLD_SECTIONS: WorldSection[] = [
     id: "entree",
     label: "Entrée",
     accent: "#2f5bff",
-    eyebrow: "Studio digital à Tours",
+    eyebrow: "Agence web et IA à Tours",
     title: "Sites, applications et agents IA.",
     body: "Dessinés, développés et branchés à vos outils par un seul studio, à Tours. De la première maquette à la mise en ligne.",
     tags: [],
