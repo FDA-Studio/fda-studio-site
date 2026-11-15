@@ -86,7 +86,7 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </header>
 
-      <div className="wrap grid gap-14 pb-[var(--section-y)] lg:grid-cols-12">
+      <div className="wrap grid grid-cols-1 gap-14 pb-[var(--section-y)] lg:grid-cols-12">
         {a.toc.length > 2 && (
           <aside className="lg:col-span-3 lg:col-start-10 lg:row-start-1">
             <nav aria-label="Sommaire" className="lg:sticky lg:top-28">
