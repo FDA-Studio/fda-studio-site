@@ -22,9 +22,9 @@ intention d'achat ne compte pas.
 ## Ce que l'agent fait à chaque passage
 
 1. Lire `docs/seo/plan.md` (sujets prioritaires) et `docs/seo/journal.md` (ce qui a déjà été fait).
-2. Vérifier les pull requests SEO encore ouvertes sur `FDA-Studio/fda-studio-site` (ce sont des
-   articles mis en attente pour relecture humaine, voir « Quand ne pas publier »). S'il y en a 3
-   ou plus, ne pas écrire de nouvel article : faire seulement l'audit et le rappeler à Antoine.
+2. Vérifier les pull requests SEO encore ouvertes sur `FDA-Studio/fda-studio-site` (passages
+   interrompus) : terminer chacune (contrôles, liste de contrôle, fusion) ou la fermer et passer
+   son sujet en `écarté (<raison>)` dans le plan. Aucune PR d'article ne reste en attente.
 3. Choisir le prochain sujet `à faire` du plan, le plus prioritaire, qui n'a pas de PR ouverte,
    puis **vérifier qu'il n'est pas déjà traité** (anti-doublon) :
    - lire le titre et le mot-clé principal (premier de `keywords`) de chaque fichier de
@@ -56,8 +56,9 @@ intention d'achat ne compte pas.
    la même PR ce qui est simple et sans risque (méta-description manquante, lien cassé interne) ;
    signaler le reste.
 6. Le premier mardi du mois : rapport mensuel ajouté en tête de `docs/seo/journal.md`.
-7. Envoyer à Antoine un message court : article publié (titre et lien), ou article mis en attente
+7. Envoyer à Antoine un message court : article publié (titre et lien), ou sujet écarté
    et pourquoi, points d'audit. Rappeler qu'il peut demander à retirer ou modifier un article.
+   Le message informe, il ne demande jamais de relecture.
 
 ## Liste de contrôle avant publication automatique
 
@@ -70,13 +71,23 @@ intention d'achat ne compte pas.
 - Pas de doublon : mot-clé principal unique sur le site, sujet différent des articles publiés et
   des PR ouvertes (étape 3).
 
-## Quand ne pas publier (laisser la PR ouverte pour Antoine)
+## Publication 100 % automatique : jamais de relecture demandée à Antoine
 
-- Un point de la liste de contrôle n'est pas rempli et ne peut pas être corrigé.
-- Le sujet touche au juridique (RGPD, contrats, obligations légales), à la santé ou cite nommément
-  un concurrent : publier seulement après relecture d'Antoine.
-- L'article modifie autre chose que `content/ressources/` et `docs/seo/` (correction de page,
-  composant, configuration) : la partie hors contenu attend toujours la validation d'Antoine.
+Antoine ne relit pas les articles (choix du 16/11/2026). L'agent ne laisse donc jamais un article
+en attente de validation. Quand un point bloque :
+
+- Un point de la liste de contrôle n'est pas rempli : le corriger (retirer le chiffre non sourcé,
+  la phrase douteuse, le nom du concurrent…), puis publier. S'il ne peut pas être corrigé sans
+  vider l'article, fermer la PR, passer le sujet en `écarté (<raison>)` dans le plan et prendre le
+  sujet suivant dans le même passage.
+- Sujet juridique (RGPD, contrats, obligations légales) ou de santé : le traiter de façon
+  informative, chaque règle sourcée par un texte officiel (CNIL, Légifrance, service-public.fr),
+  sans promesse ni conseil personnalisé, avec une phrase invitant à vérifier sa situation auprès
+  d'un professionnel ; puis publier. Si ce n'est pas possible, écarter le sujet.
+- Concurrents : jamais nommés ; parler de « solutions du marché » ou de catégories d'outils.
+- Une correction hors de `content/ressources/` et `docs/seo/` (page, composant, configuration) :
+  ne pas la faire ; la noter dans `docs/seo/journal.md` et dans le message à Antoine comme
+  suggestion. Elle ne bloque jamais la publication de l'article.
 
 ## Ce que l'agent ne fait JAMAIS
 
