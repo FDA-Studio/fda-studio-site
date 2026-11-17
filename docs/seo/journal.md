@@ -2,6 +2,17 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-17 (mardi, passage agent) — Article « Comment choisir une agence IA à Tours : ce qu’elle doit vous apporter »
+  (slug choisir-agence-ia-tours ; mot-clé principal : choisir une agence IA ; ~1 400 mots). Mot-clé du plan
+  « agence IA Tours » remplacé : c’est le mot-clé principal de la page de service /agence-ia-tours/, l’article
+  l’aurait concurrencée ; il le garde en mot-clé secondaire et renvoie vers la page. Anti-doublon : 6 articles
+  existants, aucune PR ouverte. Sources : Insee Première n° 2120 (juillet 2026), Bpifrance (Diag Data IA),
+  Commission européenne (article 50 du règlement IA, 2 août 2026).
+  Audit : les 14 URL du sitemap en 200 ; un title, une meta description et un seul H1 par page (build) ;
+  données structurées présentes (Organization, Service, BreadcrumbList, BlogPosting, FAQPage) ; liens internes
+  sans erreur ; /mentions-legales/ volontairement en noindex et hors sitemap ; dernier IndexNow vert (15/11).
+  Inchangé : directive `Host:` non standard dans robots.txt (sans risque). Note : fdastudio.fr est refusé par le
+  proxy réseau de l’agent, audit en ligne fait via un service de lecture de pages.
 - 2026-11-15 (suite, demande d'Antoine en autonomie) — 3 articles publiés : « Prix d'un site vitrine en 2026 »
   (PR #33 ; La Fabrique du Net, Agence Scroll, Kolonell), « Combien coûte une application mobile en 2026 ? »
   (PR #34 ; La Fabrique du Net, Lucas Fonseque), « Étude de cas : comment nous avons conçu le site fdastudio.fr »
