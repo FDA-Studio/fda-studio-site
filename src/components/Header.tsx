@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "./brand/Logo";
 import { nav, site } from "@/lib/site";
 import { SoundToggle } from "./SoundToggle";
+import { usePresence } from "@/lib/motion";
 
 /** Lien d'ancre : défilement natif sur l'accueil, retour à l'accueil depuis les pages légales. */
 function useAnchor() {
@@ -28,6 +29,8 @@ function useAnchor() {
 export function Header() {
   const anchor = useAnchor();
   const [open, setOpen] = useState(false);
+  // Le menu reste affiché le temps de sa sortie (plus courte que l'entrée).
+  const menu = usePresence(open, 190);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -119,13 +122,14 @@ export function Header() {
       </header>
 
       {/* Menu mobile plein écran */}
-      <div id="menu-mobile" ref={menuRef} role="dialog" aria-modal="true" aria-label="Menu" hidden={!open} className="menu-sheet fixed inset-0 z-40 bg-ink md:hidden">
+      <div id="menu-mobile" ref={menuRef} role="dialog" aria-modal="true" aria-label="Menu" hidden={!menu.shown} data-closing={menu.closing ? "true" : undefined} className="menu-sheet fixed inset-0 z-40 bg-ink md:hidden">
         <div className="wrap flex h-full flex-col pb-10 pt-28">
           <nav aria-label="Navigation mobile" className="flex flex-col">
-            {nav.map((item) =>
+            {nav.map((item, i) =>
               item.page ? (
                 <a
                   key={item.id}
+                  style={{ "--i": i } as React.CSSProperties}
                   href={item.page}
                   onClick={() => setOpen(false)}
                   className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
@@ -135,6 +139,7 @@ export function Header() {
               ) : (
                 <a
                   key={item.id}
+                  style={{ "--i": i } as React.CSSProperties}
                   {...go(item.id)}
                   className="block border-b border-line py-5 text-[2.25rem] font-semibold leading-none tracking-[-0.04em]"
                 >

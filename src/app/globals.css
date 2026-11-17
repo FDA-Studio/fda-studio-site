@@ -354,8 +354,11 @@ p { text-wrap: pretty; }
 .hero-rise { animation: rise 700ms var(--ease-out-expo) both; animation-delay: calc(80ms + var(--i, 0) * 80ms); }
 .hero-fade { animation: fade-up 520ms var(--ease-out-expo) both; animation-delay: calc(480ms + var(--i, 0) * 60ms); }
 
-/* Menu mobile : fondu court */
+/* Menu mobile : fondu court à l'entrée, liens décalés de 30 ms ; sortie plus courte. */
 .menu-sheet:not([hidden]) { animation: fade 200ms var(--ease-out) both; }
+.menu-sheet:not([hidden]):not([data-closing]) nav a { animation: fade-up 360ms var(--ease-out-expo) both; animation-delay: calc(60ms + var(--i, 0) * 30ms); }
+.menu-sheet[data-closing="true"] { animation: fade-out 160ms var(--ease-out) both; pointer-events: none; }
+@keyframes fade-out { to { opacity: 0; } }
 
 /* --------------------------------------------------------------------------
    Formulaires
@@ -456,6 +459,7 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
   .btn, .btn:hover, .btn:active, .chip:active { transform: none !important; }
   .demo-slide, .demo-slide[data-shown="true"] { transform: none; filter: none; transition: opacity 200ms ease; }
   .nav-link::after { transition: none; }
+  .menu-sheet nav a, .menu-sheet[data-closing="true"] { animation: none !important; }
 }
 
 /* --------------------------------------------------------------------------
@@ -764,6 +768,10 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .emma-panel[hidden] { display: none; }
 .emma-panel[data-open="true"] { animation: emma-sheet 460ms var(--ease-out-expo) both; }
 @keyframes emma-sheet { from { transform: translateY(100%); } to { transform: none; } }
+/* Sortie : plus courte que l'entrée, accélérée vers la fin, sans clic pendant qu'elle part. */
+.emma-panel[data-closing="true"] { animation: emma-sheet-out 300ms cubic-bezier(0.4, 0, 1, 1) both; pointer-events: none; }
+@keyframes emma-sheet-out { to { transform: translateY(100%); } }
+.emma-scrim[data-closing="true"] { animation: fade-out 240ms var(--ease-out) both; pointer-events: none; }
 .emma-grip { display: block; width: 2.5rem; height: 4px; margin: 0.5rem auto 0; border-radius: 999px; background: var(--color-line-strong); }
 .emma-scrim { position: fixed; inset: 0; z-index: 74; background: rgba(5, 6, 9, 0.55); animation: emma-fade 300ms var(--ease-out) both; }
 .emma-scrim[hidden] { display: none; }
@@ -771,6 +779,7 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 @media (min-width: 768px) {
   .emma-grip, .emma-scrim { display: none; }
   .emma-panel[data-open="true"] { animation: emma-in 420ms var(--ease-out-expo) both; }
+  .emma-panel[data-closing="true"] { animation: emma-out 240ms cubic-bezier(0.4, 0, 1, 1) both; }
   .emma-panel {
     inset: auto max(1rem, env(safe-area-inset-right)) calc(max(1rem, env(safe-area-inset-bottom)) + 4.75rem) auto;
     width: min(24.5rem, calc(100vw - 2rem));
@@ -785,6 +794,7 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
   .emma-panel[data-grown="true"] { height: min(37rem, calc(100svh - 7rem)); }
 }
 @keyframes emma-in { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes emma-out { to { opacity: 0; transform: translateY(10px) scale(0.97); } }
 .emma-log { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 0.6rem; padding: 1rem; }
 .emma-msg { max-width: 86%; padding: 0.6rem 0.9rem; border-radius: 1.1rem; font-size: 0.9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; animation: emma-msg 360ms var(--ease-out-expo) both; }
 .emma-msg--agent { align-self: flex-start; background: var(--color-raised); color: var(--color-paper); border-bottom-left-radius: 0.35rem; }
@@ -805,7 +815,7 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .emma-dots span:nth-child(2) { animation-delay: 0.15s; }
 .emma-dots span:nth-child(3) { animation-delay: 0.3s; }
 @media (prefers-reduced-motion: reduce) {
-  .emma-orb *, .emma-msg, .emma-chip, .emma-panel[data-open="true"], .emma-dots span, .emma-scrim { animation: none !important; }
+  .emma-orb *, .emma-msg, .emma-chip, .emma-panel[data-open="true"], .emma-panel[data-closing="true"], .emma-dots span, .emma-scrim { animation: none !important; }
   .emma-panel { transition: none; }
   .emma-launcher { transition: opacity 200ms; }
   .emma-launcher[data-hidden="true"] { translate: none; }
