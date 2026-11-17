@@ -63,8 +63,8 @@ export const organizationJsonLd = {
     addressRegion: "Centre-Val de Loire",
     addressCountry: "FR",
   },
-  // Centre de la commune de Fondettes (et non l'adresse exacte)
-  geo: { "@type": "GeoCoordinates", latitude: 47.4036, longitude: 0.5986 },
+  // Emplacement exact de La Bonde, identique aux fiches Apple Plans et Google (décision d'Antoine, 17/11/2026)
+  geo: { "@type": "GeoCoordinates", latitude: 47.3916, longitude: 0.6309 },
   vatID: site.company.vat,
   parentOrganization: { "@type": "Organization", name: site.group.name, url: site.group.url },
   areaServed: [
