@@ -332,7 +332,7 @@ export function mountScrollWorld(container, config) {
       s.hasClip = true; s.ready = true; sizeCanvas(s);
       // la première image est prête tout de suite : plus d'affiche à attendre
       decodeFrame(s, 0).then(() => { drawFrame(s, 0); s.el.classList.add('has-clip'); });
-      decodeFrame(s, 1); decodeFrame(s, 2);
+      decodeFrame(s, 1); decodeFrame(s, 2); decodeFrame(s, frameSpec(s).count - 1);
       if (s === lead) { leadDone = true; checkBuffer(); }
     };
     const worker = () => {
@@ -380,7 +380,7 @@ export function mountScrollWorld(container, config) {
     if (s.cache.size <= keep) return;
     for (const k of Array.from(s.cache.keys()).sort((a, b) => Math.abs(b - around) - Math.abs(a - around))) {
       if (s.cache.size <= keep) break;
-      if (k < 3) continue;
+      if (k < 3 || k >= frameSpec(s).count - 3) continue;
       try { s.cache.get(k).close(); } catch (e) {}
       s.cache.delete(k);
     }
@@ -390,6 +390,19 @@ export function mountScrollWorld(container, config) {
     const ahead = isMobile() ? 8 : 12;
     for (let d = 0; d <= ahead; d++) { const a = i + d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
     for (let d = 1; d <= 3; d++) { const a = i - d * (dir >= 0 ? 1 : -1); if (a >= 0 && a < n) decodeFrame(s, a); }
+  }
+  // (FDA) Mémoire : une scène éloignée rend ses images décodées (on garde ses 3 premières et ses
+  // 3 dernières pour y revenir sans trou). Sans ça, toutes les scènes visitées gardaient leurs
+  // images : ~600 Mo sur téléphone, et Safari passait son temps à faire de la place.
+  function releaseFar(s) {
+    if (!s.cache || s.cache.size <= 6) return;
+    const n = frameSpec(s).count;
+    for (const k of Array.from(s.cache.keys())) {
+      if (k < 3 || k >= n - 3) continue;
+      try { s.cache.get(k).close(); } catch (e) {}
+      s.cache.delete(k);
+    }
+    s.lastDrawn = -1;
   }
   // Dessin « cover » (comme object-fit: cover, point d'ancrage légèrement au-dessus du centre)
   function drawBitmap(ctx, bm, W, H, alpha) {
@@ -462,13 +475,38 @@ export function mountScrollWorld(container, config) {
     ticking = false;
   }
 
-  function raf() {
+  // (FDA) Compteur de fluidité, affiché seulement avec ?mesure dans l'adresse : pour mesurer sur
+  // un vrai téléphone (Safari iPhone ne se simule pas). Images d'écran ratées, film en retard,
+  // images décodées en mémoire. Toucher le compteur le remet à zéro.
+  const meter = /[?&]mesure\b/.test(location.search) ? (() => {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;left:8px;top:8px;z-index:2147483647;font:12px/1.4 ui-monospace,monospace;color:#fff;background:rgba(0,0,0,.72);padding:6px 8px;border-radius:8px;white-space:pre;pointer-events:auto';
+    document.body.appendChild(el);
+    const m = { frames: 0, slow: 0, worst: 0, late: 0, last: 0 };
+    el.addEventListener('click', () => { m.frames = m.slow = m.worst = m.late = 0; });
+    let shown = 0;
+    return (now) => {
+      if (m.last) { const dt = now - m.last; m.frames++; if (dt > 25) m.slow++; if (dt > m.worst) m.worst = dt; }
+      m.last = now;
+      for (const s of SEGMENTS) {
+        if (!s.canvas || !s.visible) continue;
+        const n = frameSpec(s).count;
+        if (Math.abs(Math.round(Math.max(0, Math.min(1, s.cur)) * (n - 1)) - Math.round(s.lastDrawn)) > 3) m.late++;
+      }
+      if (now - shown < 500) return; shown = now;
+      const mem = SEGMENTS.reduce((t, s) => t + (s.cache ? s.cache.size : 0), 0);
+      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images`;
+    };
+  })() : null;
+
+  function raf(now) {
+    if (meter) meter(now || performance.now());
     // (FDA) un pas de recherche d'au moins une image (24 i/s) : inutile de demander deux fois la même
     const eps = isMobile() ? 0.045 : 0.03;
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
       if (s.canvas) {
-        if (!s.visible && !s.near) continue;
+        if (!s.visible && !s.near) { releaseFar(s); continue; }
         const prev = s.cur;
         s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.3 : 0.22));
         const n = frameSpec(s).count; const pos = clamp(s.cur, 0, 1) * (n - 1);
