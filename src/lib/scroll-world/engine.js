@@ -73,9 +73,8 @@ export function mountScrollWorld(container, config) {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallMQ = window.matchMedia('(max-width: 860px)');
   const isMobile = () => coarse || smallMQ.matches;
-  // (FDA) Version allégée à l'essai, activée par ?leger dans l'adresse (comparaison sur iPhone) :
-  // lissage normal quand l'image est à taille réelle, scènes invisibles retirées du rendu, styles
-  // réécrits seulement s'ils changent. Sans ?leger, le film se comporte comme avant.
+  // (FDA) À l'essai avec ?leger dans l'adresse : sur téléphone, film en 720 px de large (au lieu de
+  // 960) dessiné sur une toile moins dense. Chaque image coûte moins à décoder et à dessiner.
   const LIGHT = /[?&]leger\b/.test(location.search);
   const SECTIONS = config.sections || [];
   const CONNECTORS = config.connectors || [];
@@ -104,7 +103,7 @@ export function mountScrollWorld(container, config) {
                    remapM: Array.isArray(s.remapMobile) && s.remapMobile.length > 1 ? s.remapMobile : null,
                    // frames (FDA) : séquence d'images { base, count, ext } dessinée sur un canvas
                    // (recherche vidéo asynchrone remplacée par un dessin immédiat de l'image voulue)
-                   frames: s.frames || null, framesM: s.framesMobile || null };
+                   frames: s.frames || null, framesM: (LIGHT && s.framesLight) || s.framesMobile || null };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -210,6 +209,7 @@ export function mountScrollWorld(container, config) {
     SEGMENTS.forEach(s => { s.start = off * vh; off += s.w; s.end = off * vh; });
     totalW = off;
     track.style.height = (totalW * vh + vh) + 'px';   // +1vh so the last flight completes
+    ys = -1;   // (FDA) les repères ont bougé : la position lissée repart de la position réelle
     read();
   }
 
@@ -282,7 +282,7 @@ export function mountScrollWorld(container, config) {
   }
 
   // ---- (FDA) séquences d'images sur canvas -------------------------------------------
-  const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 2 : 2);
+  const DPR = Math.min(window.devicePixelRatio || 1, (LIGHT && isMobile()) ? 1.5 : 2);
   function frameSpec(s) { return (isMobile() && s.framesM) ? s.framesM : s.frames; }
   function frameUrl(spec, i) { return spec.base + String(i + 1).padStart(3, '0') + '.' + (spec.ext || 'webp'); }
   // (FDA) Chargement progressif : la promesse se résout dès que le PREMIER film est en mémoire
@@ -412,10 +412,6 @@ export function mountScrollWorld(container, config) {
   function drawBitmap(ctx, bm, W, H, alpha) {
     const r = Math.max(W / bm.width, H / bm.height);
     const w = bm.width * r, h = bm.height * r;
-    // (FDA) Quasiment à taille réelle (cas du téléphone), le lissage « high » ne change rien à
-    // l'œil mais coûte cher à Safari à chaque image : on le réserve aux vrais changements d'échelle.
-    const q = (LIGHT && r > 0.85 && r < 1.2) ? 'low' : 'high';
-    if (ctx.imageSmoothingQuality !== q) ctx.imageSmoothingQuality = q;
     ctx.globalAlpha = alpha; ctx.drawImage(bm, (W - w) / 2, (H - h) * 0.42, w, h);
   }
   function drawFrame(s, pos) {
@@ -428,17 +424,40 @@ export function mountScrollWorld(container, config) {
     drawBitmap(ctx, bm, W, H, 1); s.lastDrawn = pos; return true;
   }
 
-  function setStyle(el, prop, v) {
-    if (!LIGHT) { el.style[prop] = typeof v === 'number' ? String(v) : v; return; }
-    const key = '__' + prop; const val = typeof v === 'number' ? Math.round(v * 1000) / 1000 : v;
-    if (el[key] === val) return;
-    el[key] = val; el.style[prop] = typeof val === 'number' ? String(val) : val;
+  function setStyle(el, prop, v) { el.style[prop] = typeof v === 'number' ? String(v) : v; }
+  // (FDA) Position de défilement lissée : c'est elle qui pilote l'image affichée ET le passage d'une
+  // scène à l'autre. Avant, chaque scène lissait son film de son côté pendant que le changement de
+  // scène suivait le doigt : la scène suivante démarrait avant que la précédente ait fini (saut).
+  let ys = -1;
+  // Passage d'une scène à l'autre : la nouvelle apparaît en fondu PAR-DESSUS la précédente, qui
+  // reste figée sur sa dernière image. (Avant, la scène du dessus était toujours opaque : le fondu
+  // prévu ne se voyait jamais, c'était une coupe franche.)
+  function sceneLayout(y) {
+    const fade = Math.max(1, CROSSFADE * vh);
+    let ci = 0;
+    for (let i = 0; i < NSEG; i++) if (y >= SEGMENTS[i].start) ci = i;
+    const inOp = ci > 0 ? smooth((y - SEGMENTS[ci].start) / fade) : 1;
+    for (let i = 0; i < NSEG; i++) {
+      const s = SEGMENTS[i];
+      const op = i === ci ? inOp : (i === ci - 1 && inOp < 1 ? 1 : 0);
+      setStyle(s.el, 'opacity', op); s.visible = op > 0.001;
+      setStyle(s.el, 'zIndex', i === ci ? '120' : '110');
+      const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
+      if (s.canvas) {
+        const tab = (isMobile() && s.remapM) ? s.remapM : s.remap;
+        s.cur = tab ? remapTime(tab, local) : (s.linger ? lingerEase(local, s.linger) : local);
+      } else if (s.visible) {
+        const sc = reduce ? 1 : 1.03 + local * 0.14;
+        setStyle(s.img, 'transform', `translateX(${stageX - 2}vw) scale(${sc.toFixed(3)})`);
+      }
+    }
   }
   function read() {
     const y = window.scrollY || window.pageYOffset;
     const fade = CROSSFADE * vh;
     let ci = 0;
     for (let i = 0; i < NSEG; i++) if (y >= SEGMENTS[i].start) ci = i;
+    if (ys < 0 || reduce) { ys = y; sceneLayout(ys); }
 
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
@@ -446,21 +465,8 @@ export function mountScrollWorld(container, config) {
       const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
       const tab = (isMobile() && s.remapM) ? s.remapM : s.remap;
       s.target = tab ? remapTime(tab, local) : (s.linger ? lingerEase(local, s.linger) : local);
-      let outside = 0;
-      // (FDA) le dernier segment reste affiché après sa fin : la page suivante recouvre le monde
-      if (y < s.start) outside = s.start - y; else if (y > s.end && i < NSEG - 1) outside = y - s.end;
-      const op = smooth(1 - outside / fade);
-      setStyle(s.el, 'opacity', op); s.visible = op > 0.001;
-      // (FDA) une scène invisible sort du rendu : sinon le téléphone compose quand même ces
-      // calques plein écran transparents à chaque image
-      if (LIGHT) setStyle(s.el, 'visibility', s.visible ? '' : 'hidden');
       // (FDA) scène voisine : ses premières images se préparent avant qu'on y arrive
       s.near = y > s.start - (1.6 * vh + fade) && y < s.end + 1.6 * vh + fade;
-      setStyle(s.el, 'zIndex', (i === ci) ? '120' : String(100 + Math.round(op * 10)));
-      if ((!s.hasClip || !s.ready) && s.visible) {
-        const sc = reduce ? 1 : 1.03 + local * 0.14;
-        setStyle(s.img, 'transform', `translateX(${stageX - 2}vw) scale(${sc.toFixed(3)})`);
-      }
     }
 
     for (let i = 0; i < N; i++) {
@@ -520,19 +526,24 @@ export function mountScrollWorld(container, config) {
     if (meter) meter(now || performance.now());
     // (FDA) un pas de recherche d'au moins une image (24 i/s) : inutile de demander deux fois la même
     const eps = isMobile() ? 0.045 : 0.03;
+    {
+      const y = window.scrollY || window.pageYOffset;
+      const before = ys;
+      if (ys < 0 || reduce || Math.abs(y - ys) < 0.5) ys = y; else ys += (y - ys) * (isMobile() ? 0.3 : 0.22);
+      if (ys !== before) sceneLayout(ys);
+    }
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
       if (s.canvas) {
         if (!s.visible && !s.near) { releaseFar(s); continue; }
-        const prev = s.cur;
-        s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.3 : 0.22));
         const n = frameSpec(s).count; const pos = clamp(s.cur, 0, 1) * (n - 1);
         // (FDA) on décode autour de la destination (là où le scroll va), pas autour de la position
         // lissée : sur un saut (point de la route, flick rapide), la file de décodage n'est plus
         // inondée des images du trajet, et l'image d'arrivée est prête tout de suite.
         const tpos = clamp(s.target, 0, 1) * (n - 1);
-        if (s.decoding.size < 20) prefetchFrames(s, Math.round(tpos), s.target - prev);
+        if (s.decoding.size < 20) prefetchFrames(s, Math.round(tpos), s.target - (s.prevTarget || 0));
         else decodeFrame(s, Math.round(tpos));
+        s.prevTarget = s.target;
         if (Math.abs(tpos - pos) > 2) decodeFrame(s, Math.round(pos));
         if (Math.round(pos) !== Math.round(s.lastDrawn)) drawFrame(s, pos);
         continue;
