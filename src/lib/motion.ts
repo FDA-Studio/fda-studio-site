@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 
 export const reducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -47,3 +48,32 @@ export const motionPause = {
     };
   },
 };
+
+/**
+ * Garde un panneau affiché le temps de son animation de sortie : `shown` reste vrai pendant
+ * `exitMs` après la fermeture, et `closing` le signale au CSS. Sans animation (mouvement réduit),
+ * la fermeture est immédiate.
+ */
+export function usePresence(open: boolean, exitMs: number) {
+  const [shown, setShown] = useState(open);
+  const [closing, setClosing] = useState(false);
+  useEffect(() => {
+    if (open) {
+      setShown(true);
+      setClosing(false);
+      return;
+    }
+    if (reducedMotion()) {
+      setShown(false);
+      setClosing(false);
+      return;
+    }
+    setClosing(true);
+    const t = window.setTimeout(() => {
+      setShown(false);
+      setClosing(false);
+    }, exitMs);
+    return () => window.clearTimeout(t);
+  }, [open, exitMs]);
+  return { shown: open || shown, closing: !open && closing };
+}

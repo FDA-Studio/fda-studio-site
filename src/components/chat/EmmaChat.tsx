@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TextConversation } from "@elevenlabs/client";
 import { usePaused } from "@/components/motion/Live";
+import { usePresence } from "@/lib/motion";
 import { site } from "@/lib/site";
 import { turnstileToken, warmTurnstile } from "@/lib/turnstile";
 import { sfx } from "@/lib/sound";
@@ -298,6 +299,8 @@ export function EmmaChat() {
 
   const started = msgs.length > 0;
   const closedChat = phase === "ended" || phase === "error";
+  // Le panneau repart vers le bouton qui l'a ouvert, plus vite qu'il n'est arrivé.
+  const presence = usePresence(open, 340);
 
   return (
     <>
@@ -322,7 +325,7 @@ export function EmmaChat() {
       </button>
 
       {/* Panneau de discussion */}
-      <div className="emma-scrim" hidden={!open} onClick={() => setOpen(false)} aria-hidden />
+      <div className="emma-scrim" hidden={!presence.shown} data-closing={presence.closing ? "true" : undefined} onClick={() => setOpen(false)} aria-hidden />
       <section
         ref={panel}
         id="emma-chat"
@@ -333,7 +336,8 @@ export function EmmaChat() {
         data-open={open ? "true" : "false"}
         data-grown={started ? "true" : "false"}
         data-kb={kb ? "true" : "false"}
-        hidden={!open}
+        hidden={!presence.shown}
+        data-closing={presence.closing ? "true" : undefined}
         onTouchStart={(e) => {
           const top = panel.current?.getBoundingClientRect().top ?? 0;
           dragY.current = e.touches[0].clientY - top < 76 ? e.touches[0].clientY : null;
