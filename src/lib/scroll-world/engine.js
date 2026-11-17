@@ -424,6 +424,8 @@ export function mountScrollWorld(container, config) {
       if (y < s.start) outside = s.start - y; else if (y > s.end && i < NSEG - 1) outside = y - s.end;
       const op = smooth(1 - outside / fade);
       s.el.style.opacity = op; s.visible = op > 0.001;
+      // (FDA) scène voisine : ses premières images se préparent avant qu'on y arrive
+      s.near = y > s.start - (1.6 * vh + fade) && y < s.end + 1.6 * vh + fade;
       s.el.style.zIndex = (i === ci) ? '120' : String(100 + Math.round(op * 10));
       if (!s.hasClip || !s.ready) {
         const sc = reduce ? 1 : 1.03 + local * 0.14;
@@ -466,7 +468,7 @@ export function mountScrollWorld(container, config) {
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
       if (s.canvas) {
-        if (!s.visible) continue;
+        if (!s.visible && !s.near) continue;
         const prev = s.cur;
         s.cur += (s.target - s.cur) * (reduce ? 1 : (isMobile() ? 0.3 : 0.22));
         const n = frameSpec(s).count; const pos = clamp(s.cur, 0, 1) * (n - 1);

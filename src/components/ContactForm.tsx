@@ -20,6 +20,7 @@ export function ContactForm() {
   // Captcha anti-robot (actif seulement si une clé publique est configurée)
   const captchaOn = Boolean(site.turnstileSiteKey && site.contactEndpoint);
   const captchaEl = useRef<HTMLDivElement>(null);
+  const formEl = useRef<HTMLFormElement>(null);
   const captchaId = useRef<string | null>(null);
   const captchaToken = useRef("");
   const statusRef = useRef<HTMLDivElement>(null);
@@ -31,10 +32,26 @@ export function ContactForm() {
     if (besoin && needs.some((n) => n.value === besoin)) setSelectedNeeds([besoin]);
   }, []);
 
-  // Captcha : rendu dans le formulaire, invisible tant que Cloudflare ne demande pas d'interaction
+  // Captcha : rendu dans le formulaire, invisible tant que Cloudflare ne demande pas d'interaction.
+  // Chargé seulement quand le formulaire approche de l'écran (ou qu'on touche un champ) : la vérification de Cloudflare occupe
+  // le navigateur plusieurs centaines de millisecondes, et l'accueil la lançait pendant l'ouverture.
   const formVisible = status !== "sent" && status !== "mail";
+  const [captchaNear, setCaptchaNear] = useState(false);
   useEffect(() => {
-    if (!captchaOn || !formVisible) return;
+    if (!captchaOn || captchaNear) return;
+    const el = formEl.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setCaptchaNear(true);
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) setCaptchaNear(true);
+    }, { rootMargin: "900px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [captchaOn, captchaNear]);
+  useEffect(() => {
+    if (!captchaOn || !formVisible || !captchaNear) return;
     let cancelled = false;
     loadTurnstile()
       .then((ts) => {
@@ -63,7 +80,7 @@ export function ContactForm() {
       captchaId.current = null;
       captchaToken.current = "";
     };
-  }, [captchaOn, formVisible]);
+  }, [captchaOn, formVisible, captchaNear]);
 
   // Petit carillon quand la demande part (ou est prête dans la messagerie)
   useEffect(() => {
@@ -180,7 +197,7 @@ export function ContactForm() {
     ) : null;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-12" aria-describedby="form-note">
+    <form ref={formEl} onSubmit={onSubmit} onFocus={() => setCaptchaNear(true)} noValidate className="space-y-12" aria-describedby="form-note">
       {/* Besoin */}
       <fieldset>
         <legend className="field-label">Votre besoin <span className="text-muted">(plusieurs choix possibles)</span></legend>
