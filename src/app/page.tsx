@@ -20,8 +20,8 @@ export default function HomePage() {
     <>
       <WorldCopy />
       <World />
-      <Creations />
-      <FinalCTA />
+      <Creations compact />
+      <FinalCTA compact />
     </>
   );
 }
