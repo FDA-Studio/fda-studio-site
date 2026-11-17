@@ -13,8 +13,6 @@ export interface ScrollWorldSection {
   remapMobile?: number[];
   frames?: { base: string; count: number; ext?: string; bytes?: number };
   framesMobile?: { base: string; count: number; ext?: string; bytes?: number };
-  /** (FDA) film 720 px servi aux téléphones (framesMobile ne sert plus qu'avec ?net dans l'adresse) */
-  framesLight?: { base: string; count: number; ext?: string; bytes?: number };
   eyebrow?: string;
   title?: string;
   body?: string;
