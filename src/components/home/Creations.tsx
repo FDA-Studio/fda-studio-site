@@ -21,7 +21,7 @@ const items = [
 const longTitles = ["Répondre au téléphone", "Répondre aux clients par écrit", "Notre CRM, de la demande au devis signé", "Lire factures et contrats"];
 
 /** Barre de fenêtre commune aux démos : nom du concept, mention « démo », pause. */
-function FrameBar({ title }: { title?: string }) {
+export function FrameBar({ title }: { title?: string }) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-line py-1 pl-4 pr-3 md:pl-5">
       <p className="min-w-0 truncate text-sm text-muted">
