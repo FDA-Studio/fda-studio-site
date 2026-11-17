@@ -7,7 +7,8 @@ import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 import { formatDate, getArticles } from "@/lib/articles";
 import { localBySlug, localPages } from "@/lib/local-pages";
 import { serviceBySlug, services } from "@/lib/services";
-import { site } from "@/lib/site";
+import { asset, site } from "@/lib/site";
+import { ServiceDemo, type ServiceDemoKind } from "@/components/ServiceDemo";
 
 export const dynamicParams = false;
 
@@ -29,11 +30,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * Chaque page reprend la scène du film qui correspond à son service : la même pièce que celle d'où
+ * vient le visiteur. 1 = sites, 2 = IA, 3 = applications. Les pages IA et applications montrent
+ * aussi la démo animée du service.
+ */
+function visualFor(slug: string): { scene: 1 | 2 | 3; demo?: { kind: ServiceDemoKind; title: string; text: string } } {
+  if (/(^|-)ia(-|$)|agent-vocal/.test(slug)) {
+    return { scene: 2, demo: { kind: "voice", title: "Écoutez-le décrocher.", text: "L’agent vocal répond, comprend la demande, déplace le rendez-vous et note tout dans le CRM. Démo rejouée avec des données fictives." } };
+  }
+  if (slug.includes("application")) {
+    return { scene: 3, demo: { kind: "crm", title: "Une application en vrai.", text: "Notre propre CRM, conçu par le studio pour le web et l’iPhone : de la demande au devis signé. Démo rejouée avec des données fictives." } };
+  }
+  return { scene: 1 };
+}
+
 /** Page de service : offre, méthode, zone d'intervention, questions fréquentes. */
 export default async function ServicePage({ params }: Props) {
   const s = pageBySlug((await params).service);
   if (!s) notFound();
   const url = `${site.url}/${s.slug}/`;
+  const visual = visualFor(s.slug);
   const others = services.filter((o) => o.slug !== s.slug);
   // Maillage interne : les articles du même service, les plus récents d'abord
   const related = getArticles().filter((a) => a.service === s.slug).slice(0, 4);
@@ -72,20 +89,24 @@ export default async function ServicePage({ params }: Props) {
       <JsonLd data={serviceLd} />
       <JsonLd data={faqLd} />
 
-      {/* Ouverture */}
-      <section aria-labelledby="service-title" className="relative overflow-hidden pb-[var(--section-y)] pt-28 md:pt-36">
-        <div className="glow-accent pointer-events-none absolute -right-48 -top-48 h-[44rem] w-[44rem] opacity-60" aria-hidden />
+      {/* Ouverture : la scène du film derrière le titre */}
+      <section aria-labelledby="service-title" className="service-hero">
+        <picture aria-hidden>
+          <source media="(max-width: 860px)" srcSet={asset(`/world/frames/n${visual.scene}/130.webp`)} />
+          <img src={asset(`/world/frames/d${visual.scene}/130.webp`)} alt="" width={1920} height={1080} fetchPriority="high" decoding="async" className="service-hero__img" />
+        </picture>
+        <div className="service-hero__shade" aria-hidden />
         <div className="wrap relative">
-          <nav aria-label="Fil d’Ariane" className="text-sm text-muted">
+          <nav aria-label="Fil d’Ariane" className="text-sm text-soft">
             <Link href="/" className="link-line hover:text-paper">Accueil</Link>
-            <span aria-hidden className="mx-2 text-line-strong">/</span>
+            <span aria-hidden className="mx-2 text-muted">/</span>
             <span aria-current="page" className="text-paper">{s.name}</span>
           </nav>
-          <h1 id="service-title" className="hero-title mt-10 max-w-[18ch]">
+          <h1 id="service-title" className="hero-title mt-8 max-w-[18ch]">
             <span className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: 0 }}>{s.h1[0]}</span></span>
-            <span className="reveal-line"><span className="hero-rise text-muted" style={{ ["--i" as string]: 1 }}>{s.h1[1]}</span></span>
+            <span className="reveal-line"><span className="hero-rise text-soft" style={{ ["--i" as string]: 1 }}>{s.h1[1]}</span></span>
           </h1>
-          <div className="mt-10 grid gap-8 md:grid-cols-12 md:items-end">
+          <div className="mt-8 grid gap-8 md:grid-cols-12 md:items-end">
             <p className="hero-fade text-lg leading-relaxed text-soft md:col-span-7 md:text-xl" style={{ ["--i" as string]: 0 }}>{s.intro}</p>
             <div className="hero-fade flex flex-col gap-3 sm:flex-row md:col-span-5 md:justify-end" style={{ ["--i" as string]: 1 }}>
               <Link href="/#contact" className="btn btn-primary">
@@ -98,14 +119,30 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </section>
 
+      {/* Démo du service : on le voit fonctionner avant de lire */}
+      {visual.demo && (
+        <section aria-labelledby="demo-title" className="section bg-graphite">
+          <div className="wrap grid gap-10 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-5">
+              <h2 id="demo-title" className="section-title">{visual.demo.title}</h2>
+              <p className="mt-6 max-w-md text-lg text-soft">{visual.demo.text}</p>
+            </div>
+            <div className="lg:col-span-7">
+              <ServiceDemo kind={visual.demo.kind} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Offre */}
       <section aria-labelledby="offers-title" className="section border-t border-line">
         <div className="wrap">
           <h2 id="offers-title" className="section-title max-w-[16ch]">{s.headings.offers}</h2>
           <ul className={`mt-14 grid gap-px overflow-hidden rounded-[1.5rem] border border-line bg-line md:mt-20 md:grid-cols-2 ${s.offers.length % 3 === 0 ? "lg:grid-cols-3" : ""}`}>
-            {s.offers.map((o) => (
-              <li key={o.title} className="bg-ink p-6 md:p-8">
-                <h3 className="tile-title">{o.title}</h3>
+            {s.offers.map((o, i) => (
+              <li key={o.title} className="offer-card bg-ink p-6 md:p-8">
+                <span className="tabular text-sm text-accent-bright" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="tile-title mt-4">{o.title}</h3>
                 <p className="mt-3 text-soft">{o.text}</p>
               </li>
             ))}
