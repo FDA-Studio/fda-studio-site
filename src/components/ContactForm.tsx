@@ -11,8 +11,13 @@ import { loadTurnstile } from "@/lib/turnstile";
 type Errors = Partial<Record<string, string>>;
 type Status = "idle" | "sending" | "sent" | "mail" | "error";
 
-export function ContactForm() {
+/**
+ * `compact` : trois champs d'abord (nom, e-mail, projet), le reste dans « Préciser (facultatif) ».
+ * Les choix non renseignés partent avec une valeur neutre, le serveur attend les mêmes champs.
+ */
+export function ContactForm({ compact = false }: { compact?: boolean }) {
   const [selectedNeeds, setSelectedNeeds] = useState<string[]>([]);
+  const [more, setMore] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>("idle");
   const [serverError, setServerError] = useState("");
@@ -97,9 +102,9 @@ export function ContactForm() {
       email: String(fd.get("email") ?? ""),
       company: String(fd.get("company") ?? ""),
       phone: String(fd.get("phone") ?? ""),
-      needs: selectedNeeds,
-      budget: String(fd.get("budget") ?? ""),
-      timeline: String(fd.get("timeline") ?? ""),
+      needs: compact && selectedNeeds.length === 0 ? ["autre"] : selectedNeeds,
+      budget: String(fd.get("budget") ?? "") || (compact ? "À définir" : ""),
+      timeline: String(fd.get("timeline") ?? "") || (compact ? "Flexible" : ""),
       message: String(fd.get("message") ?? ""),
       consent: fd.get("consent") === "on",
       website: String(fd.get("website") ?? ""),
@@ -120,6 +125,7 @@ export function ContactForm() {
         return;
       }
       setErrors(next);
+      if (compact && next.phone) setMore(true);
       const first = Object.keys(next)[0];
       document.querySelector<HTMLElement>(`[data-field="${first}"]`)?.focus();
       return;
@@ -197,8 +203,94 @@ export function ContactForm() {
     ) : null;
 
   return (
-    <form ref={formEl} onSubmit={onSubmit} onFocus={() => setCaptchaNear(true)} noValidate className="space-y-12" aria-describedby="form-note">
-      {/* Besoin */}
+    <form ref={formEl} onSubmit={onSubmit} onFocus={() => setCaptchaNear(true)} noValidate className={compact ? "space-y-8" : "space-y-12"} aria-describedby="form-note">
+      {compact ? (
+        <>
+      <div className="grid gap-8 md:grid-cols-2">
+        <div>
+          <label htmlFor="name" className="field-label">Nom et prénom</label>
+          <input id="name" name="name" data-field="name" autoComplete="name" required className="field" aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />
+          {err("name")}
+        </div>
+        <div>
+          <label htmlFor="email" className="field-label">E-mail professionnel</label>
+          <input id="email" name="email" data-field="email" type="email" autoComplete="email" inputMode="email" required className="field" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
+          {err("email")}
+        </div>
+      </div>
+      <div>
+        <label htmlFor="message" className="field-label">Présentez votre projet</label>
+        <textarea
+          id="message"
+          name="message"
+          data-field="message"
+          rows={compact ? 4 : 5}
+          required
+          maxLength={5000}
+          placeholder="Votre activité, l’objectif du projet, ce qui existe déjà, ce qui compte le plus pour vous…"
+          className="field resize-y"
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "message-error" : undefined}
+        />
+        {err("message")}
+      </div>
+      <details className="form-more" open={more} onToggle={(e) => setMore(e.currentTarget.open)}>
+        <summary>Préciser (facultatif)</summary>
+        <div className="mt-6 space-y-8">
+      <fieldset>
+        <legend className="field-label">Votre besoin <span className="text-muted">(plusieurs choix possibles)</span></legend>
+        <div className="mt-4 flex flex-wrap gap-2" data-field="needs" tabIndex={-1}>
+          {needs.map((n) => (
+            <button key={n.value} type="button" className="chip" aria-pressed={selectedNeeds.includes(n.value)} onClick={() => toggleNeed(n.value)}>
+              {n.label}
+            </button>
+          ))}
+        </div>
+        {err("needs")}
+      </fieldset>
+
+      <div className="grid gap-8 md:grid-cols-2">
+        <div>
+          <label htmlFor="company" className="field-label">Entreprise <span className="text-muted">(facultatif)</span></label>
+          <input id="company" name="company" autoComplete="organization" className="field" />
+        </div>
+        <div>
+          <label htmlFor="phone" className="field-label">Téléphone <span className="text-muted">(facultatif)</span></label>
+          <input id="phone" name="phone" data-field="phone" type="tel" autoComplete="tel" inputMode="tel" className="field" aria-invalid={!!errors.phone} aria-describedby={errors.phone ? "phone-error" : undefined} />
+          {err("phone")}
+        </div>
+      </div>
+      <fieldset>
+        <legend className="field-label">Budget indicatif</legend>
+        <div className="mt-4 flex flex-wrap gap-2" data-field="budget" tabIndex={-1}>
+          {budgets.map((b) => (
+            <label key={b} className="relative">
+              <input type="radio" name="budget" value={b} className="peer sr-only" />
+              <span className="chip">{b}</span>
+            </label>
+          ))}
+        </div>
+        {err("budget")}
+      </fieldset>
+
+      <fieldset>
+        <legend className="field-label">Délai souhaité</legend>
+        <div className="mt-4 flex flex-wrap gap-2" data-field="timeline" tabIndex={-1}>
+          {timelines.map((t) => (
+            <label key={t} className="relative">
+              <input type="radio" name="timeline" value={t} className="peer sr-only" />
+              <span className="chip">{t}</span>
+            </label>
+          ))}
+        </div>
+        {err("timeline")}
+      </fieldset>
+
+        </div>
+      </details>
+        </>
+      ) : (
+        <>
       <fieldset>
         <legend className="field-label">Votre besoin <span className="text-muted">(plusieurs choix possibles)</span></legend>
         <div className="mt-4 flex flex-wrap gap-2" data-field="needs" tabIndex={-1}>
@@ -265,7 +357,7 @@ export function ContactForm() {
           id="message"
           name="message"
           data-field="message"
-          rows={5}
+          rows={compact ? 4 : 5}
           required
           maxLength={5000}
           placeholder="Votre activité, l’objectif du projet, ce qui existe déjà, ce qui compte le plus pour vous…"
@@ -275,6 +367,8 @@ export function ContactForm() {
         />
         {err("message")}
       </div>
+        </>
+      )}
 
       {/* Champ piège anti-robots, invisible pour les humains */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
