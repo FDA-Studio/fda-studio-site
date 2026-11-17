@@ -39,7 +39,7 @@ export function World() {
         atmosphere: false,
         hint: "Défilez pour entrer",
         diveScroll: 1.9,
-        crossfade: 0.08,
+        crossfade: 0.1,
         sections: WORLD_SECTIONS.map((s, i) => ({
           id: s.id,
           label: s.label,
@@ -47,6 +47,8 @@ export function World() {
           stillMobile: worldAsset(`still_${i}-m.webp`),
           frames: { base: worldAsset(`frames/d${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`d${i}`] },
           framesMobile: { base: worldAsset(`frames/m${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`m${i}`] },
+          // À l'essai (?leger) : le même film en 720 px de large
+          framesLight: { base: worldAsset(`frames/n${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`n${i}`] },
           accent: s.accent,
           copyAt: s.copyAt,
           remap: (motion as Record<string, number[]>)[String(i)],

@@ -13,6 +13,8 @@ export interface ScrollWorldSection {
   remapMobile?: number[];
   frames?: { base: string; count: number; ext?: string; bytes?: number };
   framesMobile?: { base: string; count: number; ext?: string; bytes?: number };
+  /** (FDA) film allégé pour téléphone, utilisé avec ?leger dans l'adresse */
+  framesLight?: { base: string; count: number; ext?: string; bytes?: number };
   eyebrow?: string;
   title?: string;
   body?: string;
