@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Gate } from "./Gate";
-import { WORLD_SECTIONS, worldAsset } from "./config";
+import { WORLD_SECTIONS, WORLD_TEXT_VARIANTS, worldAsset } from "./config";
 import motion from "./motion.json";
 import motionM from "./motion-m.json";
 import frameBytes from "./frame-bytes.json";
@@ -40,7 +40,11 @@ export function World() {
         hint: "Défilez pour entrer",
         diveScroll: 1.9,
         crossfade: 0.1,
-        sections: WORLD_SECTIONS.map((s, i) => ({
+        sections: WORLD_SECTIONS.map((base, i) => {
+          // Textes à l'essai : ?texte=1 ou ?texte=2 dans l'adresse
+          const alt = WORLD_TEXT_VARIANTS[new URLSearchParams(window.location.search).get("texte") ?? ""]?.[i];
+          return alt ? { ...base, title: alt.title, body: alt.body ?? "", tags: [], link: alt.link } : { ...base, link: undefined };
+        }).map((s, i) => ({
           id: s.id,
           label: s.label,
           still: worldAsset(`still_${i}.webp`),
@@ -56,6 +60,7 @@ export function World() {
           title: frTypo(s.title),
           body: frTypo(s.body),
           tags: s.tags,
+          link: s.link,
           cta: s.cta,
         })),
         connectors: [],
