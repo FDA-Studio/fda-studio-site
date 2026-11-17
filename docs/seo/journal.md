@@ -7,7 +7,7 @@ Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport m
   « agence IA Tours » remplacé : c’est le mot-clé principal de la page de service /agence-ia-tours/, l’article
   l’aurait concurrencée ; il le garde en mot-clé secondaire et renvoie vers la page. Anti-doublon : 6 articles
   existants, aucune PR ouverte. Sources : Insee Première n° 2120 (juillet 2026), Bpifrance (Diag Data IA),
-  Commission européenne (article 50 du règlement IA, 2 août 2026).
+  Commission européenne (article 50 du règlement IA, 2 août 2026). PR #39 fusionnée, en ligne vers 08:49 UTC.
   Audit : les 14 URL du sitemap en 200 ; un title, une meta description et un seul H1 par page (build) ;
   données structurées présentes (Organization, Service, BreadcrumbList, BlogPosting, FAQPage) ; liens internes
   sans erreur ; /mentions-legales/ volontairement en noindex et hors sitemap ; dernier IndexNow vert (15/11).
