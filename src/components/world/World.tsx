@@ -47,7 +47,7 @@ export function World() {
           stillMobile: worldAsset(`still_${i}-m.webp`),
           frames: { base: worldAsset(`frames/d${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`d${i}`] },
           framesMobile: { base: worldAsset(`frames/m${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`m${i}`] },
-          // À l'essai (?leger) : le même film en 720 px de large
+          // Film servi aux téléphones : 720 px de large (framesMobile ne sert plus qu'avec ?net)
           framesLight: { base: worldAsset(`frames/n${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`n${i}`] },
           accent: s.accent,
           copyAt: s.copyAt,
