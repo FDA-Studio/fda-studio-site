@@ -73,10 +73,6 @@ export function mountScrollWorld(container, config) {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallMQ = window.matchMedia('(max-width: 860px)');
   const isMobile = () => coarse || smallMQ.matches;
-  // (FDA) Sur téléphone, le film est servi en 720 px de large (au lieu de 960) et dessiné sur une
-  // toile de densité 1,5 : mesuré sur iPhone, deux fois moins d'images ratées. ?net dans l'adresse
-  // remet l'ancienne version (960 px, densité 2) pour comparer.
-  const LIGHT = !/[?&]net\b/.test(location.search);
   const SECTIONS = config.sections || [];
   const CONNECTORS = config.connectors || [];
   const CONNECTORS_M = config.connectorsMobile || [];
@@ -104,7 +100,7 @@ export function mountScrollWorld(container, config) {
                    remapM: Array.isArray(s.remapMobile) && s.remapMobile.length > 1 ? s.remapMobile : null,
                    // frames (FDA) : séquence d'images { base, count, ext } dessinée sur un canvas
                    // (recherche vidéo asynchrone remplacée par un dessin immédiat de l'image voulue)
-                   frames: s.frames || null, framesM: (LIGHT && s.framesLight) || s.framesMobile || null };
+                   frames: s.frames || null, framesM: s.framesMobile || null };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -283,7 +279,9 @@ export function mountScrollWorld(container, config) {
   }
 
   // ---- (FDA) séquences d'images sur canvas -------------------------------------------
-  const DPR = Math.min(window.devicePixelRatio || 1, (LIGHT && isMobile()) ? 1.5 : 2);
+  // (FDA) Téléphone : toile de densité 1,5, accordée au film 720 px. Mesuré sur iPhone : deux fois
+  // moins d'images ratées qu'en 960 px sur une toile de densité 2.
+  const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 1.5 : 2);
   function frameSpec(s) { return (isMobile() && s.framesM) ? s.framesM : s.frames; }
   function frameUrl(spec, i) { return spec.base + String(i + 1).padStart(3, '0') + '.' + (spec.ext || 'webp'); }
   // (FDA) Chargement progressif : la promesse se résout dès que le PREMIER film est en mémoire
@@ -519,7 +517,7 @@ export function mountScrollWorld(container, config) {
       }
       if (now - shown < 500) return; shown = now;
       const mem = SEGMENTS.reduce((t, s) => t + (s.cache ? s.cache.size : 0), 0);
-      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images${LIGHT ? '' : '  · net'}`;
+      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images`;
     };
   })() : null;
 
