@@ -28,19 +28,24 @@ export function Footer() {
           </ul>
         </div>
 
-        <nav aria-label="Près de chez vous" className="mt-12 border-t border-line pt-6">
-          <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted">
-            {localPages.map((p) => (
-              <li key={p.slug}><Link href={`/${p.slug}/`} className="link-line hover:text-paper">{p.name}</Link></li>
-            ))}
-          </ul>
-        </nav>
-
         <p lang="en" className="slogan mt-20 md:mt-28">
           We build<br />what&rsquo;s next.
         </p>
 
-        <p className="mt-8 border-t border-line pt-6 text-sm text-muted">
+        {/* Pages locales : repliées pour ne pas charger le bas de page. Les liens restent dans la page
+            (lisibles par Google) et s'ouvrent d'un toucher. */}
+        <details className="foot-more mt-8 border-t border-line pt-4">
+          <summary>Près de chez vous</summary>
+          <nav aria-label="Près de chez vous" className="pb-2 pt-3">
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted">
+              {localPages.map((p) => (
+                <li key={p.slug}><Link href={`/${p.slug}/`} className="link-line hover:text-paper">{p.name}</Link></li>
+              ))}
+            </ul>
+          </nav>
+        </details>
+
+        <p className="mt-4 border-t border-line pt-6 text-sm text-muted">
           © {new Date().getFullYear()} FDA Studio, marque de la société {site.company.name} ({site.group.name}). Aucun cookie, aucun traceur.
         </p>
       </div>
