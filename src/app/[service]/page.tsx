@@ -102,7 +102,7 @@ export default async function ServicePage({ params }: Props) {
       <section aria-labelledby="offers-title" className="section border-t border-line">
         <div className="wrap">
           <h2 id="offers-title" className="section-title max-w-[16ch]">{s.headings.offers}</h2>
-          <ul className="mt-14 grid gap-px overflow-hidden rounded-[1.5rem] border border-line bg-line md:mt-20 md:grid-cols-2 lg:grid-cols-3">
+          <ul className={`mt-14 grid gap-px overflow-hidden rounded-[1.5rem] border border-line bg-line md:mt-20 md:grid-cols-2 ${s.offers.length % 3 === 0 ? "lg:grid-cols-3" : ""}`}>
             {s.offers.map((o) => (
               <li key={o.title} className="bg-ink p-6 md:p-8">
                 <h3 className="tile-title">{o.title}</h3>
@@ -117,7 +117,7 @@ export default async function ServicePage({ params }: Props) {
       <section aria-labelledby="for-title" className="section border-t border-line">
         <div className="wrap">
           <h2 id="for-title" className="section-title max-w-[18ch]">{s.headings.forWhom}</h2>
-          <ul className="mt-14 grid gap-10 md:mt-20 md:grid-cols-2 md:gap-x-16">
+          <ul className={`mt-14 grid gap-10 md:mt-20 md:gap-x-16 ${s.forWhom.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
             {s.forWhom.map((f) => (
               <li key={f.title} className="border-t border-line pt-6">
                 <h3 className="text-xl font-semibold tracking-[-0.02em]">{f.title}</h3>
