@@ -693,6 +693,12 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .world .sw-copy__eyebrow { color: color-mix(in srgb, var(--sw-accent) 45%, #ffffff); }
 .world .sw-copy__title { font-weight: 650; letter-spacing: -0.045em; line-height: 0.98; font-size: clamp(2.3rem, 4.2vw, 3.75rem); text-wrap: balance; }
 .world .sw-copy__body { color: var(--color-soft); max-width: 38ch; text-wrap: pretty; }
+/* Lien de scène (textes à l'essai) : suit l'état du texte, cliquable seulement quand il est affiché */
+/* Les boutons de la dernière scène restaient cliquables même invisibles, par-dessus les autres
+   scènes : ils suivent maintenant l'état de leur texte (cliquables seulement quand il est affiché). */
+.world .sw-copy__cta { pointer-events: inherit; }
+.world .sw-copy__link { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; margin-top: 0.9rem; color: var(--color-paper); font-size: 1rem; border-bottom: 1px solid color-mix(in srgb, var(--sw-accent) 70%, #ffffff); transition: opacity 700ms var(--ease-out) 220ms; }
+.world .sw-copy:not([data-shown="true"]) .sw-copy__link { opacity: 0; }
 .sw-word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em; margin-bottom: -0.1em; }
 .sw-word > span { display: inline-block; transform: translateY(108%); transition: transform 900ms var(--ease-out-expo); transition-delay: calc(var(--i) * 40ms); }
 .sw-copy[data-shown="true"] .sw-word > span { transform: none; }

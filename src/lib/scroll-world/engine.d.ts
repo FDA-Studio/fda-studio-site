@@ -17,6 +17,8 @@ export interface ScrollWorldSection {
   title?: string;
   body?: string;
   tags?: string[];
+  /** (FDA) lien affiché sous le titre de la scène */
+  link?: { label: string; href: string };
   cta?: { primary?: { label: string; href: string }; secondary?: { label: string; href: string } };
 }
 export interface ScrollWorldConfig {

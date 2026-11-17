@@ -172,6 +172,7 @@ export function mountScrollWorld(container, config) {
       (s.title ? `<h2 class="sw-copy__title">${esc(s.title)}</h2>` : '') +
       (s.body ? `<p class="sw-copy__body">${esc(s.body)}</p>` : '') +
       (s.tags && s.tags.length ? `<ul class="sw-copy__tags">${s.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : '') +
+      (s.link ? `<a class="sw-copy__link" tabindex="-1" href="${esc(s.link.href)}">${esc(s.link.label)}<span aria-hidden="true">→</span></a>` : '') +
       (s.cta ? `<div class="sw-copy__cta">${ctaBtns(s.cta)}</div>` : '');
     copylayer.appendChild(c); copies.push(c);
 

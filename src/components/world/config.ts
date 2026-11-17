@@ -82,3 +82,27 @@ export const WORLD_SECTIONS: WorldSection[] = [
     },
   },
 ];
+
+/**
+ * Textes du film à l'essai (adresse ?texte=1 ou ?texte=2, invisible pour les visiteurs).
+ * 1 : mêmes titres ou presque, une seule ligne dessous, sans étiquettes.
+ * 2 : un titre court et un lien vers la page du service, rien d'autre.
+ */
+export const WORLD_TEXT_VARIANTS: Record<string, { title: string; body?: string; link?: { label: string; href: string } }[]> = {
+  "1": [
+    { title: "Sites, applications et agents IA.", body: "Un seul studio, à Tours. De la maquette à la mise en ligne." },
+    { title: "Un site qui donne envie de vous appeler.", body: "Sur mesure, rapide sur mobile, trouvé sur Google." },
+    { title: "Une IA qui travaille dans vos outils.", body: "Elle répond, trie, lit vos factures. Vous gardez la main." },
+    { title: "Des applications ouvertes chaque matin.", body: "Web et mobile, jusqu’à la publication sur les stores." },
+    { title: "Derrière la porte, nos propres univers.", body: "Door Knight, notre jeu d’action 3D sur mobile." },
+    { title: "Votre projet commence par une conversation." },
+  ],
+  "2": [
+    { title: "Sites, applications, agents IA." },
+    { title: "Un site qui donne envie d’appeler.", link: { label: "Création de site internet", href: "/creation-site-internet-tours/" } },
+    { title: "Une IA dans vos outils.", link: { label: "Agence IA", href: "/agence-ia-tours/" } },
+    { title: "Des applications ouvertes chaque matin.", link: { label: "Applications", href: "/developpement-application-tours/" } },
+    { title: "Derrière la porte, nos univers.", link: { label: "Gaming", href: "/gaming/" } },
+    { title: "Tout commence par une conversation." },
+  ],
+};
