@@ -354,6 +354,20 @@ p { text-wrap: pretty; }
 .hero-rise { animation: rise 700ms var(--ease-out-expo) both; animation-delay: calc(80ms + var(--i, 0) * 80ms); }
 .hero-fade { animation: fade-up 520ms var(--ease-out-expo) both; animation-delay: calc(480ms + var(--i, 0) * 60ms); }
 
+/* Accueil, version courte : onglets des démos (téléphone) */
+.demo-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.25rem; padding: 0.25rem; border: 1px solid var(--color-line); border-radius: 999px; }
+.demo-tab { min-height: 2.75rem; border-radius: 999px; font-size: 0.8125rem; color: var(--color-muted); transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out), transform 160ms var(--ease-out); }
+.demo-tab:active { transform: scale(0.97); }
+.demo-tab[aria-selected="true"] { background: var(--color-accent); color: #fff; }
+.demo-panel:not([hidden]) { animation: fade-up 320ms var(--ease-out-expo) both; }
+.demo-swap { animation: fade 280ms var(--ease-out) both; }
+.demo-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--color-line); transition: background-color 200ms var(--ease-out), width 200ms var(--ease-out); }
+.demo-dot[data-on="true"] { width: 18px; background: var(--color-accent); }
+.form-more > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; color: var(--color-soft); }
+.form-more > summary::-webkit-details-marker { display: none; }
+.form-more > summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border: 1px solid var(--color-line); border-radius: 999px; }
+.form-more[open] > summary::before { content: "–"; }
+
 /* Menu mobile : fondu court à l'entrée, liens décalés de 30 ms ; sortie plus courte. */
 .menu-sheet:not([hidden]) { animation: fade 200ms var(--ease-out) both; }
 .menu-sheet:not([hidden]):not([data-closing]) nav a { animation: fade-up 360ms var(--ease-out-expo) both; animation-delay: calc(60ms + var(--i, 0) * 30ms); }
@@ -460,6 +474,7 @@ input:focus-visible + .chip { outline: 2px solid var(--color-accent-bright); out
   .demo-slide, .demo-slide[data-shown="true"] { transform: none; filter: none; transition: opacity 200ms ease; }
   .nav-link::after { transition: none; }
   .menu-sheet nav a, .menu-sheet[data-closing="true"] { animation: none !important; }
+  .demo-panel, .demo-swap { animation: none !important; }
 }
 
 /* --------------------------------------------------------------------------
