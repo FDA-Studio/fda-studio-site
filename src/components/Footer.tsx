@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./brand/Logo";
+import { localPages } from "@/lib/local-pages";
 import { site } from "@/lib/site";
 
 export function Footer() {
@@ -26,6 +27,14 @@ export function Footer() {
             <li><Link href="/confidentialite/" className="link-line hover:text-paper">Confidentialité</Link></li>
           </ul>
         </div>
+
+        <nav aria-label="Près de chez vous" className="mt-12 border-t border-line pt-6">
+          <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted">
+            {localPages.map((p) => (
+              <li key={p.slug}><Link href={`/${p.slug}/`} className="link-line hover:text-paper">{p.name}</Link></li>
+            ))}
+          </ul>
+        </nav>
 
         <p lang="en" className="slogan mt-20 md:mt-28">
           We build<br />what&rsquo;s next.

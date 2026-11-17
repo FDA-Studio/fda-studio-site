@@ -28,6 +28,8 @@ export type Service = {
   faq: { q: string; a: string }[];
   /** Lien vers une démonstration sur l'accueil */
   demo?: { href: string; label: string };
+  /** Villes et territoires desservis, pour les données structurées (Tours et sa région par défaut) */
+  areaServed?: string[];
 };
 
 export const services: Service[] = [

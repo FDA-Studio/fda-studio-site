@@ -5,19 +5,23 @@ import { JsonLd } from "@/components/JsonLd";
 import { ArrowIcon } from "@/components/icons";
 import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 import { formatDate, getArticles } from "@/lib/articles";
+import { localBySlug, localPages } from "@/lib/local-pages";
 import { serviceBySlug, services } from "@/lib/services";
 import { site } from "@/lib/site";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return services.map((s) => ({ service: s.slug }));
+  return [...services, ...localPages].map((s) => ({ service: s.slug }));
 }
 
 type Props = { params: Promise<{ service: string }> };
 
+/** Une page de service, ou une page locale (ville ou métier) construite sur le même gabarit. */
+const pageBySlug = (slug: string) => serviceBySlug(slug) ?? localBySlug(slug);
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const s = serviceBySlug((await params).service);
+  const s = pageBySlug((await params).service);
   if (!s) return {};
   return {
     ...pageMeta({ title: s.title, description: s.description, path: `/${s.slug}/`, keywords: s.keywords }),
@@ -27,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 /** Page de service : offre, méthode, zone d'intervention, questions fréquentes. */
 export default async function ServicePage({ params }: Props) {
-  const s = serviceBySlug((await params).service);
+  const s = pageBySlug((await params).service);
   if (!s) notFound();
   const url = `${site.url}/${s.slug}/`;
   const others = services.filter((o) => o.slug !== s.slug);
@@ -42,12 +46,14 @@ export default async function ServicePage({ params }: Props) {
     description: s.description,
     url,
     provider: { "@id": `${site.url}/#organization` },
-    areaServed: [
-      { "@type": "City", name: "Tours" },
-      { "@type": "AdministrativeArea", name: "Indre-et-Loire" },
-      { "@type": "AdministrativeArea", name: "Centre-Val de Loire" },
-      { "@type": "Country", name: "France" },
-    ],
+    areaServed: s.areaServed
+      ? [...s.areaServed.map((name) => ({ "@type": "Place", name })), { "@type": "Country", name: "France" }]
+      : [
+          { "@type": "City", name: "Tours" },
+          { "@type": "AdministrativeArea", name: "Indre-et-Loire" },
+          { "@type": "AdministrativeArea", name: "Centre-Val de Loire" },
+          { "@type": "Country", name: "France" },
+        ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: s.name,
