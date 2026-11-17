@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Gate } from "./Gate";
-import { WORLD_SECTIONS, WORLD_TEXT_VARIANTS, worldAsset } from "./config";
+import { WORLD_SECTIONS, worldAsset } from "./config";
 import motion from "./motion.json";
 import motionM from "./motion-m.json";
 import frameBytes from "./frame-bytes.json";
@@ -40,11 +40,7 @@ export function World() {
         hint: "Défilez pour entrer",
         diveScroll: 1.9,
         crossfade: 0.1,
-        sections: WORLD_SECTIONS.map((base, i) => {
-          // Textes à l'essai : ?texte=1 ou ?texte=2 dans l'adresse
-          const alt = WORLD_TEXT_VARIANTS[new URLSearchParams(window.location.search).get("texte") ?? ""]?.[i];
-          return alt ? { ...base, title: alt.title, body: alt.body ?? "", tags: [], link: alt.link } : { ...base, link: undefined };
-        }).map((s, i) => ({
+        sections: WORLD_SECTIONS.map((s, i) => ({
           id: s.id,
           label: s.label,
           still: worldAsset(`still_${i}.webp`),
@@ -162,11 +158,14 @@ export function WorldCopy() {
       <h1>
         {WORLD_SECTIONS[0].eyebrow} : {WORLD_SECTIONS[0].title.charAt(0).toLowerCase() + WORLD_SECTIONS[0].title.slice(1)}
       </h1>
-      <p>{WORLD_SECTIONS[0].body}</p>
       {WORLD_SECTIONS.slice(1).map((s) => (
         <section key={s.id} aria-labelledby={`world-${s.id}`}>
           <h2 id={`world-${s.id}`}>{s.title}</h2>
-          <p>{s.body}</p>
+          {s.link && (
+            <p>
+              <a href={s.link.href}>{s.link.label}</a>
+            </p>
+          )}
           {s.cta && (
             <p>
               <a href={s.cta.primary.href}>{s.cta.primary.label}</a>
