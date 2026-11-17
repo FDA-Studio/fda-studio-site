@@ -73,6 +73,10 @@ export function mountScrollWorld(container, config) {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallMQ = window.matchMedia('(max-width: 860px)');
   const isMobile = () => coarse || smallMQ.matches;
+  // (FDA) Version allégée à l'essai, activée par ?leger dans l'adresse (comparaison sur iPhone) :
+  // lissage normal quand l'image est à taille réelle, scènes invisibles retirées du rendu, styles
+  // réécrits seulement s'ils changent. Sans ?leger, le film se comporte comme avant.
+  const LIGHT = /[?&]leger\b/.test(location.search);
   const SECTIONS = config.sections || [];
   const CONNECTORS = config.connectors || [];
   const CONNECTORS_M = config.connectorsMobile || [];
@@ -408,6 +412,10 @@ export function mountScrollWorld(container, config) {
   function drawBitmap(ctx, bm, W, H, alpha) {
     const r = Math.max(W / bm.width, H / bm.height);
     const w = bm.width * r, h = bm.height * r;
+    // (FDA) Quasiment à taille réelle (cas du téléphone), le lissage « high » ne change rien à
+    // l'œil mais coûte cher à Safari à chaque image : on le réserve aux vrais changements d'échelle.
+    const q = (LIGHT && r > 0.85 && r < 1.2) ? 'low' : 'high';
+    if (ctx.imageSmoothingQuality !== q) ctx.imageSmoothingQuality = q;
     ctx.globalAlpha = alpha; ctx.drawImage(bm, (W - w) / 2, (H - h) * 0.42, w, h);
   }
   function drawFrame(s, pos) {
@@ -420,6 +428,12 @@ export function mountScrollWorld(container, config) {
     drawBitmap(ctx, bm, W, H, 1); s.lastDrawn = pos; return true;
   }
 
+  function setStyle(el, prop, v) {
+    if (!LIGHT) { el.style[prop] = typeof v === 'number' ? String(v) : v; return; }
+    const key = '__' + prop; const val = typeof v === 'number' ? Math.round(v * 1000) / 1000 : v;
+    if (el[key] === val) return;
+    el[key] = val; el.style[prop] = typeof val === 'number' ? String(val) : val;
+  }
   function read() {
     const y = window.scrollY || window.pageYOffset;
     const fade = CROSSFADE * vh;
@@ -436,13 +450,16 @@ export function mountScrollWorld(container, config) {
       // (FDA) le dernier segment reste affiché après sa fin : la page suivante recouvre le monde
       if (y < s.start) outside = s.start - y; else if (y > s.end && i < NSEG - 1) outside = y - s.end;
       const op = smooth(1 - outside / fade);
-      s.el.style.opacity = op; s.visible = op > 0.001;
+      setStyle(s.el, 'opacity', op); s.visible = op > 0.001;
+      // (FDA) une scène invisible sort du rendu : sinon le téléphone compose quand même ces
+      // calques plein écran transparents à chaque image
+      if (LIGHT) setStyle(s.el, 'visibility', s.visible ? '' : 'hidden');
       // (FDA) scène voisine : ses premières images se préparent avant qu'on y arrive
       s.near = y > s.start - (1.6 * vh + fade) && y < s.end + 1.6 * vh + fade;
-      s.el.style.zIndex = (i === ci) ? '120' : String(100 + Math.round(op * 10));
-      if (!s.hasClip || !s.ready) {
+      setStyle(s.el, 'zIndex', (i === ci) ? '120' : String(100 + Math.round(op * 10)));
+      if ((!s.hasClip || !s.ready) && s.visible) {
         const sc = reduce ? 1 : 1.03 + local * 0.14;
-        s.img.style.transform = `translateX(${stageX - 2}vw) scale(${sc.toFixed(3)})`;
+        setStyle(s.img, 'transform', `translateX(${stageX - 2}vw) scale(${sc.toFixed(3)})`);
       }
     }
 
@@ -455,9 +472,9 @@ export function mountScrollWorld(container, config) {
       else if (i === N - 1) cop = before ? 0 : smooth((pr - 0.35) / 0.3);       // holds CTA at the end
       else { const c0 = seg.copyAt, half = Math.max(c0, 1 - c0); cop = (before || after) ? 0 : smooth(1 - Math.abs(pr - c0) / half); }
       const c = copies[i];
-      c.style.opacity = cop;
-      c.style.transform = reduce ? 'none' : `translateY(${(0.5 - pr) * 4}vh)`;
-      c.style.pointerEvents = cop > 0.5 ? 'auto' : 'none';
+      setStyle(c, 'opacity', cop);
+      if (cop > 0.001) setStyle(c, 'transform', reduce ? 'none' : `translateY(${((0.5 - pr) * 4).toFixed(2)}vh)`);
+      setStyle(c, 'pointerEvents', cop > 0.5 ? 'auto' : 'none');
     }
 
     const cur = SEGMENTS[ci];
@@ -495,7 +512,7 @@ export function mountScrollWorld(container, config) {
       }
       if (now - shown < 500) return; shown = now;
       const mem = SEGMENTS.reduce((t, s) => t + (s.cache ? s.cache.size : 0), 0);
-      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images`;
+      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images${LIGHT ? '  · allégé' : ''}`;
     };
   })() : null;
 
