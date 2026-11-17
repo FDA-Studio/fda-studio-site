@@ -73,9 +73,10 @@ export function mountScrollWorld(container, config) {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallMQ = window.matchMedia('(max-width: 860px)');
   const isMobile = () => coarse || smallMQ.matches;
-  // (FDA) À l'essai avec ?leger dans l'adresse : sur téléphone, film en 720 px de large (au lieu de
-  // 960) dessiné sur une toile moins dense. Chaque image coûte moins à décoder et à dessiner.
-  const LIGHT = /[?&]leger\b/.test(location.search);
+  // (FDA) Sur téléphone, le film est servi en 720 px de large (au lieu de 960) et dessiné sur une
+  // toile de densité 1,5 : mesuré sur iPhone, deux fois moins d'images ratées. ?net dans l'adresse
+  // remet l'ancienne version (960 px, densité 2) pour comparer.
+  const LIGHT = !/[?&]net\b/.test(location.search);
   const SECTIONS = config.sections || [];
   const CONNECTORS = config.connectors || [];
   const CONNECTORS_M = config.connectorsMobile || [];
@@ -518,7 +519,7 @@ export function mountScrollWorld(container, config) {
       }
       if (now - shown < 500) return; shown = now;
       const mem = SEGMENTS.reduce((t, s) => t + (s.cache ? s.cache.size : 0), 0);
-      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images${LIGHT ? '  · allégé' : ''}`;
+      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images${LIGHT ? '' : '  · net'}`;
     };
   })() : null;
 
