@@ -45,7 +45,7 @@ export function World() {
           label: s.label,
           still: worldAsset(`still_${i}.webp`),
           stillMobile: worldAsset(`still_${i}-m.webp`),
-          frames: { base: worldAsset(`frames/d${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`d${i}`] },
+          frames: { base: worldAsset(`frames/e${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`e${i}`] },
           // Téléphone : film portrait en 720 px de large
           framesMobile: { base: worldAsset(`frames/n${i}/`), count: 193, bytes: (frameBytes as Record<string, number>)[`n${i}`] },
           accent: s.accent,
