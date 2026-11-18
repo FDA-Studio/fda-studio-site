@@ -33,7 +33,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 | Prio | Sujet | Mot-clé principal | Statut |
 | --- | --- | --- | --- |
 | P1 | Prix d'un site vitrine en 2026 : ce qui fait varier le devis | prix site vitrine | publié (2026-11-15, PR #33) |
-| P1 | Création de site internet à Tours : comment choisir son agence | création site internet Tours | à faire |
+| P1 | Création de site internet à Tours : comment choisir son agence | choisir une agence web (« création site internet Tours » reste à la page de service) | publié (2026-11-18) |
 | P1 | Combien coûte un site e-commerce en 2026 ? | prix site e-commerce | à faire |
 | P2 | Shopify ou site e-commerce sur mesure : que choisir ? | Shopify ou sur mesure | à faire |
 | P2 | Refonte de site : quand la faire et comment ne pas perdre son référencement | refonte site internet SEO | à faire |

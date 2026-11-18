@@ -2,6 +2,16 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-18 (mercredi, passage « seo-autopilot » demandé par Antoine) — Article « Comment choisir son agence
+  web à Tours : 7 points à vérifier » (slug choisir-agence-web-tours ; mot-clé principal : choisir une agence
+  web ; ~1 400 mots). Le mot-clé du plan « création site internet Tours » reste à la page de service
+  /creation-site-internet-tours/ (gardé en secondaire, lien vers la page). Anti-doublon : 7 articles existants,
+  aucune PR d'article ouverte ; sujet voisin de choisir-agence-ia-tours mais autre question (site, pas IA).
+  Sources ouvertes : baromètre France Num 2026 (service-public, 2 oct. 2026), communiqué Afnic « Réussir avec
+  le web » 2025, article L131-3 du CPI (Légifrance). Audit des 24 pages construites : un seul H1 partout,
+  canoniques, données structurées valides, aucun lien interne cassé, sitemap cohérent. Corrigé hors agent
+  (PR #63) : 6 titres d'articles de plus de 65 caractères (suffixe « | FDA Studio » retiré quand il ne tient
+  pas), titre de /ressources/, 5 descriptions de pages locales de plus de 165 caractères.
 - 2026-11-17 (mardi, passage agent) — Article « Comment choisir une agence IA à Tours : ce qu’elle doit vous apporter »
   (slug choisir-agence-ia-tours ; mot-clé principal : choisir une agence IA ; ~1 400 mots). Mot-clé du plan
   « agence IA Tours » remplacé : c’est le mot-clé principal de la page de service /agence-ia-tours/, l’article
