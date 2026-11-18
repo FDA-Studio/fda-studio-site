@@ -154,10 +154,11 @@ export function World() {
 export function WorldCopy() {
   return (
     <div className="sr-only">
-      {/* Le H1 reprend le surtitre visible (agence, ville) et le titre affiché dans le monde 3D */}
+      {/* Le H1 reprend ce qui est affiché à l'entrée : l'agence et ses villes, puis ses métiers */}
       <h1>
-        {WORLD_SECTIONS[0].eyebrow} : {WORLD_SECTIONS[0].title.charAt(0).toLowerCase() + WORLD_SECTIONS[0].title.slice(1)}
+        {WORLD_SECTIONS[0].title} à {WORLD_SECTIONS[0].body}
       </h1>
+      <p>{WORLD_SECTIONS[0].eyebrow}.</p>
       {WORLD_SECTIONS.slice(1).map((s) => (
         <section key={s.id} aria-labelledby={`world-${s.id}`}>
           <h2 id={`world-${s.id}`}>{s.title}</h2>
