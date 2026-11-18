@@ -60,7 +60,7 @@ export const WORLD_SECTIONS: WorldSection[] = [
     label: "Applications",
     accent: "#2f5bff",
     eyebrow: "Applications",
-    title: "Des applications ouvertes chaque matin.",
+    title: "Des applications ouvertes chaque jour.",
     body: "",
     tags: [],
     link: { label: "Applications", href: "/developpement-application-tours/" },
