@@ -66,7 +66,7 @@ export const organizationJsonLd = {
   // Emplacement exact de La Bonde, identique aux fiches Apple Plans et Google (décision d'Antoine, 17/11/2026)
   geo: { "@type": "GeoCoordinates", latitude: 47.3916, longitude: 0.6309 },
   vatID: site.company.vat,
-  parentOrganization: { "@type": "Organization", name: site.group.name, url: site.group.url },
+  parentOrganization: { "@type": "Organization", name: site.group.name },
   areaServed: [
     { "@type": "City", name: "Tours" },
     { "@type": "City", name: "Fondettes" },
@@ -94,7 +94,7 @@ export const organizationJsonLd = {
     itemOffered: { "@type": "Service", name: s.name, url: `${site.url}/${s.slug}/` },
   })),
   founder: { "@id": `${site.url}/#author` },
-  sameAs: [site.group.url, "https://doorknight.games", ...site.socials],
+  sameAs: ["https://doorknight.games", ...site.socials],
   ...(site.phone.e164 ? { telephone: site.phone.e164 } : {}),
 };
 

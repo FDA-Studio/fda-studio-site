@@ -79,7 +79,7 @@ export default function AboutPage() {
               rubrique <Link href="/ressources/" className="link-line text-paper">Ressources</Link>.
             </p>
             <p>
-              Il dirige aussi le <a href={site.group.url} target="_blank" rel="noopener noreferrer" className="link-line text-paper">{site.group.name}<span className="sr-only"> (nouvel onglet)</span></a>,
+              Il dirige aussi le {site.group.name},
               qui réunit FDA Studio, Safetycar (garages sécurisés pour véhicules de prestige au Mans et à Orléans) et le centre de self-stockage
               Homebox d’Orléans Sud.
             </p>

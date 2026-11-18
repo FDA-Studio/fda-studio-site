@@ -28,7 +28,8 @@ export const site = {
   /** Auteur des articles de la rubrique Ressources (affiché et déclaré en données structurées). */
   author: { name: "Antoine Donabella", jobTitle: "Gérant de FDA Studio" },
   region: "Touraine, France",
-  group: { name: "Groupe FDA", url: "https://fdaholding.fr" },
+  // Le site fdaholding.fr est hors ligne depuis le 19 nov. 2026 : on cite le groupe sans lien.
+  group: { name: "Groupe FDA" },
   tagline: "We build what's next.",
   description:
     "Agence web et IA près de Tours : création de sites internet, intégration de l'intelligence artificielle, applications mobiles et jeux vidéo, partout en France.",
