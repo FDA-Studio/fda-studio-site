@@ -73,6 +73,11 @@ export function mountScrollWorld(container, config) {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallMQ = window.matchMedia('(max-width: 860px)');
   const isMobile = () => coarse || smallMQ.matches;
+  // (FDA) Outils de mesure, invisibles pour les visiteurs : ?mesure affiche le compteur, ?natif essaie
+  // le dessin sans redimensionnement (voir drawBitmap).
+  const METER = /[?&]mesure\b/.test(location.search);
+  const NATIVE = /[?&]natif\b/.test(location.search);
+  const drawStat = { n: 0, ms: 0 };
   const SECTIONS = config.sections || [];
   const CONNECTORS = config.connectors || [];
   const CONNECTORS_M = config.connectorsMobile || [];
@@ -373,6 +378,7 @@ export function mountScrollWorld(container, config) {
     // Retina elle faisait 3 456 x 2 000 : quatre fois plus de pixels à remplir à chaque image, pour
     // une image identique (le film est simplement agrandi). Mesuré sur Mac : 16 images très en retard
     // sur 698 et des blocages de 0,3 s. Le navigateur agrandit ensuite la toile à l'écran.
+    if (NATIVE) { s.canvas.style.objectFit = 'cover'; s.canvas.style.objectPosition = 'center 42%'; return; }
     const k = isMobile() ? DPR : Math.min(DPR, FILM_WIDTH / Math.max(1, window.innerWidth));
     const w = Math.round(window.innerWidth * k), h = Math.round(window.innerHeight * k);
     if (s.canvas.width !== w || s.canvas.height !== h) { s.canvas.width = w; s.canvas.height = h; s.lastDrawn = -1; }
@@ -416,9 +422,21 @@ export function mountScrollWorld(container, config) {
   }
   // Dessin « cover » (comme object-fit: cover, point d'ancrage légèrement au-dessus du centre)
   function drawBitmap(ctx, bm, W, H, alpha) {
-    const r = Math.max(W / bm.width, H / bm.height);
-    const w = bm.width * r, h = bm.height * r;
-    ctx.globalAlpha = alpha; ctx.drawImage(bm, (W - w) / 2, (H - h) * 0.42, w, h);
+    const t0 = METER ? performance.now() : 0;
+    if (NATIVE) {
+      // (FDA, à l'essai avec ?natif) L'image est copiée telle quelle dans une toile à sa taille ; le
+      // navigateur la cadre à l'écran (object-fit: cover, ancrage 42 % comme le dessin d'origine).
+      // Firefox redimensionne chaque image sur le fil principal : mesuré à 5 ms par image, contre
+      // presque rien dans Chrome et Safari. Une copie sans redimensionnement coûte moins.
+      const c = ctx.canvas;
+      if (c.width !== bm.width || c.height !== bm.height) { c.width = bm.width; c.height = bm.height; ctx.imageSmoothingEnabled = false; }
+      ctx.drawImage(bm, 0, 0);
+    } else {
+      const r = Math.max(W / bm.width, H / bm.height);
+      const w = bm.width * r, h = bm.height * r;
+      ctx.globalAlpha = alpha; ctx.drawImage(bm, (W - w) / 2, (H - h) * 0.42, w, h);
+    }
+    if (METER) { drawStat.n++; drawStat.ms += performance.now() - t0; }
   }
   function drawFrame(s, pos) {
     const n = frameSpec(s).count; const ctx = s.ctx2d, W = s.canvas.width, H = s.canvas.height;
@@ -507,12 +525,12 @@ export function mountScrollWorld(container, config) {
   // (FDA) Compteur de fluidité, affiché seulement avec ?mesure dans l'adresse : pour mesurer sur
   // un vrai téléphone (Safari iPhone ne se simule pas). Images d'écran ratées, film en retard,
   // images décodées en mémoire. Toucher le compteur le remet à zéro.
-  const meter = /[?&]mesure\b/.test(location.search) ? (() => {
+  const meter = METER ? (() => {
     const el = document.createElement('div');
     el.style.cssText = 'position:fixed;left:8px;top:8px;z-index:2147483647;font:12px/1.4 ui-monospace,monospace;color:#fff;background:rgba(0,0,0,.72);padding:6px 8px;border-radius:8px;white-space:pre;pointer-events:auto';
     document.body.appendChild(el);
     const m = { frames: 0, slow: 0, worst: 0, late: 0, last: 0 };
-    el.addEventListener('click', () => { m.frames = m.slow = m.worst = m.late = 0; });
+    el.addEventListener('click', () => { m.frames = m.slow = m.worst = m.late = 0; drawStat.n = 0; drawStat.ms = 0; });
     let shown = 0;
     return (now) => {
       if (m.last) { const dt = now - m.last; m.frames++; if (dt > 25) m.slow++; if (dt > m.worst) m.worst = dt; }
@@ -524,7 +542,7 @@ export function mountScrollWorld(container, config) {
       }
       if (now - shown < 500) return; shown = now;
       const mem = SEGMENTS.reduce((t, s) => t + (s.cache ? s.cache.size : 0), 0);
-      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images`;
+      el.textContent = `images ${m.frames}  ratées ${m.slow} (${m.frames ? (100 * m.slow / m.frames).toFixed(1) : 0} %)\npire ${Math.round(m.worst)} ms  film en retard ${m.late}\nen mémoire ${mem} images\ndessin ${drawStat.n ? (drawStat.ms / drawStat.n).toFixed(1) : '0'} ms${NATIVE ? '  · natif' : ''}`;
     };
   })() : null;
 
