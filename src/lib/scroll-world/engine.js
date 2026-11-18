@@ -283,6 +283,7 @@ export function mountScrollWorld(container, config) {
   // (FDA) Téléphone : toile de densité 1,5, accordée au film 720 px. Mesuré sur iPhone : deux fois
   // moins d'images ratées qu'en 960 px sur une toile de densité 2.
   const DPR = Math.min(window.devicePixelRatio || 1, isMobile() ? 1.5 : 2);
+  const FILM_WIDTH = 1920;
   function frameSpec(s) { return (isMobile() && s.framesM) ? s.framesM : s.frames; }
   function frameUrl(spec, i) { return spec.base + String(i + 1).padStart(3, '0') + '.' + (spec.ext || 'webp'); }
   // (FDA) Chargement progressif : la promesse se résout dès que le PREMIER film est en mémoire
@@ -368,7 +369,12 @@ export function mountScrollWorld(container, config) {
   }
   function sizeCanvas(s) {
     if (!s.canvas) return;
-    const w = Math.round(window.innerWidth * DPR), h = Math.round(window.innerHeight * DPR);
+    // (FDA) Ordinateur : la toile n'est jamais plus large que le film lui-même (1 920 px). Sur un écran
+    // Retina elle faisait 3 456 x 2 000 : quatre fois plus de pixels à remplir à chaque image, pour
+    // une image identique (le film est simplement agrandi). Mesuré sur Mac : 16 images très en retard
+    // sur 698 et des blocages de 0,3 s. Le navigateur agrandit ensuite la toile à l'écran.
+    const k = isMobile() ? DPR : Math.min(DPR, FILM_WIDTH / Math.max(1, window.innerWidth));
+    const w = Math.round(window.innerWidth * k), h = Math.round(window.innerHeight * k);
     if (s.canvas.width !== w || s.canvas.height !== h) { s.canvas.width = w; s.canvas.height = h; s.lastDrawn = -1; }
   }
   function decodeFrame(s, i) {
