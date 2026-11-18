@@ -7,7 +7,7 @@ import { pageMeta } from "@/lib/seo";
 import { serviceBySlug } from "@/lib/services";
 
 export const metadata: Metadata = pageMeta({
-  title: "Ressources : sites, IA et applications pour les entreprises",
+  title: "Ressources : sites, IA et applications pour PME",
   description: "Guides concrets de FDA Studio : prix, méthodes et retours d’expérience sur les sites internet, l’intelligence artificielle, les agents vocaux et les applications.",
   path: "/ressources/",
 });

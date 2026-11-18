@@ -23,7 +23,7 @@ export const localPages: Service[] = [
     name: "Agence web et IA à Orléans",
     title: "Agence web et IA pour les entreprises d’Orléans — FDA Studio",
     description:
-      "Sites internet, applications et intelligence artificielle pour les entreprises d’Orléans et du Loiret : agent vocal, automatisation, site rapide et bien référencé. Devis gratuit.",
+      "Sites internet, applications et IA pour les entreprises d’Orléans et du Loiret : agent vocal, automatisation, site rapide et bien référencé. Devis gratuit.",
     keywords: ["agence web Orléans", "création site internet Orléans", "agence IA Orléans", "agent vocal Orléans", "développement application Orléans", "site internet Loiret"],
     h1: ["Agence web et IA", "pour les entreprises d’Orléans"],
     headings: {
@@ -72,7 +72,7 @@ export const localPages: Service[] = [
     name: "Agence web et IA au Mans",
     title: "Agence web et IA pour les entreprises du Mans — FDA Studio",
     description:
-      "Sites internet, applications et intelligence artificielle pour les entreprises du Mans et de la Sarthe : agent vocal, automatisation, site rapide et bien référencé. Devis gratuit.",
+      "Sites internet, applications et IA pour les entreprises du Mans et de la Sarthe : agent vocal, automatisation, site rapide et bien référencé. Devis gratuit.",
     keywords: ["agence web Le Mans", "création site internet Le Mans", "agence IA Le Mans", "agent vocal Le Mans", "développement application Le Mans", "site internet Sarthe"],
     h1: ["Agence web et IA", "pour les entreprises du Mans"],
     headings: {
@@ -121,7 +121,7 @@ export const localPages: Service[] = [
     name: "Agent vocal pour artisans",
     title: "Agent vocal pour artisans à Tours, Orléans et Le Mans — FDA Studio",
     description:
-      "Un agent vocal IA qui répond aux appels quand vous êtes sur un chantier : demande comprise, rendez-vous pris, résumé envoyé. Pour les artisans de Tours, Orléans et Le Mans.",
+      "Un agent vocal IA qui répond quand vous êtes sur un chantier : demande comprise, rendez-vous pris, résumé envoyé. Pour les artisans de Tours, Orléans et Le Mans.",
     keywords: ["agent vocal artisan", "standard téléphonique artisan Tours", "secrétariat téléphonique artisan", "agent vocal IA Orléans", "répondeur intelligent artisan Le Mans", "prise de rendez-vous automatique"],
     h1: ["Agent vocal pour artisans", "à Tours, Orléans et Le Mans"],
     headings: {
@@ -170,7 +170,7 @@ export const localPages: Service[] = [
     name: "Site internet pour restaurant",
     title: "Site internet pour restaurant à Tours, Orléans et Le Mans — FDA Studio",
     description:
-      "Site internet pour restaurants, bars et traiteurs à Tours, Orléans et Le Mans : carte à jour, réservation, horaires, avis Google et agent vocal pour les appels du service.",
+      "Site internet pour restaurants, bars et traiteurs à Tours, Orléans et Le Mans : carte à jour, réservation, horaires, avis Google et agent vocal au téléphone.",
     keywords: ["site internet restaurant Tours", "création site restaurant Orléans", "site restaurant Le Mans", "réservation en ligne restaurant", "agent vocal restaurant", "site web bar traiteur"],
     h1: ["Site internet pour restaurant", "à Tours, Orléans et Le Mans"],
     headings: {
@@ -219,7 +219,7 @@ export const localPages: Service[] = [
     name: "IA pour cabinets et professions libérales",
     title: "IA pour cabinets et professions libérales à Tours, Orléans, Le Mans",
     description:
-      "Agent vocal, prise de rendez-vous, tri des e-mails et préparation des documents : l’intelligence artificielle pour les cabinets de Tours, Orléans et Le Mans, sans perdre la main.",
+      "Agent vocal, prise de rendez-vous, tri des e-mails, préparation des documents : l’IA pour les cabinets de Tours, Orléans et Le Mans, sans perdre la main.",
     keywords: ["IA cabinet comptable Tours", "IA cabinet avocat Orléans", "agent vocal cabinet", "automatisation profession libérale", "prise de rendez-vous automatique cabinet", "intelligence artificielle Le Mans"],
     h1: ["L’IA pour les cabinets", "à Tours, Orléans et Le Mans"],
     headings: {

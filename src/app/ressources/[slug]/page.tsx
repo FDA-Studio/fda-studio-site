@@ -22,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const meta = pageMeta({ title: a.title, description: a.description, path: `/ressources/${a.slug}/`, keywords: a.keywords });
   return {
     ...meta,
-    title: { absolute: `${a.title} | ${site.name}` },
+    // Le nom du studio n'est ajouté que s'il tient : au-delà de 65 caractères, Google coupe le titre.
+    title: { absolute: `${a.title} | ${site.name}`.length <= 65 ? `${a.title} | ${site.name}` : a.title },
     openGraph: {
       ...meta.openGraph,
       type: "article",
