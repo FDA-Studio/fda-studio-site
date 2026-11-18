@@ -44,7 +44,6 @@ export function Footer() {
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             <li><Link href="/mentions-legales/" className="link-line hover:text-paper">Mentions légales</Link></li>
             <li><Link href="/confidentialite/" className="link-line hover:text-paper">Confidentialité</Link></li>
-            <li><a href={site.group.url} target="_blank" rel="noopener noreferrer" className="link-line hover:text-paper">Groupe FDA<span className="sr-only"> (nouvel onglet)</span></a></li>
           </ul>
           <p className="mt-4">
             © {new Date().getFullYear()} FDA Studio, marque de la société {site.company.name} ({site.group.name}). Aucun cookie, aucun traceur.
