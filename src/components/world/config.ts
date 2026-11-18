@@ -63,7 +63,7 @@ export const WORLD_SECTIONS: WorldSection[] = [
     title: "Des applications ouvertes chaque jour.",
     body: "",
     tags: [],
-    link: { label: "Applications", href: "/developpement-application-tours/" },
+    link: { label: "Voir nos applications", href: "/developpement-application-tours/" },
     copyAt: 0.72,
   },
   {
@@ -74,7 +74,7 @@ export const WORLD_SECTIONS: WorldSection[] = [
     title: "Derrière la porte, nos univers.",
     body: "",
     tags: [],
-    link: { label: "Gaming", href: "/gaming/" },
+    link: { label: "Découvrir nos jeux", href: "/gaming/" },
     copyAt: 0.72,
   },
   {
