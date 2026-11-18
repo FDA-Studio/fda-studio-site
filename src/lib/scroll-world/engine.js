@@ -73,10 +73,13 @@ export function mountScrollWorld(container, config) {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallMQ = window.matchMedia('(max-width: 860px)');
   const isMobile = () => coarse || smallMQ.matches;
-  // (FDA) Outils de mesure, invisibles pour les visiteurs : ?mesure affiche le compteur, ?natif essaie
-  // le dessin sans redimensionnement (voir drawBitmap).
+  // (FDA) Outils de mesure, invisibles pour les visiteurs : ?mesure affiche le compteur.
   const METER = /[?&]mesure\b/.test(location.search);
-  const NATIVE = /[?&]natif\b/.test(location.search);
+  // (FDA) Ordinateur : chaque image est copiée telle quelle dans une toile à la taille du film, et
+  // c'est le navigateur qui l'agrandit à l'écran (carte graphique). `?etire` remet l'ancien dessin
+  // redimensionné, pour comparer les deux à la mesure.
+  const STRETCH = /[?&]etire\b/.test(location.search);
+  const NATIVE = !(coarse || smallMQ.matches) && !STRETCH;
   const drawStat = { n: 0, ms: 0 };
   const SECTIONS = config.sections || [];
   const CONNECTORS = config.connectors || [];
@@ -424,7 +427,7 @@ export function mountScrollWorld(container, config) {
   function drawBitmap(ctx, bm, W, H, alpha) {
     const t0 = METER ? performance.now() : 0;
     if (NATIVE) {
-      // (FDA, à l'essai avec ?natif) L'image est copiée telle quelle dans une toile à sa taille ; le
+      // (FDA) L'image est copiée telle quelle dans une toile à sa taille ; le
       // navigateur la cadre à l'écran (object-fit: cover, ancrage 42 % comme le dessin d'origine).
       // Firefox redimensionne chaque image sur le fil principal : mesuré à 5 ms par image, contre
       // presque rien dans Chrome et Safari. Une copie sans redimensionnement coûte moins.
