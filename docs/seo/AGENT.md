@@ -112,7 +112,7 @@ en attente de validation. Quand un point bloque :
 - Chaque chiffre, prix ou fait daté vient d'une page réellement ouverte pendant la recherche
   (pas d'un extrait de résultat), cité par un lien. Les prix sont des « ordres de grandeur ».
 - 2 à 4 liens internes : la page de service concernée (`/creation-site-internet-tours/`,
-  `/agence-ia-tours/`, `/developpement-application-tours/`), un autre article si pertinent,
+  `/agence-ia-tours/`, `/developpement-application-tours/`, `/crm-sur-mesure-tours/`, `/referencement-naturel-tours/`, `/securite-site-internet-tours/`), un autre article si pertinent,
   et `/#contact` ou `/#creations` (démos) quand c'est naturel.
 - Ancrage local quand c'est pertinent (Tours, Indre-et-Loire), sans bourrage de mots-clés.
 - Mot-clé principal dans le titre, la description, le premier paragraphe et un H2, naturellement.
@@ -124,7 +124,7 @@ en attente de validation. Quand un point bloque :
 title: 10 à 110 caractères, avec le mot-clé principal
 description: 70 à 170 caractères, donne envie de cliquer
 date: AAAA-MM-JJ (jour de la proposition)
-service: creation-site-internet-tours | agence-ia-tours | developpement-application-tours
+service: creation-site-internet-tours | agence-ia-tours | developpement-application-tours | crm-sur-mesure-tours | referencement-naturel-tours | securite-site-internet-tours
 keywords: [mot-clé principal, variante, variante]
 ---
 ```
