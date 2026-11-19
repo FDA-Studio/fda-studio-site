@@ -2,6 +2,15 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-20 (suite, Antoine : « fais tous les points ») — PR #71 : 3 pages de service (/crm-sur-mesure-tours/,
+  /referencement-naturel-tours/, /securite-site-internet-tours/) et 2 pages locales IA (/agence-ia-orleans/,
+  /agence-ia-le-mans/), toutes vérifiées en ligne ; 9 sujets ajoutés au plan pour ces services ; AGENT.md : ces
+  services sont autorisés dans l'en-tête `service:` des articles. PR #72 : llms.txt avec les pages par ville et
+  par métier (vérifié en ligne), titres de partage sans « | FDA Studio » en double, IndexNow déclenché aussi par
+  src/lib/local-pages.ts. Tâche planifiée créée : « Rapport SEO hebdomadaire — fdastudio.fr » (lundi 7 h 52,
+  Search Console via Windsor.ai, rapport dans docs/seo/rapports.md). Reste chez Antoine : activer la mesure des
+  visites (Vercel → Analytics), fiche Google, avis, annuaires, connexion Ahrefs ; textes prêts dans le projet
+  claude.ai (« seo-kit-fiches-presse-2026-11-20 »).
 - 2026-11-20 (nuit, passage « seo-autopilot » demandé par Antoine, en autonomie) — Pas d'article : 2 déjà
   publiés cette semaine (17 et 18/11) et passage planifié du vendredi à venir ; plafond respecté. Audit des
   27 pages construites : un title, une description et un seul H1 partout, canoniques, JSON-LD valide, aucun
