@@ -76,6 +76,11 @@ export const organizationJsonLd = {
     { "@type": "City", name: "Amboise" },
     { "@type": "AdministrativeArea", name: "Indre-et-Loire" },
     { "@type": "AdministrativeArea", name: "Centre-Val de Loire" },
+    // Villes visées par les pages locales /agence-web-orleans/ et /agence-web-le-mans/
+    { "@type": "City", name: "Orléans" },
+    { "@type": "AdministrativeArea", name: "Loiret" },
+    { "@type": "City", name: "Le Mans" },
+    { "@type": "AdministrativeArea", name: "Sarthe" },
     { "@type": "Country", name: "France" },
   ],
   knowsAbout: [

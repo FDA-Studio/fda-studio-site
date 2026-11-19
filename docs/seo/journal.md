@@ -2,6 +2,18 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-20 (nuit, passage « seo-autopilot » demandé par Antoine, en autonomie) — Pas d'article : 2 déjà
+  publiés cette semaine (17 et 18/11) et passage planifié du vendredi à venir ; plafond respecté. Audit des
+  27 pages construites : un title, une description et un seul H1 partout, canoniques, JSON-LD valide, aucun
+  lien interne cassé. Corrigé (PR de corrections du 20/11) : (1) texte des H1 collé pour les robots qui lisent
+  le HTML sans CSS (« IApour », « À proposde ») sur les 9 pages de service et locales et les pages à en-tête ;
+  (2) lastmod du sitemap = date du build sur toutes les pages : retiré, sauf dates réelles des articles et de
+  /ressources/ ; (3) directive `Host:` retirée de robots.txt ; (4) zone desservie du JSON-LD de l'entreprise
+  complétée par Orléans, Loiret, Le Mans, Sarthe (déjà visés par le H1 et les pages locales) ; (5) bloc
+  « Pour aller plus loin » ajouté aux 6 pages locales (articles du service correspondant ; les plus récents pour
+  Orléans et Le Mans) : liens entrants des articles les moins liés passés de 2-5 à 4-7. Constat marché :
+  La Fabrique du Net occupe le haut des résultats sur « agence web / IA / application Tours », « Orléans »,
+  « Le Mans » ; la fiche FDA Studio en attente de validation y est le levier local le plus rapide.
 - 2026-11-18 (mercredi, passage « seo-autopilot » demandé par Antoine) — Article « Comment choisir son agence
   web à Tours : 7 points à vérifier » (slug choisir-agence-web-tours ; mot-clé principal : choisir une agence
   web ; ~1 400 mots). Le mot-clé du plan « création site internet Tours » reste à la page de service

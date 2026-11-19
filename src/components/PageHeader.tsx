@@ -42,7 +42,7 @@ export function PageHeader({
           <div className={aside ? "lg:col-span-8" : "lg:col-span-12"}>
             <h1 data-shown="true" className="text-giant font-semibold leading-[0.95] tracking-[-0.05em]">
               {lines.map((l, i) => (
-                <span key={i} className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: i }}>{l}</span></span>
+                <span key={i} className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: i }}>{l}</span>{i < lines.length - 1 ? " " : null}</span>
               ))}
             </h1>
             {intro && <div className="measure mt-10 text-lg text-muted md:text-xl">{intro}</div>}

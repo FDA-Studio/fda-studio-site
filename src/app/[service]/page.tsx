@@ -52,8 +52,20 @@ export default async function ServicePage({ params }: Props) {
   const url = `${site.url}/${s.slug}/`;
   const visual = visualFor(s.slug);
   const others = services.filter((o) => o.slug !== s.slug);
-  // Maillage interne : les articles du même service, les plus récents d'abord
-  const related = getArticles().filter((a) => a.service === s.slug).slice(0, 4);
+  // Maillage interne : les articles du même service, les plus récents d'abord. Une page locale
+  // reprend les articles du service qui lui correspond ; une page de ville, les plus récents.
+  const relatedService = services.some((o) => o.slug === s.slug)
+    ? s.slug
+    : /^agence-web-/.test(s.slug)
+      ? null
+      : visual.scene === 2
+        ? "agence-ia-tours"
+        : visual.scene === 3
+          ? "developpement-application-tours"
+          : "creation-site-internet-tours";
+  const related = getArticles()
+    .filter((a) => relatedService === null || a.service === relatedService)
+    .slice(0, 4);
 
   const serviceLd = {
     "@context": "https://schema.org",
@@ -103,7 +115,7 @@ export default async function ServicePage({ params }: Props) {
             <span aria-current="page" className="text-paper">{s.name}</span>
           </nav>
           <h1 id="service-title" className="hero-title mt-8 max-w-[18ch]">
-            <span className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: 0 }}>{s.h1[0]}</span></span>
+            <span className="reveal-line"><span className="hero-rise" style={{ ["--i" as string]: 0 }}>{s.h1[0]}</span>{" "}</span>
             <span className="reveal-line"><span className="hero-rise text-soft" style={{ ["--i" as string]: 1 }}>{s.h1[1]}</span></span>
           </h1>
           <div className="mt-8 grid gap-8 md:grid-cols-12 md:items-end">
