@@ -11,6 +11,7 @@ on:
       - "content/ressources/**"
       - "src/app/**"
       - "src/lib/services.ts"
+      - "src/lib/local-pages.ts"
   workflow_dispatch:
 
 permissions:

@@ -15,6 +15,9 @@ export function pageMeta({
   keywords?: string[];
 }): Metadata {
   const url = new URL(path, site.url).toString();
+  // Titre de partage : le nom du studio n'est ajouté que s'il n'y figure pas déjà
+  // (évite « … | FDA Studio | FDA Studio » sur LinkedIn, Facebook ou WhatsApp).
+  const shareTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
   return {
     title,
     description,
@@ -25,13 +28,13 @@ export function pageMeta({
       locale: site.locale,
       url,
       siteName: site.name,
-      title: `${title} | ${site.name}`,
+      title: shareTitle,
       description,
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "FDA Studio" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${site.name}`,
+      title: shareTitle,
       description,
       images: ["/og-image.png"],
     },
@@ -92,6 +95,8 @@ export const organizationJsonLd = {
     "Chatbots",
     "Automatisation des processus",
     "Développement d'applications mobiles",
+    "CRM sur mesure",
+    "Sécurité des sites internet et des applications",
     "Développement de jeux vidéo",
   ],
   makesOffer: services.map((s) => ({

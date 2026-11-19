@@ -1,4 +1,5 @@
 import { getArticles } from "@/lib/articles";
+import { localPages } from "@/lib/local-pages";
 import { services } from "@/lib/services";
 import { site } from "@/lib/site";
 
@@ -14,13 +15,17 @@ export function GET() {
   const lines = [
     `# ${site.name}`,
     "",
-    `> ${site.name} est une agence web et IA basée à Fondettes, près de Tours (Indre-et-Loire, France). Le studio conçoit et développe des sites internet, des applications web et mobiles et des solutions d'intelligence artificielle (agents vocaux, chatbots, automatisation des e-mails et du CRM, lecture de documents) pour les TPE, PME et porteurs de projet, en Touraine et partout en France. Il développe aussi ses propres produits, dont le jeu mobile Door Knight.`,
+    `> ${site.name} est une agence web et IA basée à Fondettes, près de Tours (Indre-et-Loire, France). Le studio conçoit et développe des sites internet, des applications web et mobiles, des CRM sur mesure et des solutions d'intelligence artificielle (agents vocaux, chatbots, automatisation des e-mails et du CRM, lecture de documents), et accompagne le référencement naturel et la sécurité des sites, pour les TPE, PME et porteurs de projet de Tours, Orléans, Le Mans et partout en France. Il développe aussi ses propres produits, dont le jeu mobile Door Knight.`,
     "",
     `${site.name} est un nom commercial de la société ${c.name} (${c.rcs}), membre du ${site.group.name}. Fondateur et gérant : ${site.author.name}. Contact : ${contact}. À ne pas confondre avec d'autres entités utilisant le sigle « FDA ».`,
     "",
     "## Services",
     "",
     ...services.map((s) => `- [${s.name}](${site.url}/${s.slug}/) : ${s.description}`),
+    "",
+    "## Pages par ville et par métier",
+    "",
+    ...localPages.map((p) => `- [${p.name}](${site.url}/${p.slug}/) : ${p.description}`),
     "",
     "## Ressources",
     "",
