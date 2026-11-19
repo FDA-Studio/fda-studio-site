@@ -39,7 +39,7 @@ function visualFor(slug: string): { scene: 1 | 2 | 3; demo?: { kind: ServiceDemo
   if (/(^|-)ia(-|$)|agent-vocal/.test(slug)) {
     return { scene: 2, demo: { kind: "voice", title: "Écoutez-le décrocher.", text: "L’agent vocal répond, comprend la demande, déplace le rendez-vous et note tout dans le CRM. Démo rejouée avec des données fictives." } };
   }
-  if (slug.includes("application")) {
+  if (slug.includes("application") || slug.includes("crm")) {
     return { scene: 3, demo: { kind: "crm", title: "Une application en vrai.", text: "Notre propre CRM, conçu par le studio pour le web et l’iPhone : de la demande au devis signé. Démo rejouée avec des données fictives." } };
   }
   return { scene: 1 };

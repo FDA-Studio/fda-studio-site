@@ -54,6 +54,30 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 | P2 | Outil métier sur mesure ou logiciel du marché ? | logiciel sur mesure PME | à faire |
 | P3 | Publier une application sur l'App Store : le guide | publier application App Store | à faire |
 
+## CRM — service : crm-sur-mesure-tours
+
+| Prio | Sujet | Mot-clé principal | Statut |
+| --- | --- | --- | --- |
+| P1 | CRM sur mesure ou CRM du marché : comment choisir ? | CRM sur mesure | à faire |
+| P2 | Passer du tableur au CRM : la méthode sans perdre ses données | remplacer tableur CRM | à faire |
+| P2 | CRM pour artisan : ce qu'il doit faire, et ce qui est superflu | CRM artisan | à faire |
+
+## Référencement — service : referencement-naturel-tours
+
+| Prio | Sujet | Mot-clé principal | Statut |
+| --- | --- | --- | --- |
+| P1 | Fiche Google Business Profile : les réglages qui comptent pour une PME | fiche Google Business Profile | à faire |
+| P2 | Être cité par ChatGPT et Perplexity : ce qu'une PME peut faire | visibilité IA entreprise | à faire |
+| P2 | Audit SEO : ce qu'il doit contenir et comment le lire | audit SEO | à faire |
+
+## Sécurité — service : securite-site-internet-tours
+
+| Prio | Sujet | Mot-clé principal | Statut |
+| --- | --- | --- | --- |
+| P1 | Sécuriser son site internet : les 10 vérifications à faire en priorité | sécuriser son site internet | à faire |
+| P2 | Site piraté : les premiers réflexes et qui contacter | site piraté que faire | à faire |
+| P2 | SPF, DKIM, DMARC : protéger les e-mails de son entreprise contre l'usurpation | DMARC PME | à faire |
+
 ## Règles d'évolution du plan
 
 L'agent peut ajouter des sujets (en bas de la bonne section, statut `à faire`) quand une recherche
