@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { VoiceConversation } from "@elevenlabs/client";
-import { site } from "@/lib/site";
+import { asset, site } from "@/lib/site";
 import { getSound } from "@/lib/sound";
 import { turnstileToken, warmTurnstile } from "@/lib/turnstile";
 
@@ -158,6 +158,9 @@ export function TalkToEmma() {
       conv.current = (await Conversation.startSession({
         signedUrl: data.signedUrl,
         connectionType: "websocket",
+        // Module de rééchantillonnage servi par le site (scripts/vendor-audio.mjs) : sans cette option,
+        // le client le télécharge sur cdn.jsdelivr.net (Firefox, Safari iOS), ce que la CSP bloque.
+        libsampleratePath: asset("/vendor/libsamplerate.worklet.js"),
         onConnect: () => {
           setPhase("live");
           meter();
