@@ -1,0 +1,30 @@
+{
+  "$comment": "Source unique de la Content-Security-Policy du site. Elle alimente la balise meta (layout.tsx, utile si le site est servi en secours par GitHub Pages, sans en-têtes HTTP) et doit être recopiée à l'identique dans l'en-tête Content-Security-Policy de vercel.json. scripts/check-csp.mjs bloque le build si les deux divergent. Pour chaque source : la raison est dans notes.",
+  "directives": {
+    "default-src": ["'self'"],
+    "script-src": ["'self'", "'unsafe-inline'", "'wasm-unsafe-eval'", "blob:", "https://challenges.cloudflare.com"],
+    "style-src": ["'self'", "'unsafe-inline'"],
+    "img-src": ["'self'", "data:", "blob:", "https://doorknight.games"],
+    "font-src": ["'self'", "data:"],
+    "media-src": ["'self'", "blob:", "data:", "https://doorknight.games"],
+    "connect-src": ["'self'", "https://app.fdastudio.fr", "https://api.elevenlabs.io", "wss://api.elevenlabs.io"],
+    "frame-src": ["https://challenges.cloudflare.com"],
+    "worker-src": ["'self'", "blob:"],
+    "frame-ancestors": ["'none'"],
+    "base-uri": ["'self'"],
+    "form-action": ["'self'", "mailto:", "https://app.fdastudio.fr"],
+    "object-src": ["'none'"],
+    "upgrade-insecure-requests": []
+  },
+  "headerOnly": ["frame-ancestors"],
+  "notes": {
+    "script-src 'unsafe-inline'": "Hydratation de l'export statique Next.js (scripts en ligne générés au build).",
+    "script-src 'wasm-unsafe-eval'": "Module de rééchantillonnage audio de la démo vocale (WebAssembly), servi depuis /vendor/.",
+    "script-src blob:": "Modules audio (AudioWorklet) créés par le client ElevenLabs.",
+    "challenges.cloudflare.com": "Captcha Cloudflare Turnstile (formulaire, chat et démo vocale).",
+    "doorknight.games": "Visuels et vidéos Door Knight de la page Gaming.",
+    "app.fdastudio.fr": "API publique du CRM : demandes de devis, sessions de démo vocale et de chat.",
+    "api.elevenlabs.io": "Conversation avec Emma (WebSocket, connectionType websocket : LiveKit n'est pas utilisé).",
+    "mailto:": "Repli du formulaire de contact quand aucune adresse d'envoi n'est configurée (développement)."
+  }
+}
