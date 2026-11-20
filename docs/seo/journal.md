@@ -10,7 +10,12 @@ Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport m
   IA (sans changement d'effet), JSON-LD Organization complété (désambiguïsation, création 2026, SIREN, langue,
   fondateur décrit en entier), /a-propos/ : fiche d'identité complétée et 7 questions fréquentes sur le studio
   (FAQPage), /llms.txt avec faits clés et désambiguïsation, nouveau /llms-full.txt (texte intégral, noindex),
-  AGENT.md : règles d'écriture pour être cité par les IA et contrôle IA dans l'audit du mardi.
+  AGENT.md : règles d'écriture pour être cité par les IA et contrôle IA dans l'audit du mardi (PR #76).
+  Relevé dans les IA (navigateur d'Antoine) : sur « meilleures agences web à Tours », le mode IA de Google et
+  ChatGPT citent Sortlist, La Fabrique du Net et les notes Google des agences, sans FDA Studio ; sur « Qu'est-ce
+  que FDA Studio ? », les deux répondent juste à partir de la fiche Sortlist et de l'annuaire des entreprises.
+  Les fiches Sortlist et La Fabrique du Net indiquent « Chemin de la Bondé » au lieu de « La Bonde » et n'ont
+  aucun avis. Fiches déclarées en sameAs et affichées sur /a-propos/ (PR suivante).
 - 2026-11-20 (midi, demande d'Antoine : « regarde si tout est bien indexé ») — Vérifié dans Search Console et Bing
   Webmaster Tools (navigateur d'Antoine). Google, inspection d'URL : 13 pages indexées (accueil, 3 services historiques,
   /ressources/, Orléans, Le Mans, 4 pages métiers, /a-propos/, choisir-agence-web-tours) ; non indexées : les 5 pages

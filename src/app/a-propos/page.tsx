@@ -186,6 +186,20 @@ export default function AboutPage() {
                 ))}
               </dd>
             </div>
+            <div className="contents">
+              <dt className="border-t border-line pt-4 text-sm text-muted sm:pb-4">Annuaires</dt>
+              <dd className="pb-4 text-paper sm:border-t sm:border-line sm:pt-4">
+                {site.directories.map((d, i) => (
+                  <span key={d.url}>
+                    {i > 0 && " · "}
+                    <a href={d.url} target="_blank" rel="noopener noreferrer" className="link-line">
+                      {d.name}
+                      <span className="sr-only"> (nouvel onglet)</span>
+                    </a>
+                  </span>
+                ))}
+              </dd>
+            </div>
           </dl>
         </div>
       </section>

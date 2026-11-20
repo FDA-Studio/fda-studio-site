@@ -119,7 +119,7 @@ export const organizationJsonLd = {
   })),
   // Fondateur décrit en entier (et non par simple renvoi) : chaque page porte la fiche complète.
   founder: authorJsonLd,
-  sameAs: ["https://doorknight.games", ...site.socials],
+  sameAs: ["https://doorknight.games", ...site.socials, ...site.directories.map((d) => d.url)],
   ...(site.phone.e164 ? { telephone: site.phone.e164 } : {}),
 };
 
