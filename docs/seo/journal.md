@@ -2,6 +2,15 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-20 (10 h, demande d'Antoine) — Étude de cas publiée : site d'Alexandra Degans, kinésiologue à Bassens et
+  Myans près de Chambéry (https://alexandradegans-kinesiologie.com/), réalisé par FDA Studio ; accord de la cliente
+  pour apparaître comme réalisation confirmé par Antoine. Faits relevés sur le site en ligne le 20/11 (navigateur) :
+  14 pages au plan du site, 6 soins, 2 cabinets, réservation en 4 étapes avec règlement en ligne, données
+  structurées HealthAndBeautyBusiness, robots.txt ouvert, lien « Site réalisé par FDA Studio — Antoine Donabella »
+  vers fdastudio.fr en pied de page (lien suivi). Le domaine en .fr ne résout pas (NXDOMAIN) : le site est en .com.
+  Troisième article de la semaine (17, 18, 20/11) : plafond de 2 dépassé à la demande d'Antoine pour une réalisation.
+  Décision d'Antoine : pas de connecteur Ahrefs ni Semrush ; volumes et liens par exports gratuits (Keyword Planner,
+  Search Console, Bing Webmaster Tools).
 - 2026-11-20 (vendredi, passage planifié) — Pas d'article : plafond de 2 par semaine déjà atteint
   (17 et 18/11). Aucune PR ouverte sur le dépôt. Pas d'audit (vendredi). Reprise au passage du
   mardi 24/11 avec le premier sujet P1 `à faire` du plan, après contrôle anti-doublon.

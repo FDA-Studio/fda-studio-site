@@ -42,6 +42,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 | P3 | Maintenance de site internet : ce que doit couvrir un contrat | maintenance site internet | à faire |
 | P3 | Les mentions légales obligatoires d'un site d'entreprise | mentions légales site | à faire |
 | P2 | Étude de cas : comment nous avons conçu le site fdastudio.fr | étude de cas site internet | publié (2026-11-15, PR #35) |
+| P1 | Étude de cas : le site d’Alexandra Degans, kinésiologue près de Chambéry (client réel, accord donné à Antoine) | site internet kinésiologue | publié (2026-11-20) |
 
 ## Applications — service : developpement-application-tours
 
