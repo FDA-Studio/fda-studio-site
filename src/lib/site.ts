@@ -11,6 +11,8 @@ export const site = {
     capital: "10 000 €",
     address: "La Bonde, 37230 Fondettes, France",
     rcs: "RCS Tours 889 822 300",
+    /** Numéro SIREN, déclaré aux moteurs (identifier) pour relier le studio aux registres officiels. */
+    siren: "889822300",
     euid: "FR3701.889822300",
     vat: "FR43889822300",
     director: "Antoine Donabella, gérant",
@@ -27,6 +29,14 @@ export const site = {
   socials: ["https://www.linkedin.com/company/fda-studio-fr/", "https://www.instagram.com/fda_studio_fr/"] as string[],
   /** Auteur des articles de la rubrique Ressources (affiché et déclaré en données structurées). */
   author: { name: "Antoine Donabella", jobTitle: "Gérant de FDA Studio" },
+  /** Année de création du studio, telle que déclarée sur les fiches (décision d'Antoine, nov. 2026). */
+  founded: "2026",
+  /**
+   * Désambiguïsation pour les moteurs et les assistants IA : une recherche « FDA Studio » renvoie
+   * surtout le studio vidéo de la FDA américaine. Reprise dans le JSON-LD, /llms.txt et /a-propos/.
+   */
+  disambiguation:
+    "FDA Studio est une agence web et IA française, basée à Fondettes près de Tours. Elle n’a aucun lien avec la Food and Drug Administration (FDA), l’agence fédérale américaine des médicaments et de l’alimentation.",
   region: "Touraine, France",
   // Le site fdaholding.fr est hors ligne depuis le 19 nov. 2026 : on cite le groupe sans lien.
   group: { name: "Groupe FDA" },

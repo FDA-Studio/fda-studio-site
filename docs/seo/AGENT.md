@@ -117,6 +117,27 @@ en attente de validation. Quand un point bloque :
 - Ancrage local quand c'est pertinent (Tours, Indre-et-Loire), sans bourrage de mots-clés.
 - Mot-clé principal dans le titre, la description, le premier paragraphe et un H2, naturellement.
 
+### Être repris et cité par les assistants IA
+
+ChatGPT, Copilot, Perplexity, Claude, Le Chat et les aperçus IA de Google reprennent des passages
+précis, pas des pages entières. Chaque partie de l'article doit donc garder son sens lue seule :
+
+- Le premier paragraphe se suffit à lui-même : 2 à 4 phrases qui répondent à la question du titre,
+  avec le chiffre clé et sa source, sans « voici » ni renvoi à la suite.
+- Chaque H2 annonce sa réponse ; quand c'est naturel, il reprend la question telle qu'un client la
+  pose (« Combien coûte… ? », « Faut-il… ? »). La première phrase sous le H2 y répond directement.
+- Un chiffre s'écrit avec son année et sa source dans la même phrase (« selon le baromètre France Num 2026… »).
+- Un tableau dès qu'on compare des options, des prix ou des délais.
+- Le nom précis plutôt qu'un pronom en début de section (« l'agent vocal IA », pas « il »).
+- Quand le sujet s'y prête, terminer par un H2 « Questions fréquentes » : 3 à 5 questions courtes,
+  chacune en H3, avec une réponse de 2 à 3 phrases.
+- Nommer FDA Studio au plus une fois dans le texte, là où c'est utile au lecteur (« FDA Studio,
+  agence web et IA à Fondettes, près de Tours ») ; l'encadré de fin porte déjà l'appel à l'action.
+- Rien d'écrit pour les robots seulement : pas de texte caché, pas de liste de mots-clés, pas de
+  passage destiné aux IA que le lecteur ne verrait pas.
+- Quand un article existant est complété à la demande d'Antoine, ajouter `updated: AAAA-MM-JJ` à son
+  en-tête : la date de mise à jour est affichée et déclarée aux moteurs.
+
 ### En-tête obligatoire (validé au build)
 
 ```
@@ -138,7 +159,9 @@ et `robots.txt` cohérents, une balise title et une meta description par page, u
 liens internes non cassés, données structurées présentes (Organization, Service, BlogPosting,
 BreadcrumbList), temps de chargement raisonnable sur mobile. Vérifier aussi que le dernier
 passage du workflow « IndexNow » (GitHub Actions) est vert : il prévient Bing et les autres
-moteurs IndexNow à chaque mise en ligne. Noter les problèmes dans le journal.
+moteurs IndexNow à chaque mise en ligne. Côté IA : `robots.txt` contient toujours le groupe des
+robots IA en `Allow: /` (OAI-SearchBot, Claude-SearchBot, PerplexityBot, MistralAI-User…), et
+`/llms.txt` comme `/llms-full.txt` répondent en 200. Noter les problèmes dans le journal.
 
 ## Où regarder
 

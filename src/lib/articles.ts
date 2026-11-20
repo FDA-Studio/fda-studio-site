@@ -35,6 +35,15 @@ export type Article = z.infer<typeof FrontMatter> & {
   readingMinutes: number;
 };
 
+/**
+ * Texte Markdown d'un article publié, sans son en-tête (utilisé par /llms-full.txt). Lu à part,
+ * et non ajouté aux objets Article, pour ne jamais alourdir les données passées aux pages.
+ */
+export function articleMarkdown(slug: string): string {
+  if (!SLUG.test(slug)) throw new Error(`Slug invalide : ${slug}`);
+  return parseFrontMatter(readFileSync(join(DIR, `${slug}.md`), "utf8")).body.trim();
+}
+
 /** En-tête minimal : `clé: valeur`, listes `[a, b]`, booléens. Pas de YAML arbitraire. */
 function parseFrontMatter(raw: string): { data: Record<string, unknown>; body: string } {
   const m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(raw);

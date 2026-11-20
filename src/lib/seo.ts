@@ -41,9 +41,19 @@ export function pageMeta({
   };
 }
 
+/** L'auteur des articles : une personne identifiée, rattachée au studio. */
+export const authorJsonLd = {
+  "@type": "Person",
+  "@id": `${site.url}/#author`,
+  name: site.author.name,
+  jobTitle: site.author.jobTitle,
+  worksFor: { "@id": `${site.url}/#organization` },
+};
+
 /**
  * L'entreprise pour les moteurs de recherche : ProfessionalService (sous-type de LocalBusiness),
  * pour apparaître dans les recherches locales (« agence web Tours ») et nationales.
+ * Présente sur toutes les pages (layout) : c'est la fiche que lisent aussi les assistants IA.
  */
 export const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -57,7 +67,11 @@ export const organizationJsonLd = {
   image: `${site.url}/og-image.png`,
   email: site.email,
   description: site.description,
+  disambiguatingDescription: site.disambiguation,
   slogan: site.tagline,
+  foundingDate: site.founded,
+  knowsLanguage: "fr",
+  identifier: { "@type": "PropertyValue", propertyID: "SIREN", value: site.company.siren },
   address: {
     "@type": "PostalAddress",
     streetAddress: "La Bonde",
@@ -103,18 +117,10 @@ export const organizationJsonLd = {
     "@type": "Offer",
     itemOffered: { "@type": "Service", name: s.name, url: `${site.url}/${s.slug}/` },
   })),
-  founder: { "@id": `${site.url}/#author` },
+  // Fondateur décrit en entier (et non par simple renvoi) : chaque page porte la fiche complète.
+  founder: authorJsonLd,
   sameAs: ["https://doorknight.games", ...site.socials],
   ...(site.phone.e164 ? { telephone: site.phone.e164 } : {}),
-};
-
-/** L'auteur des articles : une personne identifiée, rattachée au studio. */
-export const authorJsonLd = {
-  "@type": "Person",
-  "@id": `${site.url}/#author`,
-  name: site.author.name,
-  jobTitle: site.author.jobTitle,
-  worksFor: { "@id": `${site.url}/#organization` },
 };
 
 export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
