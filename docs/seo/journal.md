@@ -2,6 +2,9 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-20 (vendredi, passage planifié) — Pas d'article : plafond de 2 par semaine déjà atteint
+  (17 et 18/11). Aucune PR ouverte sur le dépôt. Pas d'audit (vendredi). Prochain sujet du plan au passage du
+  mardi 24/11 : « Combien coûte un site e-commerce en 2026 ? » (P1, prix site e-commerce), après contrôle anti-doublon.
 - 2026-11-20 (suite, Antoine : « fais tous les points ») — PR #71 : 3 pages de service (/crm-sur-mesure-tours/,
   /referencement-naturel-tours/, /securite-site-internet-tours/) et 2 pages locales IA (/agence-ia-orleans/,
   /agence-ia-le-mans/), toutes vérifiées en ligne ; 9 sujets ajoutés au plan pour ces services ; AGENT.md : ces
