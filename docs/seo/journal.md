@@ -2,6 +2,14 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-20 (midi, demande d'Antoine : « regarde si tout est bien indexé ») — Vérifié dans Search Console et Bing
+  Webmaster Tools (navigateur d'Antoine). Google, inspection d'URL : 13 pages indexées (accueil, 3 services historiques,
+  /ressources/, Orléans, Le Mans, 4 pages métiers, /a-propos/, choisir-agence-web-tours) ; non indexées : les 5 pages
+  du 20/11 et la plupart des articles (« inconnue de Google » ou « détectée, non indexée »). Indexation demandée pour
+  10 URL (IA Orléans, IA Le Mans, CRM, référencement, sécurité, étude de cas kinésiologue, prix site vitrine,
+  choisir agence IA, prix agent vocal, prix application mobile) ; sitemap renvoyé : relu le 20/11, 28 pages découvertes.
+  Bing : seule l'accueil est indexée ; IndexNow a bien reçu les 28 URL ; 26 URL soumises à la main (quota 100/jour)
+  et sitemap renvoyé (dernière lecture 12/11, 9 URL). Ne pas redemander l'indexation des mêmes URL avant une semaine.
 - 2026-11-20 (10 h, demande d'Antoine) — Étude de cas publiée : site d'Alexandra Degans, kinésiologue à Bassens et
   Myans près de Chambéry (https://alexandradegans-kinesiologie.com/), réalisé par FDA Studio ; accord de la cliente
   pour apparaître comme réalisation confirmé par Antoine. Faits relevés sur le site en ligne le 20/11 (navigateur) :
