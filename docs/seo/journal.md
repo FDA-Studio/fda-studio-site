@@ -2,6 +2,15 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-20 (après-midi, Antoine : « il faut qu'on soit ultra bien référencé pour toutes les IA ») — Accès vérifié :
+  17 signatures de robots (OpenAI, Anthropic, Perplexity, Mistral, Google, Bing, Apple…) reçoivent un 200 sur
+  l'accueil, une page de service, /llms.txt et un article ; aucun blocage Vercel ; DNS chez Vercel (pas de proxy
+  Cloudflare) ; pages lisibles sans JavaScript, FAQ comprises. Constat : « FDA Studio » renvoie surtout au studio
+  vidéo de la FDA américaine. Branche `ia-visibilite-2026-11-20` : robots.txt avec un groupe explicite pour les robots
+  IA (sans changement d'effet), JSON-LD Organization complété (désambiguïsation, création 2026, SIREN, langue,
+  fondateur décrit en entier), /a-propos/ : fiche d'identité complétée et 7 questions fréquentes sur le studio
+  (FAQPage), /llms.txt avec faits clés et désambiguïsation, nouveau /llms-full.txt (texte intégral, noindex),
+  AGENT.md : règles d'écriture pour être cité par les IA et contrôle IA dans l'audit du mardi.
 - 2026-11-20 (midi, demande d'Antoine : « regarde si tout est bien indexé ») — Vérifié dans Search Console et Bing
   Webmaster Tools (navigateur d'Antoine). Google, inspection d'URL : 13 pages indexées (accueil, 3 services historiques,
   /ressources/, Orléans, Le Mans, 4 pages métiers, /a-propos/, choisir-agence-web-tours) ; non indexées : les 5 pages

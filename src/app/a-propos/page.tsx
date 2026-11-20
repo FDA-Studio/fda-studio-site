@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowIcon } from "@/components/icons";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
+import { aboutFaq } from "@/lib/about";
 import { authorJsonLd, pageMeta } from "@/lib/seo";
 import { services } from "@/lib/services";
 import { site } from "@/lib/site";
@@ -34,11 +35,17 @@ export default function AboutPage() {
     mainEntity: { "@id": `${site.url}/#organization` },
   };
   const personLd = { "@context": "https://schema.org", ...authorJsonLd };
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: aboutFaq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  };
 
   return (
     <>
       <JsonLd data={aboutLd} />
       <JsonLd data={personLd} />
+      <JsonLd data={faqLd} />
       <PageHeader
         crumbs={[{ name: "À propos", path }]}
         lines={["À propos", "de FDA Studio."]}
@@ -139,11 +146,14 @@ export default function AboutPage() {
           <dl className="grid gap-x-8 lg:col-span-7 lg:col-start-6 sm:grid-cols-[minmax(10rem,auto)_1fr]">
             {[
               ["Nom commercial", site.name],
+              ["Activité", "Agence web et IA : sites internet, applications, CRM sur mesure, intelligence artificielle, référencement et sécurité"],
+              ["Fondateur et gérant", site.author.name],
+              ["Création", site.founded],
               ["Société", `${c.name}, ${c.form.toLowerCase()} au capital de ${c.capital}`],
               ["Groupe", site.group.name],
               ["Adresse", c.address],
               ["Immatriculation", c.rcs],
-              ["Zone d’intervention", "Tours, Touraine et toute la France"],
+              ["Zone d’intervention", "Tours et la Touraine, Orléans, Le Mans et toute la France"],
             ].map(([k, v]) => (
               <div key={k} className="contents">
                 <dt className="border-t border-line pt-4 text-sm text-muted sm:pb-4">{k}</dt>
@@ -180,8 +190,23 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Questions fréquentes sur le studio : toutes ouvertes, rien ne se replie (même gabarit que les pages de service) */}
+      <section aria-labelledby="about-faq" className="section border-t border-line">
+        <div className="wrap grid gap-12 lg:grid-cols-12">
+          <h2 id="about-faq" className="section-title lg:col-span-4">Questions fréquentes sur FDA Studio.</h2>
+          <dl className="lg:col-span-7 lg:col-start-6">
+            {aboutFaq.map((f) => (
+              <div key={f.q} className="border-t border-line py-6 md:py-8">
+                <dt className="text-xl font-semibold tracking-[-0.02em]">{f.q}</dt>
+                <dd className="mt-3 text-soft">{f.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
       {/* Clôture */}
-      <section aria-labelledby="about-cta" className="section">
+      <section aria-labelledby="about-cta" className="section border-t border-line">
         <div className="wrap grid gap-8 md:grid-cols-12 md:items-end">
           <h2 id="about-cta" className="section-title md:col-span-7">Parlons de votre projet.</h2>
           <div className="md:col-span-5">

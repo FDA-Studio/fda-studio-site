@@ -1,4 +1,5 @@
 import { getArticles } from "@/lib/articles";
+import { llmsFacts, llmsSummary, textResponse } from "@/lib/llms";
 import { localPages } from "@/lib/local-pages";
 import { services } from "@/lib/services";
 import { site } from "@/lib/site";
@@ -6,18 +7,21 @@ import { site } from "@/lib/site";
 /**
  * /llms.txt : présentation du studio pour les assistants IA (format proposé sur llmstxt.org).
  * Généré au build (export statique) : la liste des articles suit automatiquement la rubrique Ressources.
+ * La version intégrale (texte complet des pages et des articles) est servie par /llms-full.txt.
  */
 export const dynamic = "force-static";
 
 export function GET() {
-  const c = site.company;
-  const contact = [site.email, site.phone.display].filter(Boolean).join(", ");
-  const lines = [
+  return textResponse([
     `# ${site.name}`,
     "",
-    `> ${site.name} est une agence web et IA basée à Fondettes, près de Tours (Indre-et-Loire, France). Le studio conçoit et développe des sites internet, des applications web et mobiles, des CRM sur mesure et des solutions d'intelligence artificielle (agents vocaux, chatbots, automatisation des e-mails et du CRM, lecture de documents), et accompagne le référencement naturel et la sécurité des sites, pour les TPE, PME et porteurs de projet de Tours, Orléans, Le Mans et partout en France. Il développe aussi ses propres produits, dont le jeu mobile Door Knight.`,
+    `> ${llmsSummary}`,
     "",
-    `${site.name} est un nom commercial de la société ${c.name} (${c.rcs}), membre du ${site.group.name}. Fondateur et gérant : ${site.author.name}. Contact : ${contact}. À ne pas confondre avec d'autres entités utilisant le sigle « FDA ».`,
+    site.disambiguation,
+    "",
+    "Faits clés :",
+    "",
+    ...llmsFacts(),
     "",
     "## Services",
     "",
@@ -33,10 +37,13 @@ export function GET() {
     "",
     "## Studio",
     "",
-    `- [À propos de ${site.name}](${site.url}/a-propos/) : identité, fondateur, produits et méthode.`,
+    `- [À propos de ${site.name}](${site.url}/a-propos/) : identité, fondateur, produits, méthode et questions fréquentes sur le studio.`,
     `- [Gaming : Door Knight](${site.url}/gaming/) : le jeu d'action 3D du studio pour iPhone, iPad et Android.`,
     `- [Contact et demande de devis](${site.url}/#contact)`,
     "",
-  ];
-  return new Response(lines.join("\n"), { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+    "## Optional",
+    "",
+    `- [Version intégrale](${site.url}/llms-full.txt) : texte complet des pages de service, des pages locales, des questions fréquentes et des articles, en un seul fichier.`,
+    "",
+  ]);
 }
