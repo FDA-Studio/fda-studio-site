@@ -27,6 +27,14 @@ export const site = {
   phone: { display: "06 67 16 53 29", e164: "+33667165329" },
   /** Profils officiels, déclarés aux moteurs de recherche (sameAs). LinkedIn et Instagram. */
   socials: ["https://www.linkedin.com/company/fda-studio-fr/", "https://www.instagram.com/fda_studio_fr/"] as string[],
+  /**
+   * Fiches du studio dans les annuaires d'agences, déclarées aux moteurs (sameAs) et affichées sur
+   * /a-propos/. Ce sont les sources que citent ChatGPT et le mode IA de Google sur FDA Studio (relevé du 20/11/2026).
+   */
+  directories: [
+    { name: "Sortlist", url: "https://www.sortlist.fr/agency/fda-studio" },
+    { name: "La Fabrique du Net", url: "https://www.lafabriquedunet.fr/agences/agence/fda-studio" },
+  ] as { name: string; url: string }[],
   /** Auteur des articles de la rubrique Ressources (affiché et déclaré en données structurées). */
   author: { name: "Antoine Donabella", jobTitle: "Gérant de FDA Studio" },
   /** Année de création du studio, telle que déclarée sur les fiches (décision d'Antoine, nov. 2026). */

@@ -19,6 +19,7 @@ export function llmsFacts(): string[] {
     `- Contact : ${contact}`,
     `- Site officiel : ${site.url}`,
     `- Profils officiels : ${site.socials.join(", ")}`,
+    `- Fiches annuaires : ${site.directories.map((d) => `${d.name} (${d.url})`).join(", ")}`,
   ];
 }
 
