@@ -889,3 +889,32 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 .crm-grad { background: linear-gradient(180deg, #f6f7f9 30%, rgba(246, 247, 249, 0.62)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 }
 @media (prefers-reduced-motion: reduce) { .crm-beam::before, .crm-beam::after { animation: none; } }
+
+/* Badge « source préférée » de Google (composant PreferredSource), aux couleurs FDA Studio. */
+.preferred-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.1rem 0.6rem 0.6rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  background: var(--color-surface);
+  transition: border-color var(--t-hover) var(--ease-out), background-color var(--t-hover) var(--ease-out), transform var(--t-press) var(--ease-out);
+}
+.preferred-source__icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-violet));
+}
+@media (hover: hover) {
+  .preferred-source:hover { border-color: var(--color-accent-bright); background: var(--color-raised); }
+}
+.preferred-source:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .preferred-source { transition: none; }
+  .preferred-source:active { transform: none; }
+}

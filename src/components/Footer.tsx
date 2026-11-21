@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "./brand/Logo";
 import { localPages } from "@/lib/local-pages";
 import { site } from "@/lib/site";
+import { PreferredSource } from "./PreferredSource";
 
 export function Footer() {
   return (
@@ -14,6 +15,7 @@ export function Footer() {
             {site.phone.display && (
               <a href={`tel:${site.phone.e164}`} className="link-line mt-3 block w-fit text-xl text-paper">{site.phone.display}</a>
             )}
+            <PreferredSource className="mt-8" />
           </div>
         </div>
 
