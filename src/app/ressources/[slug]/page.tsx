@@ -1,3 +1,4 @@
+import { PreferredSource } from "@/components/PreferredSource";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -114,6 +115,11 @@ export default async function ArticlePage({ params }: Props) {
               <Link href={`/${service.slug}/`} className="btn btn-ghost">{service.name}</Link>
             </div>
           </aside>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-[40ch] text-sm text-muted">Pour retrouver nos prochains articles en priorité dans vos recherches Google :</p>
+            <PreferredSource />
+          </div>
         </div>
       </div>
 
