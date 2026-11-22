@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...services.map((s) => ({ url: `${site.url}/${s.slug}/`, changeFrequency: "monthly" as const, priority: 0.9 })),
     ...localPages.map((p) => ({ url: `${site.url}/${p.slug}/`, changeFrequency: "monthly" as const, priority: 0.8 })),
     { url: `${site.url}/ressources/`, ...(lastArticle ? { lastModified: lastArticle } : {}), changeFrequency: "weekly", priority: 0.7 },
-    ...articles.map((a) => ({ url: `${site.url}/ressources/${a.slug}/`, lastModified: new Date(`${a.updated ?? a.date}T12:00:00Z`), changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...articles.map((a) => ({ url: `${site.url}/ressources/${a.slug}/`, lastModified: new Date(`${a.updated ?? a.date}T12:00:00Z`), changeFrequency: "monthly" as const, priority: 0.6, ...(a.images.length ? { images: a.images.map((i) => `${site.url}${i.src}`) } : {}) })),
     { url: `${site.url}/gaming/`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${site.url}/a-propos/`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${site.url}/confidentialite/`, changeFrequency: "yearly", priority: 0.2 },

@@ -918,3 +918,16 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
   .preferred-source { transition: none; }
   .preferred-source:active { transform: none; }
 }
+
+/* Captures dans les articles (études de cas) : cadre discret, légende sous l'image. */
+.article-prose .article-figure { margin: 2.25rem 0; }
+.article-prose .article-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  background: var(--color-surface);
+}
+.article-prose .article-figure--portrait { max-width: 22rem; margin-inline: auto; }
+.article-prose .article-figure figcaption { margin-top: 0.75rem; font-size: 0.875rem; color: var(--color-muted); }
