@@ -26,7 +26,7 @@ export const site = {
    */
   phone: { display: "06 67 16 53 29", e164: "+33667165329" },
   /** Profils officiels, déclarés aux moteurs de recherche (sameAs). LinkedIn et Instagram. */
-  socials: ["https://www.linkedin.com/company/fda-studio-fr/", "https://www.instagram.com/fda_studio_fr/"] as string[],
+  socials: ["https://www.linkedin.com/company/fda-studio-fr/", "https://www.instagram.com/fda_studio_fr/", "https://www.facebook.com/profile.php?id=61596476086147"] as string[],
   /**
    * Fiches du studio dans les annuaires d'agences, déclarées aux moteurs (sameAs) et affichées sur
    * /a-propos/. Ce sont les sources que citent ChatGPT et le mode IA de Google sur FDA Studio (relevé du 20/11/2026).
