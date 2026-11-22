@@ -2,6 +2,7 @@
 title: Étude de cas : le site d’Alexandra Degans, kinésiologue près de Chambéry
 description: Réservation et paiement en ligne, univers visuel sur mesure, référencement local : comment nous avons réalisé le site d’une kinésiologue en Savoie.
 date: 2026-11-20
+updated: 2026-11-22
 service: creation-site-internet-tours
 keywords: [site internet kinésiologue, site praticien bien-être, réservation en ligne thérapeute, référencement local Chambéry]
 ---
@@ -24,6 +25,8 @@ Un quatrième enjeu traverse les trois : pour un soin d’accompagnement, le sit
 
 Nous avons construit tout le site autour d’une seule image : un arbre. L’accueil s’ouvre sur un grand arbre baigné de lumière et une promesse courte, « Retrouver l’équilibre, à votre rythme. ». En faisant défiler la page, le visiteur « entre dans l’arbre » : la vue se rapproche du tronc et des branches, et chaque étape du défilement fait apparaître une partie du propos.
 
+![Page d’accueil du site de la kinésiologue Alexandra Degans près de Chambéry, réalisé par FDA Studio : un grand arbre baigné de lumière et la promesse « Retrouver l’équilibre, à votre rythme »](/media/realisations/site-kinesiologue-chambery-accueil-realise-par-fda-studio.webp "L’accueil du site, sur ordinateur.")
+
 La métaphore ne s’arrête pas à l’accueil :
 
 - **Les soins sont des branches** : la section qui les présente s’intitule « Chaque branche est un chemin vers vous ».
@@ -31,6 +34,8 @@ La métaphore ne s’arrête pas à l’accueil :
 - **Même la page d’erreur** reste dans l’univers : un lien cassé devient un chemin « perdu entre les branches », avec un retour vers l’accueil et vers les soins.
 
 La typographie, une police à empattements avec des passages en italique, et une palette chaude de verts, de bruns et de lumière dorée prolongent ce calme. Le déroulement d’une séance tient en trois mots : écouter, ressentir, libérer. Un bouton « Ambiance sonore » permet enfin d’ajouter un fond sonore, au choix du visiteur.
+
+![Version mobile du site de kinésiologie à Chambéry réalisé par FDA Studio : même univers de l’arbre, bouton « Prendre rendez-vous » sous le pouce](/media/realisations/site-kinesiologue-chambery-version-mobile-fda-studio.webp "Le même accueil sur téléphone.")
 
 Ce soin du détail n’est pas décoratif. Un site cohérent du premier écran à la dernière page rassure : il dit, avant même la première séance, comment le cabinet travaille.
 
@@ -46,6 +51,8 @@ La [page de réservation](https://alexandradegans-kinesiologie.com/reserver) est
 | 4. Coordonnées | Ses informations, puis le règlement en ligne |
 
 Le paiement en ligne confirme le rendez-vous immédiatement, sans échange supplémentaire entre la praticienne et son patient. Pour ceux qui préfèrent parler avant de réserver, le numéro de téléphone reste affiché sur la page.
+
+![Page de réservation en ligne du site de kinésiologie près de Chambéry : « Choisir sa branche », puis le choix du soin avec sa durée et son tarif](/media/realisations/reservation-en-ligne-kinesiologue-chambery-fda-studio.webp "La réservation en ligne, première étape : le choix du soin.")
 
 Le choix du soin, du jour et du cabinet se fait dans le site lui-même, dans le même univers visuel que le reste des pages, et non dans la fenêtre d’un service extérieur.
 

@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Marked, type Tokens } from "marked";
 import { z } from "zod";
@@ -33,7 +33,41 @@ export type Article = z.infer<typeof FrontMatter> & {
   html: string;
   toc: { id: string; text: string }[];
   readingMinutes: number;
+  /** Images de l'article, dans l'ordre : pour le plan du site (Google Images) et les données structurées. */
+  images: ArticleImage[];
 };
+
+export type ArticleImage = { src: string; alt: string; width: number; height: number };
+
+/** Seules les images du site, rangées dans /media/, sont acceptées dans un article. */
+const LOCAL_IMAGE = /^\/media\/[a-z0-9/-]+\.(webp|png|jpe?g)$/;
+
+/**
+ * Largeur et hauteur d'une image du dossier public, lues dans son en-tête (WebP, PNG, JPEG).
+ * Elles évitent le décalage de mise en page pendant le chargement. Le build échoue si l'image manque.
+ */
+function imageSize(src: string): { width: number; height: number } {
+  const file = join(process.cwd(), "public", src);
+  if (!existsSync(file)) throw new Error(`Image introuvable dans public : ${src}`);
+  const b = readFileSync(file);
+  if (b.toString("ascii", 0, 4) === "RIFF" && b.toString("ascii", 8, 12) === "WEBP") {
+    const kind = b.toString("ascii", 12, 16);
+    if (kind === "VP8X") return { width: 1 + b.readUIntLE(24, 3), height: 1 + b.readUIntLE(27, 3) };
+    if (kind === "VP8L") {
+      const bits = b.readUInt32LE(21);
+      return { width: 1 + (bits & 0x3fff), height: 1 + ((bits >> 14) & 0x3fff) };
+    }
+    return { width: b.readUInt16LE(26) & 0x3fff, height: b.readUInt16LE(28) & 0x3fff };
+  }
+  if (b.readUInt32BE(0) === 0x89504e47) return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+  for (let i = 2; i < b.length - 9; ) {
+    if (b[i] !== 0xff) { i++; continue; }
+    const marker = b[i + 1];
+    if (marker >= 0xc0 && marker <= 0xc3) return { width: b.readUInt16BE(i + 7), height: b.readUInt16BE(i + 5) };
+    i += 2 + b.readUInt16BE(i + 2);
+  }
+  throw new Error(`Dimensions illisibles : ${src}`);
+}
 
 /**
  * Texte Markdown d'un article publié, sans son en-tête (utilisé par /llms-full.txt). Lu à part,
@@ -81,6 +115,7 @@ const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;")
 
 function render(body: string) {
   const toc: { id: string; text: string }[] = [];
+  const images: ArticleImage[] = [];
   const md = new Marked({ gfm: true });
   md.use({
     renderer: {
@@ -105,8 +140,19 @@ function render(body: string) {
           ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${text}</a>`
           : `<a href="${escapeHtml(href)}">${text}</a>`;
       },
-      image() {
-        return ""; // pas d'image distante non maîtrisée
+      // Image du site uniquement (/media/…), avec texte alternatif obligatoire ; le titre Markdown
+      // devient la légende. Jamais d'image distante non maîtrisée.
+      image(token: Tokens.Image) {
+        const src = token.href.trim();
+        const alt = token.text.trim();
+        if (!LOCAL_IMAGE.test(src)) return "";
+        if (alt.length < 10) throw new Error(`Image sans texte alternatif utile : ${src}`);
+        const { width, height } = imageSize(src);
+        images.push({ src, alt, width, height });
+        const lazy = images.length > 1 ? ' loading="lazy"' : "";
+        const caption = token.title ? `<figcaption>${escapeHtml(token.title)}</figcaption>` : "";
+        const cls = height > width ? "article-figure article-figure--portrait" : "article-figure";
+        return `<figure class="${cls}"><img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" width="${width}" height="${height}" decoding="async"${lazy} />${caption}</figure>`;
       },
       table(token: Tokens.Table) {
         const head = token.header.map((c) => `<th>${this.parser.parseInline(c.tokens)}</th>`).join("");
@@ -116,7 +162,7 @@ function render(body: string) {
     },
   });
   const html = md.parse(frTypo(body), { async: false }) as string;
-  return { html, toc };
+  return { html, toc, images };
 }
 
 let cache: Article[] | null = null;
@@ -136,10 +182,10 @@ export function getArticles(): Article[] {
     const { data, body } = parseFrontMatter(readFileSync(join(DIR, file), "utf8"));
     const parsed = FrontMatter.safeParse(data);
     if (!parsed.success) throw new Error(`${file} : ${parsed.error.issues.map((i) => `${i.path.join(".")} ${i.message}`).join(" ; ")}`);
-    const { html, toc } = render(body);
+    const { html, toc, images } = render(body);
     const words = body.split(/\s+/).filter(Boolean).length;
     const fm = { ...parsed.data, title: frTypo(parsed.data.title), description: frTypo(parsed.data.description) };
-    return { ...fm, slug, html, toc, readingMinutes: Math.max(1, Math.round(words / 220)) };
+    return { ...fm, slug, html, toc, images, readingMinutes: Math.max(1, Math.round(words / 220)) };
   });
   assertNoDuplicates(all);
   cache = all.filter((a) => !a.draft).sort((a, b) => b.date.localeCompare(a.date));

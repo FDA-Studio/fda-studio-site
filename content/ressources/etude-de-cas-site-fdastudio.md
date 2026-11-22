@@ -2,6 +2,7 @@
 title: Étude de cas : comment nous avons conçu le site fdastudio.fr
 description: Design immersif, vitesse sur mobile, référencement local et démonstrations d’IA : les choix, les erreurs et les mesures derrière notre propre site.
 date: 2026-11-15
+updated: 2026-11-22
 service: creation-site-internet-tours
 keywords: [étude de cas site internet, site internet immersif, site rapide sur mobile, création site agence Tours]
 ---
@@ -31,6 +32,10 @@ Plutôt que de décrire nos agents IA, nous les avons mis en ligne : un agent vo
 ### Une page par service, pensée pour la recherche locale
 
 Chaque service a sa page : [création de site internet à Tours](/creation-site-internet-tours/), [agence IA à Tours](/agence-ia-tours/), [développement d’applications à Tours](/developpement-application-tours/). Chacune répond aux questions d’un prospect : ce que nous réalisons, pour qui, comment se déroule un projet, ce qui est inclus, questions fréquentes.
+
+![Page « Intégration de l’IA pour les entreprises de Tours » du site fdastudio.fr, conçue par FDA Studio](/media/realisations/agence-ia-tours-page-fda-studio.webp "La page du service IA, sur ordinateur.")
+
+![Page « Création de site internet à Tours » de fdastudio.fr sur téléphone, avec le bouton « Demander un devis »](/media/realisations/creation-site-internet-tours-version-mobile-fda-studio.webp "La page création de site, sur téléphone.")
 
 ### Une technique simple à exploiter
 

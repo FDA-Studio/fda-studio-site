@@ -55,7 +55,11 @@ export default async function ArticlePage({ params }: Props) {
     mainEntityOfPage: url,
     url,
     // Image de partage propre à l'article (route /ressources/<slug>/og.png)
-    image: { "@type": "ImageObject", url: `${url}og.png`, width: 1200, height: 630 },
+    // + les captures de l'article, décrites, pour Google Images
+    image: [
+      { "@type": "ImageObject", url: `${url}og.png`, width: 1200, height: 630 },
+      ...a.images.map((i) => ({ "@type": "ImageObject", url: `${site.url}${i.src}`, width: i.width, height: i.height, caption: i.alt })),
+    ],
     keywords: a.keywords.join(", "),
     author: authorJsonLd,
     publisher: { "@id": `${site.url}/#organization` },
