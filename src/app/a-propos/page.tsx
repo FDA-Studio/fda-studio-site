@@ -179,7 +179,7 @@ export default function AboutPage() {
                   <span key={u}>
                     {i > 0 && " · "}
                     <a href={u} target="_blank" rel="noopener noreferrer" className="link-line">
-                      {u.includes("linkedin") ? "LinkedIn" : "Instagram"}
+                      {u.includes("linkedin") ? "LinkedIn" : u.includes("facebook") ? "Facebook" : "Instagram"}
                       <span className="sr-only"> (nouvel onglet)</span>
                     </a>
                   </span>
