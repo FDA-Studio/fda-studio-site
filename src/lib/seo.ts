@@ -83,7 +83,6 @@ export const organizationJsonLd = {
   // Emplacement exact de La Bonde, identique aux fiches Apple Plans et Google (décision d'Antoine, 17/11/2026)
   geo: { "@type": "GeoCoordinates", latitude: 47.3916, longitude: 0.6309 },
   ...(site.company.vat ? { vatID: site.company.vat } : {}),
-  parentOrganization: { "@type": "Organization", name: site.group.name, legalName: "FDA", identifier: { "@type": "PropertyValue", propertyID: "SIREN", value: "889822300" } },
   areaServed: [
     { "@type": "City", name: "Tours" },
     { "@type": "City", name: "Fondettes" },

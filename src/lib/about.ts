@@ -35,7 +35,7 @@ export const aboutFaq: { q: string; a: string }[] = [
   },
   {
     q: "Qui a fondé FDA Studio ?",
-    a: `${site.author.name}, qui dirige le studio depuis sa création en ${site.founded}. FDA Studio est une société par actions simplifiée (${c.rcs}), filiale du ${site.group.name}.`,
+    a: `${site.author.name}, qui dirige le studio depuis sa création en ${site.founded}. FDA Studio est une société par actions simplifiée (${c.rcs}).`,
   },
   {
     q: "FDA Studio a-t-il un lien avec la FDA américaine ?",

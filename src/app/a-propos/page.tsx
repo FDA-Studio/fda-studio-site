@@ -85,11 +85,6 @@ export default function AboutPage() {
               <strong className="font-semibold text-paper">{site.author.name}</strong> a fondé et dirige FDA Studio. Il signe les articles de la
               rubrique <Link href="/ressources/" className="link-line text-paper">Ressources</Link>.
             </p>
-            <p>
-              Il dirige aussi le {site.group.name},
-              qui réunit FDA Studio, Safetycar (garages sécurisés pour véhicules de prestige au Mans et à Orléans) et le centre de self-stockage
-              Homebox d’Orléans Sud.
-            </p>
           </div>
         </div>
       </section>
@@ -150,7 +145,7 @@ export default function AboutPage() {
               ["Fondateur et dirigeant", site.author.name],
               ["Création", site.founded],
               ["Société", `${c.name}, ${c.form.toLowerCase()} au capital de ${c.capital}`],
-              ["Groupe", `${site.group.name} (filiale à 100 % de la société FDA)`],
+              ["Groupe", site.group.name],
               ["Adresse", c.address],
               ["Immatriculation", c.rcs],
               ["Zone d’intervention", "Tours et la Touraine, Orléans, Le Mans et toute la France"],

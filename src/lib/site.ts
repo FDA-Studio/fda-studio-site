@@ -5,8 +5,7 @@
 export const site = {
   name: "FDA Studio",
   /**
-   * Société éditrice : FDA Studio est une société à part entière depuis le 23/11/2026 (Kbis),
-   * filiale à 100 % de la société FDA (Groupe FDA), qui en est la présidente.
+   * Société éditrice : FDA Studio, société à part entière depuis le 23/11/2026 (Kbis).
    */
   company: {
     name: "FDA Studio",
@@ -19,8 +18,6 @@ export const site = {
     euid: "FR3701.133185223",
     /** Numéro de TVA intracommunautaire : vide tant qu'il n'est pas confirmé par l'administration (rien n'est alors affiché ni déclaré). */
     vat: "",
-    /** Présidente de la SAS (personne morale) et son représentant. */
-    president: "FDA, SARL immatriculée au RCS de Tours sous le numéro 889 822 300, représentée par son gérant, Antoine Donabella",
     director: "Antoine Donabella",
   },
   url: "https://fdastudio.fr",
@@ -52,7 +49,7 @@ export const site = {
   disambiguation:
     "FDA Studio est une agence web et IA française, basée à Fondettes près de Tours. Elle n’a aucun lien avec la Food and Drug Administration (FDA), l’agence fédérale américaine des médicaments et de l’alimentation.",
   region: "Touraine, France",
-  // Le site fdaholding.fr est hors ligne depuis le 19 nov. 2026 : on cite le groupe sans lien.
+  // Seule mention du groupe, dans la fiche d'identité de /a-propos/ (souhait d'Antoine, 24 nov. 2026).
   group: { name: "Groupe FDA" },
   tagline: "We build what's next.",
   description:
