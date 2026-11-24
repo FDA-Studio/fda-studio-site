@@ -1,6 +1,6 @@
 # FDA Studio — site officiel
 
-Site de la marque FDA Studio (studio technologique du groupe FDA) : sites internet, intelligence artificielle, applications et jeux vidéo.
+Site de FDA Studio, agence web et IA près de Tours : sites internet, intelligence artificielle, applications et jeux vidéo.
 
 ## Stack
 
