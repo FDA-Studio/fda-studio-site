@@ -24,7 +24,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 
 | Prio | Sujet | Mot-clé principal | Statut |
 | --- | --- | --- | --- |
-| P1 | Automatiser ses devis et relances : méthode et coût | automatiser ses devis et relances | proposé (PR à venir) |
+| P1 | Automatiser ses devis et relances : méthode et coût | automatiser ses devis et relances | publié (2026-11-24, PR #86) |
 | P2 | Make, Zapier ou n8n : quel outil d'automatisation pour une PME ? | Make Zapier n8n comparatif | à faire |
 | P2 | 10 processus à automatiser en priorité dans une PME | automatisation processus PME | à faire |
 

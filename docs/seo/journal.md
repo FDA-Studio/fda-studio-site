@@ -4,7 +4,7 @@ Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport m
 
 - 2026-11-24 (mardi, passage planifié, tâche du Bureau) — Article « Automatiser ses devis et relances : méthode et coût
   pour une PME en 2026 » (slug automatiser-devis-relances ; mot-clé principal : automatiser ses devis et relances ;
-  ~1 550 mots). Anti-doublon : 9 articles existants, aucune PR ouverte, aucun article sur l'automatisation. Le sujet
+  ~1 550 mots ; PR #86 fusionnée, en ligne vers 08:52 UTC). Anti-doublon : 9 articles existants, aucune PR ouverte, aucun article sur l'automatisation. Le sujet
   voisin « Make, Zapier ou n8n » reste à faire : l'article ne donne que les tarifs d'entrée, sans comparatif.
   Sources ouvertes : rapport final du baromètre France Num 2026 (88 % outil de gestion, 71 % logiciel de facturation),
   communiqué du ministère de l'Économie du 28/09/2026 (40 % utilisent l'IA, 11 % pour automatiser des tâches),
