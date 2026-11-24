@@ -51,7 +51,7 @@ export function Footer() {
             <li><Link href="/confidentialite/" className="link-line hover:text-paper">Confidentialité</Link></li>
           </ul>
           <p className="mt-4">
-            © {new Date().getFullYear()} {site.company.name}, société du {site.group.name}. Aucun cookie, aucun traceur.
+            © {new Date().getFullYear()} {site.company.name}. Aucun cookie, aucun traceur.
           </p>
         </div>
       </div>

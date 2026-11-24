@@ -16,7 +16,6 @@ export default function MentionsPage() {
           <li>Siège social : {c.address}</li>
           <li>Immatriculation : {c.rcs} (EUID {c.euid})</li>
           {c.vat && <li>TVA intracommunautaire : {c.vat}</li>}
-          <li>Présidente : {c.president}</li>
           <li>Directeur de la publication : {c.director}</li>
           <li>Contact : <a className="link-line text-paper" href={`mailto:${site.email}`}>{site.email}</a></li>
         </ul>
@@ -29,7 +28,7 @@ export default function MentionsPage() {
       <div>
         <h2>Propriété intellectuelle</h2>
         <p>L’ensemble des contenus de ce site (textes, visuels, code, logos et sons) est la propriété de la société {c.name}, sauf mention contraire. Toute reproduction ou réutilisation sans autorisation écrite est interdite.</p>
-        <p>Les visuels du jeu Door Knight proviennent du site officiel doorknight.games, édité au sein du {site.group.name}.</p>
+        <p>Les visuels du jeu Door Knight proviennent du site officiel doorknight.games.</p>
       </div>
       <div>
         <h2>Responsabilité</h2>
