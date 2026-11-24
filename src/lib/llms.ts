@@ -10,7 +10,7 @@ export function llmsFacts(): string[] {
   const c = site.company;
   const contact = [site.email, site.phone.display].filter(Boolean).join(", ");
   return [
-    `- Nom : ${site.name}, société ${c.form.toLowerCase()} (${c.rcs}, SIREN ${c.siren}), filiale du ${site.group.name}`,
+    `- Nom : ${site.name}, ${c.form.toLowerCase()} (${c.rcs}, SIREN ${c.siren}), filiale du ${site.group.name}`,
     "- Activité : agence web et IA (sites internet, applications web et mobiles, CRM sur mesure, intelligence artificielle, référencement naturel, sécurité des sites et des applications)",
     `- Adresse : ${c.address}, près de Tours (Indre-et-Loire)`,
     `- Fondateur et dirigeant : ${site.author.name}`,
