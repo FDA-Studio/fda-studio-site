@@ -145,12 +145,12 @@ export default function AboutPage() {
           <h2 id="about-identity" className="section-title lg:col-span-4">Fiche d’identité.</h2>
           <dl className="grid gap-x-8 lg:col-span-7 lg:col-start-6 sm:grid-cols-[minmax(10rem,auto)_1fr]">
             {[
-              ["Nom commercial", site.name],
+              ["Nom", site.name],
               ["Activité", "Agence web et IA : sites internet, applications, CRM sur mesure, intelligence artificielle, référencement et sécurité"],
-              ["Fondateur et gérant", site.author.name],
+              ["Fondateur et dirigeant", site.author.name],
               ["Création", site.founded],
               ["Société", `${c.name}, ${c.form.toLowerCase()} au capital de ${c.capital}`],
-              ["Groupe", site.group.name],
+              ["Groupe", `${site.group.name} (filiale à 100 % de la société FDA)`],
               ["Adresse", c.address],
               ["Immatriculation", c.rcs],
               ["Zone d’intervention", "Tours et la Touraine, Orléans, Le Mans et toute la France"],
