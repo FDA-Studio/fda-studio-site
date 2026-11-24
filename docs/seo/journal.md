@@ -2,6 +2,21 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-24 (mardi, passage planifié, tâche du Bureau) — Article « Automatiser ses devis et relances : méthode et coût
+  pour une PME en 2026 » (slug automatiser-devis-relances ; mot-clé principal : automatiser ses devis et relances ;
+  ~1 550 mots). Anti-doublon : 9 articles existants, aucune PR ouverte, aucun article sur l'automatisation. Le sujet
+  voisin « Make, Zapier ou n8n » reste à faire : l'article ne donne que les tarifs d'entrée, sans comparatif.
+  Sources ouvertes : rapport final du baromètre France Num 2026 (88 % outil de gestion, 71 % logiciel de facturation),
+  communiqué du ministère de l'Économie du 28/09/2026 (40 % utilisent l'IA, 11 % pour automatiser des tâches),
+  Service Public Entreprendre F31144 (mentions du devis bâtiment, amendes), F23211 (délais de paiement, 40 €),
+  A15683 (facturation électronique), pages tarifs officielles de Make, Zapier et n8n (relevées le 24/11).
+  Audit : 30 pages construites, un title, une meta description et un seul H1 partout, aucun lien interne cassé,
+  BlogPosting et BreadcrumbList présents ; robots.txt en ligne avec le groupe des robots IA en `Allow: /` et le
+  sitemap ; /llms-full.txt en 200 ; derniers passages IndexNow verts (24/11). Accès direct à fdastudio.fr toujours
+  refusé par le proxy de l'agent : vérifications en ligne faites par un service de lecture de pages.
+  Suggestion hors périmètre : la page /developpement-application-tours/ (src/lib/services.ts) emploie « SaaS »
+  (description, mots-clés, encadré), alors que le vocabulaire du studio dit « CRM » ou « logiciel en ligne » ;
+  le sujet du plan « MVP : lancer un SaaS » est à renommer le jour où il sera traité.
 - 2026-11-20 (après-midi, Antoine : « il faut qu'on soit ultra bien référencé pour toutes les IA ») — Accès vérifié :
   17 signatures de robots (OpenAI, Anthropic, Perplexity, Mistral, Google, Bing, Apple…) reçoivent un 200 sur
   l'accueil, une page de service, /llms.txt et un article ; aucun blocage Vercel ; DNS chez Vercel (pas de proxy
