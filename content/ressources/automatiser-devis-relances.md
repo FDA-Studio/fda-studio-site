@@ -6,7 +6,7 @@ service: agence-ia-tours
 keywords: [automatiser ses devis et relances, automatisation devis, relance devis automatique, relance facture impayée, logiciel devis PME]
 ---
 
-Automatiser ses devis et relances, c’est faire produire le devis à partir d’une demande déjà qualifiée, puis laisser un outil envoyer les rappels au bon moment, jusqu’à la signature et jusqu’au paiement. La plupart des PME ont déjà la première brique : selon le [baromètre France Num 2026](https://www.francenum.gouv.fr/files/2026-09/Barom%C3%A8tre%20France%20Num%202026%20-%20Rapport%20final.pdf), 88 % des TPE et PME utilisent au moins un outil de gestion, dont 71 % un logiciel de facturation. Ce qui manque presque toujours, c’est le lien entre la demande, le devis, la relance et la facture. Côté outils, les abonnements d’automatisation démarrent autour de 12 à 20 dollars par mois en 2026 ; l’essentiel du budget va au paramétrage.
+Automatiser ses devis et relances, c’est faire produire le devis à partir d’une demande déjà qualifiée, puis laisser un outil envoyer les rappels au bon moment, jusqu’à la signature et jusqu’au paiement. La plupart des PME ont déjà la première brique : selon le [baromètre France Num 2026](https://www.francenum.gouv.fr/files/2026-09/Barom%C3%A8tre%20France%20Num%202026%20-%20Rapport%20final.pdf), 88 % des TPE et PME utilisent au moins un outil de gestion et 71 % un logiciel de facturation. Ce qui manque presque toujours, c’est le lien entre la demande, le devis, la relance et la facture. Côté outils, les premières formules payantes des outils d’automatisation affichent 12 à 20 dollars par mois en novembre 2026 (Make, Zapier, n8n) ; l’essentiel du budget va au paramétrage.
 
 ## Pourquoi les devis et les relances se perdent
 
