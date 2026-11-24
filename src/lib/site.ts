@@ -4,18 +4,24 @@
  */
 export const site = {
   name: "FDA Studio",
-  /** Société éditrice : FDA Studio est un nom commercial de la société FDA (groupe FDA). */
+  /**
+   * Société éditrice : FDA Studio est une société à part entière depuis le 23/11/2026 (Kbis),
+   * filiale à 100 % de la société FDA (Groupe FDA), qui en est la présidente.
+   */
   company: {
-    name: "FDA",
-    form: "Société à responsabilité limitée à associé unique",
-    capital: "10 000 €",
+    name: "FDA Studio",
+    form: "Société par actions simplifiée à associé unique",
+    capital: "1 000 €",
     address: "La Bonde, 37230 Fondettes, France",
-    rcs: "RCS Tours 889 822 300",
+    rcs: "RCS Tours 133 185 223",
     /** Numéro SIREN, déclaré aux moteurs (identifier) pour relier le studio aux registres officiels. */
-    siren: "889822300",
-    euid: "FR3701.889822300",
-    vat: "FR43889822300",
-    director: "Antoine Donabella, gérant",
+    siren: "133185223",
+    euid: "FR3701.133185223",
+    /** Numéro de TVA intracommunautaire : vide tant qu'il n'est pas confirmé par l'administration (rien n'est alors affiché ni déclaré). */
+    vat: "",
+    /** Présidente de la SAS (personne morale) et son représentant. */
+    president: "FDA, SARL immatriculée au RCS de Tours sous le numéro 889 822 300, représentée par son gérant, Antoine Donabella",
+    director: "Antoine Donabella",
   },
   url: "https://fdastudio.fr",
   locale: "fr_FR",
@@ -36,7 +42,7 @@ export const site = {
     { name: "La Fabrique du Net", url: "https://www.lafabriquedunet.fr/agences/agence/fda-studio" },
   ] as { name: string; url: string }[],
   /** Auteur des articles de la rubrique Ressources (affiché et déclaré en données structurées). */
-  author: { name: "Antoine Donabella", jobTitle: "Gérant de FDA Studio" },
+  author: { name: "Antoine Donabella", jobTitle: "Fondateur et dirigeant de FDA Studio" },
   /** Année de création du studio, telle que déclarée sur les fiches (décision d'Antoine, nov. 2026). */
   founded: "2026",
   /**

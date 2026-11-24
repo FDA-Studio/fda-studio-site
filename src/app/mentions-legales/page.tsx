@@ -11,11 +11,12 @@ export default function MentionsPage() {
     <LegalPage title="Mentions légales" path="/mentions-legales/">
       <div>
         <h2>Éditeur du site</h2>
-        <p>Le site fdastudio.fr est édité par la société {c.name}, {c.form.toLowerCase()} au capital de {c.capital}, exerçant sous le nom commercial FDA Studio.</p>
+        <p>Le site fdastudio.fr est édité par la société {c.name}, {c.form.toLowerCase()} au capital de {c.capital}.</p>
         <ul>
           <li>Siège social : {c.address}</li>
           <li>Immatriculation : {c.rcs} (EUID {c.euid})</li>
-          <li>TVA intracommunautaire : {c.vat}</li>
+          {c.vat && <li>TVA intracommunautaire : {c.vat}</li>}
+          <li>Présidente : {c.president}</li>
           <li>Directeur de la publication : {c.director}</li>
           <li>Contact : <a className="link-line text-paper" href={`mailto:${site.email}`}>{site.email}</a></li>
         </ul>
@@ -27,8 +28,8 @@ export default function MentionsPage() {
       </div>
       <div>
         <h2>Propriété intellectuelle</h2>
-        <p>L’ensemble des contenus de ce site (textes, visuels, code, logos et sons) est la propriété de la société {c.name}, sauf mention contraire. FDA Studio et Door Knight sont des marques exploitées par la société {c.name}. Toute reproduction ou réutilisation sans autorisation écrite est interdite.</p>
-        <p>Les visuels du jeu Door Knight proviennent du site officiel doorknight.games, édité par la même société.</p>
+        <p>L’ensemble des contenus de ce site (textes, visuels, code, logos et sons) est la propriété de la société {c.name}, sauf mention contraire. Toute reproduction ou réutilisation sans autorisation écrite est interdite.</p>
+        <p>Les visuels du jeu Door Knight proviennent du site officiel doorknight.games, édité au sein du {site.group.name}.</p>
       </div>
       <div>
         <h2>Responsabilité</h2>

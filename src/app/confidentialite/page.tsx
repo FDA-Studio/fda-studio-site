@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       </div>
       <div>
         <h2>Responsable du traitement</h2>
-        <p>Société {c.name} (nom commercial FDA Studio), {c.address}, {c.rcs}. Contact : {mail}.</p>
+        <p>Société {c.name}, {c.form.toLowerCase()}, {c.address}, {c.rcs}. Contact : {mail}.</p>
       </div>
       <div>
         <h2>Ce qui est enregistré dans votre navigateur</h2>
