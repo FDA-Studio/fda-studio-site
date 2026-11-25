@@ -32,6 +32,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 
 | Prio | Sujet | Mot-clé principal | Statut |
 | --- | --- | --- | --- |
+| P0 | Créer le site internet de son entreprise à Tours : étapes, délais et ce qu'il faut préparer (demande d'Antoine du 23/11, à traiter au prochain passage, le vendredi 27/11 ; angle guide, renvoyer vers /creation-site-internet-tours/ sans la concurrencer) | étapes création site internet entreprise Tours | à faire |
 | P1 | Prix d'un site vitrine en 2026 : ce qui fait varier le devis | prix site vitrine | publié (2026-11-15, PR #33) |
 | P1 | Création de site internet à Tours : comment choisir son agence | choisir une agence web (« création site internet Tours » reste à la page de service) | publié (2026-11-18) |
 | P1 | Combien coûte un site e-commerce en 2026 ? | prix site e-commerce | à faire |
