@@ -71,7 +71,10 @@ export const organizationJsonLd = {
   slogan: site.tagline,
   foundingDate: site.founded,
   knowsLanguage: "fr",
-  identifier: { "@type": "PropertyValue", propertyID: "SIREN", value: site.company.siren },
+  identifier: [
+    { "@type": "PropertyValue", propertyID: "SIREN", value: site.company.siren },
+    { "@type": "PropertyValue", propertyID: "SIRET", value: site.company.siret.replace(/\s/g, "") },
+  ],
   address: {
     "@type": "PostalAddress",
     streetAddress: "La Bonde",

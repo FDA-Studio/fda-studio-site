@@ -15,6 +15,7 @@ export default function MentionsPage() {
         <ul>
           <li>Siège social : {c.address}</li>
           <li>Immatriculation : {c.rcs} (EUID {c.euid})</li>
+          <li>SIRET du siège : {c.siret}</li>
           {c.vat && <li>TVA intracommunautaire : {c.vat}</li>}
           <li>Directeur de la publication : {c.director}</li>
           <li>Contact : <a className="link-line text-paper" href={`mailto:${site.email}`}>{site.email}</a></li>
