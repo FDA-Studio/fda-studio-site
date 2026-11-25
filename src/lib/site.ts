@@ -18,7 +18,7 @@ export const site = {
     siret: "133 185 223 00012",
     euid: "FR3701.133185223",
     /** Numéro de TVA intracommunautaire : vide tant qu'il n'est pas confirmé par l'administration (rien n'est alors affiché ni déclaré). */
-    vat: "",
+    vat: "FR71133185223",
     director: "Antoine Donabella",
   },
   url: "https://fdastudio.fr",
