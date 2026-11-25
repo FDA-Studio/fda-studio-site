@@ -15,6 +15,7 @@ export const site = {
     rcs: "RCS Tours 133 185 223",
     /** Numéro SIREN, déclaré aux moteurs (identifier) pour relier le studio aux registres officiels. */
     siren: "133185223",
+    siret: "133 185 223 00012",
     euid: "FR3701.133185223",
     /** Numéro de TVA intracommunautaire : vide tant qu'il n'est pas confirmé par l'administration (rien n'est alors affiché ni déclaré). */
     vat: "",
