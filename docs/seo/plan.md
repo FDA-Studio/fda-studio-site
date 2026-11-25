@@ -51,7 +51,7 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 | --- | --- | --- | --- |
 | P1 | Combien coûte une application mobile en 2026 ? | prix application mobile | publié (2026-11-15, PR #34) |
 | P1 | Développer une application à Tours : étapes, délais et budget | développement application Tours | à faire |
-| P2 | MVP : lancer un SaaS sans brûler son budget | développer un MVP SaaS | à faire |
+| P2 | MVP : lancer un logiciel en ligne sans brûler son budget (ne pas employer « SaaS », règle d’Antoine) | développer un MVP logiciel en ligne | à faire |
 | P2 | Application web ou application mobile : que choisir ? | application web ou mobile | à faire |
 | P2 | Outil métier sur mesure ou logiciel du marché ? | logiciel sur mesure PME | à faire |
 | P3 | Publier une application sur l'App Store : le guide | publier application App Store | à faire |

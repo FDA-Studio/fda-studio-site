@@ -227,13 +227,13 @@ export const services: Service[] = [
     name: "Développement d’applications",
     title: "Développement d’application mobile et web à Tours — FDA Studio",
     description:
-      "Développement d’applications à Tours : applications mobiles iOS et Android, applications web, SaaS et outils métiers sur mesure, de la maquette aux stores.",
+      "Développement d’applications à Tours : applications mobiles iOS et Android, applications web, logiciels en ligne et outils métiers sur mesure, de la maquette aux stores.",
     keywords: [
       "développement application Tours",
       "création application mobile Tours",
       "développement application web",
       "développeur iOS Android Tours",
-      "création SaaS",
+      "création logiciel en ligne",
       "logiciel sur mesure Indre-et-Loire",
     ],
     h1: ["Développement d’applications", "mobiles et web à Tours"],
@@ -246,12 +246,12 @@ export const services: Service[] = [
       faq: "Questions fréquentes sur le développement d’applications.",
     },
     intro:
-      "FDA Studio crée des applications sur mesure : applications mobiles iOS et Android, applications web, SaaS, tableaux de bord et outils métiers. Le même studio s’occupe du design, du développement et de la publication.",
+      "FDA Studio crée des applications sur mesure : applications mobiles iOS et Android, applications web, logiciels en ligne, tableaux de bord et outils métiers. Le même studio s’occupe du design, du développement et de la publication.",
     serviceType: "Développement d'applications",
     offers: [
       { title: "Application mobile", text: "Pour iPhone, iPad et Android, publiée sur l’App Store et Google Play." },
       { title: "Application web", text: "Accessible depuis un navigateur, sans installation, sur ordinateur comme sur téléphone." },
-      { title: "SaaS", text: "Un logiciel en ligne avec comptes utilisateurs, abonnements et espace d’administration." },
+      { title: "Logiciel en ligne", text: "Un logiciel accessible en ligne, avec comptes utilisateurs, abonnements et espace d’administration." },
       { title: "Outil métier", text: "Planning, devis, suivi d’interventions : un outil pensé pour la façon dont votre équipe travaille." },
       { title: "Tableau de bord", text: "Vos chiffres réunis au même endroit, mis à jour automatiquement depuis vos logiciels." },
       { title: "Jeu et expérience 3D", text: "Le studio développe aussi ses propres jeux mobiles, comme Door Knight." },
