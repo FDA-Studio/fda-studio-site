@@ -84,3 +84,21 @@ quand le sujet est déjà couvert par un article (voir AGENT.md, étape 3).
 
 L'agent peut ajouter des sujets (en bas de la bonne section, statut `à faire`) quand une recherche
 montre une question fréquente des prospects, et l'indique dans sa PR. Il ne supprime pas de sujet.
+
+## Orléans et Le Mans — pages : agence-web-orleans, agence-web-le-mans (décision d'Antoine du 26/11/2026)
+
+| Prio | Sujet (titre de travail) | Mot-clé principal | Statut |
+| --- | --- | --- | --- |
+| P1 | Agence web à Orléans : comment choisir son prestataire | choisir agence web Orléans | à faire |
+| P1 | Agence web au Mans : les points à vérifier avant de signer | choisir agence web Le Mans | à faire |
+| P1 | Création de site internet à Orléans : prix et étapes en 2026 | création site internet Orléans | à faire |
+| P1 | Création de site internet au Mans : prix et étapes en 2026 | création site internet Le Mans | à faire |
+| P2 | Agent vocal IA pour les artisans d'Orléans et du Mans | agent vocal artisan | à faire |
+
+## Identité visuelle — service : identite-visuelle-logo-tours
+
+| Prio | Sujet (titre de travail) | Mot-clé principal | Statut |
+| --- | --- | --- | --- |
+| P1 | Combien coûte un logo pour une entreprise en 2026 ? | prix création logo | à faire |
+| P2 | Charte graphique : ce qu'elle doit contenir pour une PME | charte graphique entreprise | à faire |
+| P2 | Refaire son logo : quand et comment sans perdre ses clients | refonte logo entreprise | à faire |

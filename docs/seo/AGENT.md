@@ -112,9 +112,9 @@ en attente de validation. Quand un point bloque :
 - Chaque chiffre, prix ou fait daté vient d'une page réellement ouverte pendant la recherche
   (pas d'un extrait de résultat), cité par un lien. Les prix sont des « ordres de grandeur ».
 - 2 à 4 liens internes : la page de service concernée (`/creation-site-internet-tours/`,
-  `/agence-ia-tours/`, `/developpement-application-tours/`, `/crm-sur-mesure-tours/`, `/referencement-naturel-tours/`, `/securite-site-internet-tours/`), un autre article si pertinent,
+  `/agence-ia-tours/`, `/developpement-application-tours/`, `/crm-sur-mesure-tours/`, `/referencement-naturel-tours/`, `/securite-site-internet-tours/`, `/identite-visuelle-logo-tours/`), un autre article si pertinent,
   et `/#contact` ou `/#creations` (démos) quand c'est naturel.
-- Ancrage local quand c'est pertinent (Tours, Indre-et-Loire), sans bourrage de mots-clés.
+- Ancrage local quand c'est pertinent, sans bourrage de mots-clés. Trois villes visées à égalité (décision d'Antoine du 26/11/2026) : Tours (Indre-et-Loire), Orléans (Loiret) et Le Mans (Sarthe). Un article sur deux au moins cite Orléans et Le Mans là où c'est naturel, et renvoie vers les pages locales (`/agence-web-orleans/`, `/agence-web-le-mans/`, `/agence-ia-orleans/`, `/agence-ia-le-mans/`). Aucun fait local inventé : une donnée sur Orléans ou Le Mans vient d'une page ouverte et citée.
 - Mot-clé principal dans le titre, la description, le premier paragraphe et un H2, naturellement.
 
 ### Être repris et cité par les assistants IA
