@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...articles.map((a) => ({ url: `${site.url}/ressources/${a.slug}/`, lastModified: new Date(`${a.updated ?? a.date}T12:00:00Z`), changeFrequency: "monthly" as const, priority: 0.6, ...(a.images.length ? { images: a.images.map((i) => `${site.url}${i.src}`) } : {}) })),
     { url: `${site.url}/gaming/`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${site.url}/a-propos/`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${site.url}/mentions-legales/`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${site.url}/rendez-vous/`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${site.url}/confidentialite/`, changeFrequency: "yearly", priority: 0.2 },
   ];

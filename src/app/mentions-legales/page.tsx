@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 import { site } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = { ...pageMeta({ title: "Mentions légales", description: "Mentions légales du site FDA Studio : éditeur, hébergement et propriété intellectuelle.", path: "/mentions-legales/" }), robots: { index: false, follow: true } };
+export const metadata: Metadata = { ...pageMeta({ title: "Mentions légales", description: "Mentions légales de FDA Studio, SAS immatriculée au RCS de Tours (SIREN 133 185 223) : éditeur, hébergement et propriété intellectuelle.", path: "/mentions-legales/" }) };
 
 export default function MentionsPage() {
   const c = site.company;
