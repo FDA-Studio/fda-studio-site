@@ -43,6 +43,7 @@ export const localPages: Service[] = [
       { title: "Agent vocal", text: "Un assistant qui décroche quand vous ne pouvez pas, comprend la demande, prend le rendez-vous et vous transmet le résumé." },
       { title: "Automatisation", text: "Relances, devis, e-mails, saisie dans vos outils : les tâches qui reviennent chaque semaine, faites sans vous." },
       { title: "Application", text: "Application mobile ou outil web sur mesure pour vos clients ou votre équipe." },
+      { title: "Identité visuelle et logo", text: "Logo, charte graphique et supports aux couleurs de votre entreprise, pensés avec votre site pour une image cohérente partout." },
     ],
     steps: SHARED_STEPS,
     forWhom: [
@@ -92,6 +93,7 @@ export const localPages: Service[] = [
       { title: "Agent vocal", text: "Les appels pris même quand l’équipe est occupée : demande comprise, rendez-vous posé, résumé envoyé." },
       { title: "Automatisation", text: "Devis, relances, comptes rendus, saisie dans le CRM : moins de copier-coller, plus de temps pour vos clients." },
       { title: "Application", text: "Application mobile ou outil interne sur mesure, relié à vos données." },
+      { title: "Identité visuelle et logo", text: "Un logo et une charte graphique qui vous ressemblent, déclinés sur votre site, vos réseaux et vos documents." },
     ],
     steps: SHARED_STEPS,
     forWhom: [

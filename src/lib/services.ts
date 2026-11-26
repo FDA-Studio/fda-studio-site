@@ -132,7 +132,7 @@ export const services: Service[] = [
     name: "Identité visuelle et logo",
     title: "Création de logo et identité visuelle à Tours | FDA Studio",
     description:
-      "Création de logo et d’identité visuelle à Tours : logo, charte graphique, couleurs, typographies et déclinaisons pour vos supports, votre site et vos réseaux.",
+      "Création de logo et d’identité visuelle à Tours, Orléans et Le Mans : logo, charte graphique, couleurs et déclinaisons pour vos supports, votre site et vos réseaux.",
     keywords: [
       "création logo Tours",
       "identité visuelle Tours",
@@ -141,18 +141,22 @@ export const services: Service[] = [
       "graphiste Tours",
       "refonte logo",
       "identité de marque Indre-et-Loire",
+      "création logo Orléans",
+      "création logo Le Mans",
+      "identité visuelle Orléans",
+      "identité visuelle Le Mans",
     ],
-    h1: ["Identité visuelle et logo", "à Tours et partout en France"],
+    h1: ["Identité visuelle et logo", "à Tours, Orléans et Le Mans"],
     headings: {
       offers: "Ce que nous créons pour votre image.",
       forWhom: "À qui s’adresse une identité visuelle.",
       steps: "Comment nous créons votre identité.",
       included: "Ce que comprend chaque identité visuelle.",
-      local: "Identité visuelle et logo à Tours, en Touraine et partout en France.",
+      local: "Identité visuelle et logo à Tours, Orléans, Le Mans et partout en France.",
       faq: "Questions fréquentes sur la création de logo.",
     },
     intro:
-      "Un logo, des couleurs, des typographies : c’est ce que vos clients retiennent avant même de lire ce que vous faites. FDA Studio crée l’identité visuelle des entreprises de Tours, de Touraine et de toute la France, puis la fait vivre partout où vos clients vous voient : site internet, réseaux sociaux, documents et supports imprimés.",
+      "Un logo, des couleurs, des typographies : c’est ce que vos clients retiennent avant même de lire ce que vous faites. FDA Studio crée l’identité visuelle des entreprises de Tours, d’Orléans, du Mans et de toute la France, puis la fait vivre partout où vos clients vous voient : site internet, réseaux sociaux, documents et supports imprimés.",
     serviceType: "Création d’identité visuelle et de logo",
     offers: [
       { title: "Création de logo", text: "Un logo pensé pour votre métier et vos clients, lisible en petit comme en grand, sur écran comme sur papier." },
@@ -184,13 +188,14 @@ export const services: Service[] = [
       "Les droits d’utilisation précisés dans le devis",
     ],
     local:
-      "Le studio est installé à Fondettes, aux portes de Tours. Nous rencontrons volontiers les entreprises de Tours, Joué-lès-Tours, Saint-Cyr-sur-Loire, Chambray-lès-Tours, Amboise et du reste de l’Indre-et-Loire, et nous travaillons à distance avec des clients partout en France.",
+      "Le studio est installé à Fondettes, aux portes de Tours. Nous créons des identités visuelles pour les entreprises de Tours et de Touraine, d’Orléans et du Loiret, du Mans et de la Sarthe, en rendez-vous sur place ou en visio, et pour des clients partout en France.",
+    areaServed: ["Tours", "Indre-et-Loire", "Orléans", "Loiret", "Le Mans", "Sarthe", "Centre-Val de Loire", "Pays de la Loire"],
     faq: [
       { q: "Combien coûte la création d’un logo ?", a: "Cela dépend de ce que vous attendez : un logo seul, ou une identité complète avec charte et supports. Après un premier échange, vous recevez un devis détaillé et gratuit." },
       { q: "Serai-je propriétaire de mon logo ?", a: "Les droits d’utilisation et les fichiers livrés sont précisés dans le devis, avant le début du travail. Vous savez dès le départ ce que vous pourrez faire de votre logo." },
       { q: "Pouvez-vous moderniser mon logo actuel ?", a: "Oui. Une refonte peut garder ce que vos clients reconnaissent déjà, tout en rendant votre image plus actuelle et plus lisible." },
       { q: "Faites-vous aussi le site internet ?", a: "Oui. C’est même l’intérêt de travailler avec un seul studio : l’identité visuelle et le site sont pensés ensemble, pour une image cohérente partout." },
-      { q: "Travaillez-vous avec des entreprises en dehors de Tours ?", a: "Oui. Nous travaillons avec des entreprises partout en France, en visioconférence. Pour les entreprises de Touraine, nous pouvons aussi nous rencontrer sur place." },
+      { q: "Travaillez-vous avec des entreprises d’Orléans et du Mans ?", a: "Oui. Nous créons des identités visuelles pour des entreprises de Tours, d’Orléans, du Mans et de toute la France, en visioconférence ou sur place." },
     ],
   },
   {
