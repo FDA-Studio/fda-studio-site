@@ -6,9 +6,9 @@ import { pageMeta } from "@/lib/seo";
 const path = "/rendez-vous/";
 
 export const metadata: Metadata = pageMeta({
-  title: "Prendre rendez-vous avec FDA Studio",
+  title: "Prendre rendez-vous avec une agence web à Tours",
   description:
-    "Réservez en ligne un appel ou une visio de 30 minutes avec Antoine, FDA Studio, pour parler de votre site internet, de votre application ou de votre projet d’intelligence artificielle.",
+    "Réservez en ligne un appel ou une visio de 30 minutes avec Antoine, de FDA Studio, pour parler de votre site internet, de votre application ou de votre projet d’IA.",
   path,
   keywords: ["rendez-vous FDA Studio", "prendre rendez-vous agence web Tours", "visio agence web", "FDA Studio contact"],
 });
