@@ -931,3 +931,13 @@ html[data-sound-auto="waiting"] [data-sound-toggle] { animation: sound-breathe 2
 }
 .article-prose .article-figure--portrait { max-width: 22rem; margin-inline: auto; }
 .article-prose .article-figure figcaption { margin-top: 0.75rem; font-size: 0.875rem; color: var(--color-muted); }
+
+/* Cibles tactiles d'au moins 24 px (WCAG 2.2, critère 2.5.8) pour les liens hors du texte courant :
+   fil d'Ariane, sommaire des articles, liens du pied de page. Hauteur gagnée sans changer le dessin. */
+nav[aria-label="Fil d’Ariane"] a,
+nav[aria-label="Sommaire"] a,
+footer ul a {
+  display: inline-block;
+  padding-block: 0.25rem;
+  background-origin: content-box; /* le soulignement animé reste collé au texte */
+}

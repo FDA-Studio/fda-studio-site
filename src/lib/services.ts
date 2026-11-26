@@ -298,7 +298,7 @@ export const services: Service[] = [
     name: "Développement d’applications",
     title: "Développement d’application mobile et web à Tours — FDA Studio",
     description:
-      "Développement d’applications à Tours : applications mobiles iOS et Android, applications web, logiciels en ligne et outils métiers sur mesure, de la maquette aux stores.",
+      "Développement d’applications à Tours : applications mobiles iOS et Android, applications web et outils métiers sur mesure, de la maquette aux stores.",
     keywords: [
       "développement application Tours",
       "création application mobile Tours",
