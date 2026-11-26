@@ -38,6 +38,7 @@ export function Footer() {
               <li><Link href="/gaming/" className="link-line hover:text-paper">Gaming</Link></li>
               <li><Link href="/ressources/" className="link-line hover:text-paper">Ressources</Link></li>
               <li><Link href="/a-propos/" className="link-line hover:text-paper">À propos</Link></li>
+              <li><Link href="/rendez-vous/" className="link-line hover:text-paper">Prendre rendez-vous</Link></li>
               {localPages.map((p) => (
                 <li key={p.slug}><Link href={`/${p.slug}/`} className="link-line hover:text-paper">{p.name}</Link></li>
               ))}

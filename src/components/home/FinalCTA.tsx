@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ContactForm } from "@/components/ContactForm";
 import { ArrowIcon } from "@/components/icons";
 import { site } from "@/lib/site";
@@ -15,6 +16,10 @@ export function FinalCTA({ compact = false }: { compact?: boolean }) {
               ? "Le plus rapide : parlez-en à Emma, notre assistante IA. Elle vous propose un créneau avec Antoine."
               : "Un site, une IA ou une application : le plus rapide est d’en parler à Emma, notre assistante IA. Elle note votre besoin et vous propose un créneau avec Antoine."}
           </p>
+          <Link href="/rendez-vous/" className="btn btn-primary mt-8 mr-3">
+            Prendre rendez-vous
+            <ArrowIcon />
+          </Link>
           <a href={`mailto:${site.email}`} className="btn btn-ghost mt-8">
             Écrire à {site.email}
             <ArrowIcon />

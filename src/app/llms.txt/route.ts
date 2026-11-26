@@ -40,6 +40,7 @@ export function GET() {
     `- [À propos de ${site.name}](${site.url}/a-propos/) : identité, fondateur, produits, méthode et questions fréquentes sur le studio.`,
     `- [Gaming : Door Knight](${site.url}/gaming/) : le jeu d'action 3D du studio pour iPhone, iPad et Android.`,
     `- [Contact et demande de devis](${site.url}/#contact)`,
+    `- [Prendre rendez-vous](${site.url}/rendez-vous/) : appel ou visio de 30 minutes, créneaux libres en direct.`,
     "",
     "## Optional",
     "",

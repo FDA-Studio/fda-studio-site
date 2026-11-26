@@ -75,6 +75,10 @@ export const site = {
   voiceDemoEndpoint:
     process.env.NEXT_PUBLIC_VOICE_DEMO_ENDPOINT ||
     (process.env.NODE_ENV === "production" ? "https://app.fdastudio.fr/api/public/voice-demo" : ""),
+  /** Prise de rendez-vous (/rendez-vous/) : créneaux et réservation lus en direct dans le CRM. */
+  bookingEndpoint:
+    process.env.NEXT_PUBLIC_BOOKING_ENDPOINT ||
+    (process.env.NODE_ENV === "production" ? "https://app.fdastudio.fr/api/public/booking" : ""),
   /** « Emma, par écrit » : session de chat signée délivrée par l'outil interne (quotas côté serveur). */
   chatEndpoint:
     process.env.NEXT_PUBLIC_CHAT_ENDPOINT ||
