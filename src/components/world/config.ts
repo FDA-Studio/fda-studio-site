@@ -28,7 +28,7 @@ export const WORLD_SECTIONS: WorldSection[] = [
     id: "entree",
     label: "Entrée",
     accent: "#2f5bff",
-    eyebrow: "Sites, applications, agents IA",
+    eyebrow: "Sites, identité visuelle, applications, IA",
     title: "Agence web et IA",
     body: "Tours, Orléans, Le Mans et partout en France.",
     tags: [],
