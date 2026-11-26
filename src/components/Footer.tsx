@@ -30,6 +30,7 @@ export function Footer() {
           <nav aria-label="Toutes les pages" className="pb-2 pt-3">
             <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted">
               <li><Link href="/creation-site-internet-tours/" className="link-line hover:text-paper">Création de site internet à Tours</Link></li>
+              <li><Link href="/identite-visuelle-logo-tours/" className="link-line hover:text-paper">Identité visuelle et logo</Link></li>
               <li><Link href="/agence-ia-tours/" className="link-line hover:text-paper">Agence IA à Tours</Link></li>
               <li><Link href="/developpement-application-tours/" className="link-line hover:text-paper">Applications mobiles et web</Link></li>
               <li><Link href="/crm-sur-mesure-tours/" className="link-line hover:text-paper">CRM sur mesure</Link></li>

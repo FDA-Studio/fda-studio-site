@@ -104,6 +104,7 @@ export const organizationJsonLd = {
   ],
   knowsAbout: [
     "Création de sites internet",
+    "Identité visuelle et création de logo",
     "Développement web",
     "Référencement naturel (SEO)",
     "Intégration de l'intelligence artificielle",

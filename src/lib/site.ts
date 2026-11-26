@@ -54,7 +54,7 @@ export const site = {
   group: { name: "Groupe FDA" },
   tagline: "We build what's next.",
   description:
-    "Agence web et IA près de Tours : création de sites internet, intégration de l'intelligence artificielle, applications mobiles et jeux vidéo, partout en France.",
+    "Agence web et IA près de Tours : création de sites internet, identité visuelle et logos, intelligence artificielle, applications mobiles et jeux vidéo, partout en France.",
   /**
    * Point d'envoi du formulaire de contact : les demandes arrivent dans l'outil interne FDA Studio
    * (app.fdastudio.fr, dépôt fda-studio-internal), qui n'accepte que l'origine fdastudio.fr.
