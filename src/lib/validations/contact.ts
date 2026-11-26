@@ -6,6 +6,7 @@ z.config({ jitless: true });
 /** Schéma partagé par le formulaire (navigateur) et la fonction serveur (revalidation). */
 export const needs = [
   { value: "web", label: "Site internet" },
+  { value: "identite", label: "Identité visuelle & logo" },
   { value: "ia", label: "IA & automatisation" },
   { value: "applications", label: "Application" },
   { value: "gaming", label: "Interactif" },
