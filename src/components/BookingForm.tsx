@@ -63,8 +63,10 @@ export function BookingForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Le captcha se monte dans le formulaire : on attend qu'il soit affiché (après le chargement des créneaux).
+  const formShown = status === "ready" || status === "sending";
   useEffect(() => {
-    if (!captchaOn || status === "sent") return;
+    if (!captchaOn || !formShown) return;
     let cancelled = false;
     loadTurnstile()
       .then((ts) => {
@@ -87,7 +89,7 @@ export function BookingForm() {
       captchaId.current = null;
       captchaToken.current = "";
     };
-  }, [captchaOn, status === "sent"]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [captchaOn, formShown]);
 
   const days = useMemo(() => {
     const map = new Map<string, Slot[]>();
@@ -214,7 +216,7 @@ export function BookingForm() {
         <div className="mt-4 flex flex-wrap gap-2" data-field="slot" tabIndex={-1}>
           {daySlots.map((s) => (
             <button key={s.starts_at} type="button" className="chip" aria-pressed={slot === s.starts_at} onClick={() => setSlot(s.starts_at)}>
-              {TIME.format(new Date(s.starts_at)).replace(":", " h ").replace(/^0/, "")}
+              {TIME.format(new Date(s.starts_at)).replace(":", " h ").replace(/^0/, "").replace(/ h 00$/, " h")}
             </button>
           ))}
         </div>
