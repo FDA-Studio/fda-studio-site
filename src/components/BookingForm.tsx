@@ -1,19 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { site } from "@/lib/site";
 import { ArrowIcon, CheckIcon } from "./icons";
 import { loadTurnstile } from "@/lib/turnstile";
+import { ManageBooking } from "./ManageBooking";
+import { dayKey, SlotPicker, type Slot } from "./SlotPicker";
 
-type Slot = { starts_at: string; label: string };
 type Kind = "visio" | "appel";
 type Status = "loading" | "ready" | "empty" | "unavailable" | "sending" | "sent" | "error";
-
-const DAY = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Paris" });
-const TIME = new Intl.DateTimeFormat("fr-FR", { hour: "numeric", minute: "2-digit", timeZone: "Europe/Paris" });
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const dayKey = (iso: string) => new Intl.DateTimeFormat("fr-CA", { timeZone: "Europe/Paris" }).format(new Date(iso));
 
 /**
  * Prise de rendez-vous en ligne. Les créneaux sont lus en direct dans l'agenda du CRM
@@ -21,6 +17,18 @@ const dayKey = (iso: string) => new Intl.DateTimeFormat("fr-CA", { timeZone: "Eu
  * La réservation crée la fiche client et le rendez-vous dans le CRM, puis un e-mail de confirmation.
  */
 export function BookingForm() {
+  // Lien « déplacer ou annuler » de l'e-mail de confirmation : /rendez-vous/?modifier=<jeton>
+  const [token, setToken] = useState<string | null | undefined>(undefined);
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get("modifier");
+    setToken(t && /^[0-9a-f]{64}$/.test(t) ? t : null);
+  }, []);
+  if (token === undefined) return <p className="panel p-8 text-muted" role="status">Chargement…</p>;
+  if (token) return <ManageBooking token={token} />;
+  return <NewBooking />;
+}
+
+function NewBooking() {
   const endpoint = site.bookingEndpoint;
   const [slots, setSlots] = useState<Slot[]>([]);
   const [status, setStatus] = useState<Status>("loading");
@@ -90,16 +98,6 @@ export function BookingForm() {
       captchaToken.current = "";
     };
   }, [captchaOn, formShown]);
-
-  const days = useMemo(() => {
-    const map = new Map<string, Slot[]>();
-    for (const s of slots) {
-      const k = dayKey(s.starts_at);
-      map.set(k, [...(map.get(k) ?? []), s]);
-    }
-    return [...map.entries()];
-  }, [slots]);
-  const daySlots = days.find(([k]) => k === day)?.[1] ?? [];
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -200,28 +198,7 @@ export function BookingForm() {
         </div>
       </fieldset>
 
-      <fieldset>
-        <legend className="field-label">Jour</legend>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {days.map(([k, list]) => (
-            <button key={k} type="button" className="chip" aria-pressed={day === k} onClick={() => { setDay(k); setSlot(""); }}>
-              {cap(DAY.format(new Date(list[0]!.starts_at)))}
-            </button>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend className="field-label">Heure <span className="text-muted">(heure de Paris)</span></legend>
-        <div className="mt-4 flex flex-wrap gap-2" data-field="slot" tabIndex={-1}>
-          {daySlots.map((s) => (
-            <button key={s.starts_at} type="button" className="chip" aria-pressed={slot === s.starts_at} onClick={() => setSlot(s.starts_at)}>
-              {TIME.format(new Date(s.starts_at)).replace(":", " h ").replace(/^0/, "").replace(/ h 00$/, " h")}
-            </button>
-          ))}
-        </div>
-        {err("slot")}
-      </fieldset>
+      <SlotPicker slots={slots} day={day} slot={slot} onDay={(d) => { setDay(d); setSlot(""); }} onSlot={setSlot} error={errors.slot} />
 
       <div className="grid gap-10 md:grid-cols-2">
         <div>
