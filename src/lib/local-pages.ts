@@ -219,7 +219,7 @@ export const localPages: Service[] = [
   {
     slug: "agent-vocal-artisans-tours",
     name: "Agent vocal pour artisans",
-    title: "Agent vocal pour artisans à Tours, Orléans et Le Mans — FDA Studio",
+    title: "Agent vocal pour artisans à Tours, Orléans, Le Mans | FDA Studio",
     description:
       "Un agent vocal IA qui répond quand vous êtes sur un chantier : demande comprise, rendez-vous pris, résumé envoyé. Pour les artisans de Tours, Orléans et Le Mans.",
     keywords: ["agent vocal artisan", "standard téléphonique artisan Tours", "secrétariat téléphonique artisan", "agent vocal IA Orléans", "répondeur intelligent artisan Le Mans", "prise de rendez-vous automatique"],

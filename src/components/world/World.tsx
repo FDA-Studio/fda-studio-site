@@ -17,6 +17,12 @@ import { frTypo } from "@/lib/typo";
  * Le texte SEO/accessibilité est rendu côté serveur (voir WorldCopy) ; le moteur
  * reconstruit la mise en scène côté client.
  */
+/** Événement de navigation vers une scène du monde (detail : id de la section, ex. « sites »). */
+export const WORLD_GOTO = "fda:world-goto";
+
+/** Ancres de la navigation qui mènent à une scène du monde plutôt qu'à un élément de la page. */
+export const WORLD_ANCHORS: Record<string, string> = { expertises: "sites" };
+
 export function World() {
   const host = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
@@ -26,10 +32,12 @@ export function World() {
   useEffect(() => {
     const el = host.current;
     if (!el) return;
-    let world: { end: () => number; progress: (i: number) => number; time: (i: number) => number; preload: (cb?: (p: number) => void) => Promise<void>; destroy: () => void } | null = null;
+    let world: { end: () => number; jumpTo: (i: number) => void; progress: (i: number) => number; time: (i: number) => number; preload: (cb?: (p: number) => void) => Promise<void>; destroy: () => void } | null = null;
     let disposed = false;
     let onScroll = () => {};
     let lastPct = -1;
+    let goTo = (_id: string) => {};
+    const onGoTo = (e: Event) => goTo((e as CustomEvent<string>).detail);
 
     (async () => {
       const { mountScrollWorld } = await import("@/lib/scroll-world/engine.js");
@@ -112,6 +120,12 @@ export function World() {
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
+      // Navigation « Expertises » : le monde n'a pas d'élément à cibler, on vole jusqu'à la scène des sites.
+      goTo = (id: string) => {
+        const i = WORLD_SECTIONS.findIndex((s) => s.id === id);
+        if (i >= 0) world?.jumpTo(i);
+      };
+      window.addEventListener(WORLD_GOTO, onGoTo);
       // Le temps du film continue d'évoluer après le dernier événement de scroll (lissage) :
       // on relit l'état à chaque image tant que le vol est à l'écran.
       const tick = () => {
@@ -137,6 +151,7 @@ export function World() {
     return () => {
       disposed = true;
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener(WORLD_GOTO, onGoTo);
       world?.destroy();
     };
   }, []);
@@ -144,7 +159,15 @@ export function World() {
   return (
     <>
       {/* L’écran reste monté pendant sa sortie (explosion des particules), puis se retire de lui-même */}
-      <Gate progress={progress} ready={ready} onEnter={() => setEntered(true)} />
+      <Gate
+        progress={progress}
+        ready={ready}
+        onEnter={() => {
+          setEntered(true);
+          const scene = WORLD_ANCHORS[window.location.hash.slice(1)];
+          if (scene) window.setTimeout(() => window.dispatchEvent(new CustomEvent(WORLD_GOTO, { detail: scene })), 400);
+        }}
+      />
       <div ref={host} className="world" data-entered={entered ? "true" : "false"} aria-hidden />
     </>
   );

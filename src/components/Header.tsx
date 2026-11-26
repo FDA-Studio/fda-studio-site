@@ -7,6 +7,7 @@ import { Logo } from "./brand/Logo";
 import { nav, site } from "@/lib/site";
 import { SoundToggle } from "./SoundToggle";
 import { usePresence } from "@/lib/motion";
+import { WORLD_ANCHORS, WORLD_GOTO } from "./world/World";
 
 /** Lien d'ancre : défilement natif sur l'accueil, retour à l'accueil depuis les pages légales. */
 function useAnchor() {
@@ -17,7 +18,15 @@ function useAnchor() {
     onClick: (e: React.MouseEvent) => {
       if (!home) return;
       const el = document.getElementById(id);
-      if (!el) return;
+      if (!el) {
+        // Ancre qui mène à une scène du monde 3D (« Expertises ») : le monde défile jusqu'à elle.
+        const scene = WORLD_ANCHORS[id];
+        if (!scene) return;
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent(WORLD_GOTO, { detail: scene }));
+        history.replaceState(null, "", `#${id}`);
+        return;
+      }
       e.preventDefault();
       const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       el.scrollIntoView({ behavior: smooth ? "smooth" : "auto" });

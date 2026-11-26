@@ -634,6 +634,8 @@ export function mountScrollWorld(container, config) {
     preload: preloadAll,
     /** Progression (0..1) du vol de la section i à la position de scroll actuelle. */
     progress: (i) => { const seg = SECTIONS[i] && SECTIONS[i]._seg; if (!seg) return 0; const y = window.scrollY || window.pageYOffset; return clamp((y - seg.start) / (seg.end - seg.start), 0, 1); },
+    /** (FDA) Défile jusqu'au milieu du vol de la section i (liens « Expertises » de la navigation). */
+    jumpTo: (i) => { if (SECTIONS[i] && SECTIONS[i]._seg) jumpTo(i); },
     /** Temps du film (0..1) effectivement affiché pour la section i (après remap et lissage). */
     time: (i) => { const seg = SECTIONS[i] && SECTIONS[i]._seg; return seg ? clamp(seg.cur || 0, 0, 1) : 0; },
     destroy() {
