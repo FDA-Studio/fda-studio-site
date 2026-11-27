@@ -296,9 +296,9 @@ export const services: Service[] = [
   {
     slug: "agent-vocal-chatbot-ia-tours",
     name: "Agent vocal et chatbot IA",
-    title: "Agent vocal IA et chatbot IA à Tours pour les PME | FDA Studio",
+    title: "Agent vocal et chatbot IA à Tours, Orléans, Le Mans | FDA Studio",
     description:
-      "Installation d’agents vocaux IA et de chatbots IA à Tours pour les PME, artisans et commerces : réponse aux appels et aux visiteurs, prise de rendez-vous, lien avec votre CRM.",
+      "Agents vocaux IA et chatbots IA pour les PME de Tours, Orléans et Le Mans : réponse aux appels et aux visiteurs, prise de rendez-vous, lien avec votre CRM.",
     keywords: [
       "agent vocal IA Tours",
       "chatbot IA Tours",
@@ -307,18 +307,22 @@ export const services: Service[] = [
       "agent conversationnel entreprise Tours",
       "agent vocal IA Indre-et-Loire",
       "chatbot site internet PME",
+      "agent vocal IA Orléans",
+      "chatbot IA Orléans",
+      "agent vocal IA Le Mans",
+      "chatbot IA Le Mans",
     ],
-    h1: ["Agent vocal IA et chatbot IA", "à Tours, pour les PME"],
+    h1: ["Agent vocal IA et chatbot IA", "à Tours, Orléans et Le Mans"],
     headings: {
       offers: "Ce que nous installons dans votre entreprise.",
       forWhom: "À qui s’adressent un agent vocal et un chatbot IA.",
       steps: "Comment se passe l’installation.",
       included: "Ce que comprend chaque installation.",
-      local: "Agent vocal IA et chatbot IA à Tours, en Touraine et partout en France.",
+      local: "Agent vocal IA et chatbot IA à Tours, Orléans, Le Mans et partout en France.",
       faq: "Questions fréquentes sur les agents vocaux et les chatbots IA.",
     },
     intro:
-      "Un appel pendant un rendez-vous, une question posée sur votre site à 21 h : quand personne ne répond, le client contacte quelqu’un d’autre. FDA Studio installe des agents vocaux IA qui décrochent au nom de votre entreprise et des chatbots IA qui répondent aux visiteurs de votre site. Ils s’appuient sur vos informations, notent chaque demande et la transmettent à votre équipe.",
+      "Un appel pendant un rendez-vous, une question posée sur votre site à 21 h : quand personne ne répond, le client contacte quelqu’un d’autre. FDA Studio installe, pour les PME de Tours, d’Orléans et du Mans, des agents vocaux IA qui décrochent au nom de votre entreprise et des chatbots IA qui répondent aux visiteurs de votre site. Ils s’appuient sur vos informations, notent chaque demande et la transmettent à votre équipe.",
     serviceType: "Installation d’agents vocaux IA et de chatbots IA",
     offers: [
       { title: "Agent vocal IA", text: "Il décroche quand vous ne pouvez pas, se présente au nom de votre entreprise, répond à partir de vos informations et note la demande." },
@@ -350,14 +354,14 @@ export const services: Service[] = [
       "Une installation pensée dans le respect du RGPD",
     ],
     local:
-      "Le studio est installé à Fondettes, aux portes de Tours. Nous installons des agents vocaux IA et des chatbots IA pour les entreprises de Tours, Joué-lès-Tours, Saint-Cyr-sur-Loire, Chambray-lès-Tours, Amboise et du reste de l’Indre-et-Loire, ainsi qu’à Orléans, au Mans et partout en France à distance.",
-    areaServed: ["Tours", "Indre-et-Loire", "Orléans", "Le Mans", "Centre-Val de Loire", "France"],
+      "Le studio est installé à Fondettes, aux portes de Tours. Nous installons des agents vocaux IA et des chatbots IA pour les entreprises de Tours et de Touraine, d’Orléans et du Loiret, du Mans et de la Sarthe, en rendez-vous sur place ou en visio, et partout en France à distance.",
+    areaServed: ["Tours", "Indre-et-Loire", "Orléans", "Loiret", "Le Mans", "Sarthe", "Centre-Val de Loire", "Pays de la Loire", "France"],
     faq: [
       { q: "Quelle différence entre un agent vocal IA et un chatbot IA ?", a: "L’agent vocal répond au téléphone, à la voix. Le chatbot répond par écrit aux visiteurs de votre site. Les deux s’appuient sur les mêmes informations et transmettent les demandes à votre équipe." },
       { q: "L’agent peut-il dire n’importe quoi à mes clients ?", a: "Il répond à partir des informations que vous lui donnez et suit les règles fixées avec vous. Il ne donne pas de prix et ne s’engage pas à votre place : en cas de doute, il prend le message et vous le transmet." },
       { q: "Peut-on écouter l’agent vocal avant de se décider ?", a: "Oui. Une démonstration est disponible sur fdastudio.fr, et vous testez votre propre agent avant sa mise en service." },
       { q: "Combien coûte un agent vocal IA ou un chatbot IA ?", a: "Cela dépend du nombre d’appels, des outils à relier et de ce que l’agent doit faire. Après un premier échange, vous recevez un devis détaillé et gratuit." },
-      { q: "Intervenez-vous en dehors de Tours ?", a: "Oui. L’installation se fait à distance : nous travaillons avec des entreprises de Touraine, d’Orléans, du Mans et de toute la France." },
+      { q: "Intervenez-vous à Orléans et au Mans ?", a: "Oui. Nous installons des agents vocaux IA et des chatbots IA pour des entreprises de Tours, d’Orléans, du Mans et de toute la France, sur place ou à distance." },
     ],
   },
   {
