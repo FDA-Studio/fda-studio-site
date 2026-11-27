@@ -32,6 +32,7 @@ export function Footer() {
               <li><Link href="/creation-site-internet-tours/" className="link-line hover:text-paper">Création de site internet à Tours</Link></li>
               <li><Link href="/identite-visuelle-logo-tours/" className="link-line hover:text-paper">Identité visuelle et logo</Link></li>
               <li><Link href="/agence-ia-tours/" className="link-line hover:text-paper">Agence IA à Tours</Link></li>
+              <li><Link href="/agent-vocal-chatbot-ia-tours/" className="link-line hover:text-paper">Agent vocal et chatbot IA</Link></li>
               <li><Link href="/developpement-application-tours/" className="link-line hover:text-paper">Applications mobiles et web</Link></li>
               <li><Link href="/crm-sur-mesure-tours/" className="link-line hover:text-paper">CRM sur mesure</Link></li>
               <li><Link href="/referencement-naturel-tours/" className="link-line hover:text-paper">Référencement naturel (SEO)</Link></li>
