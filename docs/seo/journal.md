@@ -11,7 +11,7 @@ Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport m
   (A19079, 46 % des TPE-PME avec au moins 5 % de clients venus d'Internet), Service Public Entreprendre F37351 (mentions
   obligatoires, 375 000 € / 75 000 €) et F31228 (cookies), documentation Google Search Central (exploration en plusieurs
   jours à semaines), guide d'agence mis à jour le 16/11/2026 (délais 1-2, 2-4, 4-8 mois ; agence non nommée dans le texte).
-  Deuxième article de la semaine (24 et 27/11). Pas d'audit (vendredi).
+  PR #100 fusionnée, en ligne vers 08:49 UTC. Deuxième article de la semaine (24 et 27/11). Pas d'audit (vendredi).
 - 2026-11-24 (mardi, passage planifié, tâche du Bureau) — Article « Automatiser ses devis et relances : méthode et coût
   pour une PME en 2026 » (slug automatiser-devis-relances ; mot-clé principal : automatiser ses devis et relances ;
   ~1 550 mots ; PR #86 fusionnée, en ligne vers 08:52 UTC). Anti-doublon : 9 articles existants, aucune PR ouverte, aucun article sur l'automatisation. Le sujet
