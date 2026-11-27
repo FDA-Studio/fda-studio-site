@@ -2,6 +2,16 @@
 
 Le plus récent en haut. Une ligne par passage de l'agent, un bloc par rapport mensuel.
 
+- 2026-11-27 (vendredi, passage planifié, tâche du Bureau) — Article P0 demandé par Antoine le 23/11 : « Créer le site
+  internet de son entreprise à Tours : étapes, délais et préparation » (slug etapes-creation-site-internet-entreprise-tours ;
+  mot-clé principal : étapes création site internet entreprise ; ~1 550 mots ; angle guide, renvoie vers
+  /creation-site-internet-tours/ sans reprendre son mot-clé principal). Anti-doublon : 10 articles existants, aucune PR
+  ouverte ; voisins choisir-agence-web-tours (choisir un prestataire) et prix-site-vitrine (budget) répondent à d'autres
+  questions. Cite Orléans et Le Mans avec liens vers les pages locales. Sources ouvertes : baromètre France Num 2026
+  (A19079, 46 % des TPE-PME avec au moins 5 % de clients venus d'Internet), Service Public Entreprendre F37351 (mentions
+  obligatoires, 375 000 € / 75 000 €) et F31228 (cookies), documentation Google Search Central (exploration en plusieurs
+  jours à semaines), guide d'agence mis à jour le 16/11/2026 (délais 1-2, 2-4, 4-8 mois ; agence non nommée dans le texte).
+  Deuxième article de la semaine (24 et 27/11). Pas d'audit (vendredi).
 - 2026-11-24 (mardi, passage planifié, tâche du Bureau) — Article « Automatiser ses devis et relances : méthode et coût
   pour une PME en 2026 » (slug automatiser-devis-relances ; mot-clé principal : automatiser ses devis et relances ;
   ~1 550 mots ; PR #86 fusionnée, en ligne vers 08:52 UTC). Anti-doublon : 9 articles existants, aucune PR ouverte, aucun article sur l'automatisation. Le sujet
